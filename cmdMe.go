@@ -12,7 +12,7 @@ func init() {
 }
 
 var cmdMe = &cobra.Command{
-	Use:     "group",
+	Use:     "me",
 	Short:   "Me commands : sailgo me --help",
 	Long:    `Me commands : sailgo me <command>`,
 	Aliases: []string{"m"},
