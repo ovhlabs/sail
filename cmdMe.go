@@ -22,16 +22,16 @@ var cmdMeShow = &cobra.Command{
 	Use:   "show",
 	Short: "Display information about me : sailgo me show",
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO
-		fmt.Println("TO BE IMPLEMENTED")
+		// TODO sailgo me show
+		fmt.Println("sailgo me show TO BE IMPLEMENTED")
 	},
 }
 
 var cmdMeSetAcls = &cobra.Command{
-	Use:   "show",
+	Use:   "setAcls",
 	Short: "Set Acls : sailgo me setAcls",
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO
-		fmt.Println("TO BE IMPLEMENTED")
+		// TODO  sailgo me setAcls
+		fmt.Println("sailgo me setAcls TO BE IMPLEMENTED")
 	},
 }

@@ -11,6 +11,21 @@
 			"Rev": "056c9bc7be7190eaa7715723883caffa5f8fa3e4"
 		},
 		{
+			"ImportPath": "github.com/docker/docker/cliconfig",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/homedir",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/system",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",
 			"Rev": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
 		},
@@ -31,6 +46,11 @@
 		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
 			"Rev": "2caf8efc93669b6c43e0441cdc6aed17546c96f3"
+		},
+		{
+			"ImportPath": "github.com/opencontainers/runc/libcontainer/user",
+			"Comment": "v0.0.3-22-g744a6b0",
+			"Rev": "744a6b0e7bd3aa1d2985060170040392be3e94e3"
 		},
 		{
 			"ImportPath": "github.com/spf13/cast",

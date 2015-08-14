@@ -7,12 +7,13 @@ import (
 	"net/http"
 	"os"
 
-	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/viper"
+
+	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
 )
 
 var verbose bool
-var url, auth, email, configFile string
+var host, user, password, configDir string
 var home = os.Getenv("HOME")
 
 var rootCmd = &cobra.Command{
@@ -24,50 +25,28 @@ var rootCmd = &cobra.Command{
 func main() {
 	addCommands()
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	rootCmd.PersistentFlags().StringVarP(&auth, "auth", "u", "", "auth, facultative if you have a "+home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&email, "email", "p", "", "email, facultative if you have a "+home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&configFile, "configFile", "c", home+"/.docker/config.json", "configuration file, default is "+home+"/.docker/config.json")
-
-	viper.BindPFlag("url", rootCmd.PersistentFlags().Lookup("url"))
-	viper.BindPFlag("auth", rootCmd.PersistentFlags().Lookup("auth"))
-	viper.BindPFlag("email", rootCmd.PersistentFlags().Lookup("email"))
+	rootCmd.PersistentFlags().StringVarP(&host, "host", "H", "", "Docker index host, facultative if you have a "+home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&user, "user", "u", "", "Docker index user, facultative if you have a "+home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "", "Docker index password, facultative if you have a "+home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&configDir, "configDir", "", home+"/.docker", "configuration directory, default is "+home+"/.docker/")
 
 	rootCmd.Execute()
 }
 
-func readConfig() {
-	if configFile != "" {
-		viper.SetConfigFile(configFile)
-		viper.ReadInConfig() // Find and read the config file
-		if verbose {
-			fmt.Printf("Using config file %s\n", configFile)
-		}
-	}
-}
-
-//AddCommands adds child commands to the root command rootCmd.
+// AddCommands adds child commands to the root command rootCmd.
 func addCommands() {
-	rootCmd.AddCommand(cmdMe)
 	rootCmd.AddCommand(cmdConfig)
+	rootCmd.AddCommand(cmdCompose)
+	rootCmd.AddCommand(cmdContainer)
+	rootCmd.AddCommand(cmdMe)
+	rootCmd.AddCommand(cmdNetwork)
+	rootCmd.AddCommand(cmdRepository)
+	rootCmd.AddCommand(cmdService)
 	rootCmd.AddCommand(cmdVersion)
 }
 
-func getSkipLimit(tail []string) (string, string) {
-	skip := "0"
-	limit := "10"
-	if len(tail) == 3 {
-		skip = tail[1]
-		limit = tail[2]
-	} else if len(tail) == 2 {
-		skip = tail[0]
-		limit = tail[1]
-	}
-	return skip, limit
-}
-
 func initRequest(req *http.Request) {
-	// TODOs
-	// req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 }
 
 func getHTTPClient() *http.Client {
@@ -80,16 +59,16 @@ func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 	readConfig()
 
 	// TODO URL
-	/*if viper.GetString("url") == "" {
+	/*if viper.GetString("host") == "" {
 		fmt.Println("Invalid Configuration : invalid URL. See sailgo config --help")
 		os.Exit(1)
 	}*/
 
 	var req *http.Request
 	if jsonStr != nil {
-		req, _ = http.NewRequest(method, viper.GetString("url")+path, bytes.NewReader(jsonStr))
+		req, _ = http.NewRequest(method, viper.GetString("host")+path, bytes.NewReader(jsonStr))
 	} else {
-		req, _ = http.NewRequest(method, viper.GetString("url")+path, nil)
+		req, _ = http.NewRequest(method, viper.GetString("host")+path, nil)
 	}
 
 	initRequest(req)
@@ -99,7 +78,7 @@ func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 
 	if resp.StatusCode != wantCode || verbose {
 		fmt.Printf("Response Status:%s\n", resp.Status)
-		fmt.Printf("Request path :%s\n", viper.GetString("url")+path)
+		fmt.Printf("Request path :%s\n", viper.GetString("host")+path)
 		fmt.Printf("Request :%s\n", string(jsonStr))
 		fmt.Printf("Response Headers:%s\n", resp.Header)
 		body, _ := ioutil.ReadAll(resp.Body)
