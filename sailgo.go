@@ -2,17 +2,16 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 
-	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/viper"
-
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
 )
 
-var verbose bool
+var verbose, pretty bool
 var host, user, password, configDir string
 var home = os.Getenv("HOME")
 
@@ -25,7 +24,8 @@ var rootCmd = &cobra.Command{
 func main() {
 	addCommands()
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	rootCmd.PersistentFlags().StringVarP(&host, "host", "H", "", "Docker index host, facultative if you have a "+home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().BoolVarP(&pretty, "pretty", "t", false, "Pretty Print Json Output")
+	rootCmd.PersistentFlags().StringVarP(&host, "host", "H", "sailabove.io", "Docker index host, facultative if you have a "+home+"/.docker/config.json file")
 	rootCmd.PersistentFlags().StringVarP(&user, "user", "u", "", "Docker index user, facultative if you have a "+home+"/.docker/config.json file")
 	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "", "Docker index password, facultative if you have a "+home+"/.docker/config.json file")
 	rootCmd.PersistentFlags().StringVarP(&configDir, "configDir", "", home+"/.docker", "configuration directory, default is "+home+"/.docker/")
@@ -47,6 +47,9 @@ func addCommands() {
 
 func initRequest(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "Sailabove sailgo CLI/"+VERSION)
+	req.Header.Set("User-Agent", "Sailabove sailgo CLI/"+VERSION)
+
 }
 
 func getHTTPClient() *http.Client {
@@ -54,40 +57,50 @@ func getHTTPClient() *http.Client {
 	return &http.Client{Transport: tr}
 }
 
+func getWantReturn(path string) string {
+	body := reqWant("GET", http.StatusOK, path, nil)
+	return getJSON(body)
+}
+
 func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 
 	readConfig()
 
-	// TODO URL
-	/*if viper.GetString("host") == "" {
-		fmt.Println("Invalid Configuration : invalid URL. See sailgo config --help")
-		os.Exit(1)
-	}*/
-
 	var req *http.Request
 	if jsonStr != nil {
-		req, _ = http.NewRequest(method, viper.GetString("host")+path, bytes.NewReader(jsonStr))
+		req, _ = http.NewRequest(method, host+path, bytes.NewReader(jsonStr))
 	} else {
-		req, _ = http.NewRequest(method, viper.GetString("host")+path, nil)
+		req, _ = http.NewRequest(method, host+path, nil)
 	}
 
 	initRequest(req)
+	req.SetBasicAuth(user, password)
 	resp, err := getHTTPClient().Do(req)
 	check(err)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != wantCode || verbose {
-		fmt.Printf("Response Status:%s\n", resp.Status)
-		fmt.Printf("Request path :%s\n", viper.GetString("host")+path)
-		fmt.Printf("Request :%s\n", string(jsonStr))
-		fmt.Printf("Response Headers:%s\n", resp.Header)
+		fmt.Printf("Response Status : %s\n", resp.Status)
+		fmt.Printf("Request path : %s\n", host+path)
+		fmt.Printf("Request Headers: %s\n", req.Header)
+		fmt.Printf("Request : %s\n", string(jsonStr))
+		fmt.Printf("Response Headers : %s\n", resp.Header)
 		body, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Response Body:%s\n", string(body))
+		fmt.Printf("Response Body : %s\n", string(body))
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	check(err)
 	return body
+}
+
+func getJSON(s []byte) string {
+	if pretty {
+		var out bytes.Buffer
+		json.Indent(&out, s, "", "  ")
+		return out.String()
+	}
+	return string(s)
 }
 
 func check(e error) {

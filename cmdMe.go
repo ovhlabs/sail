@@ -22,8 +22,7 @@ var cmdMeShow = &cobra.Command{
 	Use:   "show",
 	Short: "Display information about me : sailgo me show",
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO sailgo me show
-		fmt.Println("sailgo me show TO BE IMPLEMENTED")
+		fmt.Println(getWantReturn("/users"))
 	},
 }
 
