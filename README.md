@@ -10,6 +10,8 @@ go get && go build && ./sailgo -h
 # Roadmap Rewrite
 ## TODO
 
+TODO based on python version of sail 0.5.5
+
 sail containers          Containers
 sail containers ps       List docker containers
 sail containers inspect  Inspect a docker container
