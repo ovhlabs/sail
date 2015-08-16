@@ -35,13 +35,10 @@ sail services domain-attach  Attach a domain on the HTTP load balancer
 sail services domain-detach  Detach a domain from the HTTP load balancer
 
 sail repositories        Repositories
-sail repositories list   List the docker repository
 sail repositories add    Add a new docker repository
 sail repositories rm     Delete a repository
 
 sail networks            Networks
-sail networks list       List the docker private networks
-sail networks inspect    Inspect the docker private networks
 sail networks add        Add a new private network
 sail networks range-add  Add an allocation range to a private network
 sail networks rm         Delete a private network
@@ -68,3 +65,8 @@ sail apps domain-list   List domains and routes on the HTTP load balancer
 sail containers          Containers
 sail containers ps       List docker containers
 sail containers inspect  Inspect a docker container
+
+sail repositories list   List the docker repository
+
+sail networks list       List the docker private networks
+sail networks inspect    Inspect the docker private networks

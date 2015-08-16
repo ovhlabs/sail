@@ -104,6 +104,15 @@ func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 	return body
 }
 
+func getListApplications(args []string) []string {
+	apps := []string{}
+	if len(args) == 0 {
+		b := reqWant("GET", http.StatusOK, "/applications", nil)
+		err := json.Unmarshal(b, &apps)
+		check(err)
+	}
+	return apps
+}
 func getJSON(s []byte) string {
 	if pretty {
 		var out bytes.Buffer

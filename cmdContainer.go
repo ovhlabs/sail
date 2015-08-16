@@ -29,13 +29,7 @@ var cmdContainerList = &cobra.Command{
 	Short:   "List docker containers : sailgo container list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
-		apps := []string{}
-		if len(args) == 0 {
-			b := reqWant("GET", http.StatusOK, "/applications", nil)
-			err := json.Unmarshal(b, &apps)
-			check(err)
-		}
-		containerList(apps)
+		containerList(getListApplications(args))
 	},
 }
 
