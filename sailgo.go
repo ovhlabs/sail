@@ -48,8 +48,6 @@ func addCommands() {
 func initRequest(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "Sailabove sailgo CLI/"+VERSION)
-	req.Header.Set("User-Agent", "Sailabove sailgo CLI/"+VERSION)
-
 }
 
 func getHTTPClient() *http.Client {
@@ -58,8 +56,11 @@ func getHTTPClient() *http.Client {
 }
 
 func getWantReturn(path string) string {
-	body := reqWant("GET", http.StatusOK, path, nil)
-	return getJSON(body)
+	return getJSON(reqWant("GET", http.StatusOK, path, nil))
+}
+
+func reqWantJSON(method string, wantCode int, path string, body []byte) string {
+	return getJSON(reqWant(method, wantCode, path, body))
 }
 
 func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
@@ -82,8 +83,8 @@ func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 	if resp.StatusCode != wantCode || verbose {
 		fmt.Printf("Response Status : %s\n", resp.Status)
 		fmt.Printf("Request path : %s\n", host+path)
-		fmt.Printf("Request Headers: %s\n", req.Header)
-		fmt.Printf("Request : %s\n", string(jsonStr))
+		fmt.Printf("Request Headers : %s\n", req.Header)
+		fmt.Printf("Request Body : %s\n", string(jsonStr))
 		fmt.Printf("Response Headers : %s\n", resp.Header)
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Printf("Response Body : %s\n", string(body))

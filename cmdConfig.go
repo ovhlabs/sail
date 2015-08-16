@@ -25,11 +25,11 @@ var cmdConfigShow = &cobra.Command{
 	Use:   "show",
 	Short: "Show Configuration : sailgo config show",
 	Run: func(cmd *cobra.Command, args []string) {
-		show()
+		configShow()
 	},
 }
 
-func show() {
+func configShow() {
 	readConfig()
 	fmt.Printf("username:%s\n", user)
 	fmt.Printf("host:%s\n", host)
@@ -41,8 +41,8 @@ func readConfig() error {
 	if user != "" && password != "" {
 		return nil
 	}
-	// otherwise try to take from docker config.json file
 
+	// otherwise try to take from docker config.json file
 	c, err := cliconfig.Load(configDir)
 	if err != nil {
 		fmt.Printf("Error while reading config file in %s\n", configDir)
