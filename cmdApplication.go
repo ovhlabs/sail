@@ -11,9 +11,9 @@ func init() {
 	cmdApplication.AddCommand(cmdApplicationInspect)
 
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainList)
+	cmdApplicationDomain.AddCommand(cmdApplicationDomainAttach)
+	cmdApplicationDomain.AddCommand(cmdApplicationDomainDetach)
 	cmdApplication.AddCommand(cmdApplicationDomain)
-
-	// TODO domain list, attach, detach
 }
 
 var cmdApplication = &cobra.Command{
