@@ -24,7 +24,7 @@ var cmdMeShow = &cobra.Command{
 	Use:   "show",
 	Short: "Show account details : sailgo me show",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(getWantReturn("/users"))
+		fmt.Println(getWantJSON("/users"))
 	},
 }
 

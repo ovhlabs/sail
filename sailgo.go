@@ -35,8 +35,9 @@ func main() {
 
 // AddCommands adds child commands to the root command rootCmd.
 func addCommands() {
-	rootCmd.AddCommand(cmdConfig)
+	rootCmd.AddCommand(cmdApplication)
 	rootCmd.AddCommand(cmdCompose)
+	rootCmd.AddCommand(cmdConfig)
 	rootCmd.AddCommand(cmdContainer)
 	rootCmd.AddCommand(cmdMe)
 	rootCmd.AddCommand(cmdNetwork)
@@ -55,8 +56,16 @@ func getHTTPClient() *http.Client {
 	return &http.Client{Transport: tr}
 }
 
-func getWantReturn(path string) string {
+func getWantJSON(path string) string {
 	return getJSON(reqWant("GET", http.StatusOK, path, nil))
+}
+
+func postWantJSON(path string) string {
+	return getJSON(reqWant("GET", http.StatusCreated, path, nil))
+}
+
+func deleteWantJSON(path string) string {
+	return getJSON(reqWant("DELETE", http.StatusOK, path, nil))
 }
 
 func reqWantJSON(method string, wantCode int, path string, body []byte) string {
