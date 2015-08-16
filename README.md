@@ -12,9 +12,6 @@ go get && go build && ./sailgo -h
 
 TODO based on python version of sail 0.5.5
 
-sail containers          Containers
-sail containers ps       List docker containers
-sail containers inspect  Inspect a docker container
 sail containers attach   Attach to a container console
 sail containers logs     Fetch the logs of a container
 
@@ -67,3 +64,7 @@ sail apps               Applications
 sail apps list          List granted apps
 sail apps inspect       Details of an app
 sail apps domain-list   List domains and routes on the HTTP load balancer
+
+sail containers          Containers
+sail containers ps       List docker containers
+sail containers inspect  Inspect a docker container

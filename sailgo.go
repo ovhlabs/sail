@@ -61,7 +61,7 @@ func getWantJSON(path string) string {
 }
 
 func postWantJSON(path string) string {
-	return getJSON(reqWant("GET", http.StatusCreated, path, nil))
+	return getJSON(reqWant("POST", http.StatusCreated, path, nil))
 }
 
 func deleteWantJSON(path string) string {

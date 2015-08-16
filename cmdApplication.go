@@ -17,7 +17,7 @@ func init() {
 }
 
 var cmdApplication = &cobra.Command{
-	Use:     "me",
+	Use:     "application",
 	Short:   "Application commands : sailgo application --help",
 	Long:    `Application commands : sailgo application <command>`,
 	Aliases: []string{"a", "app", "apps", "applications"},
