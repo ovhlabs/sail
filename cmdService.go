@@ -84,32 +84,22 @@ func serviceList(apps []string) {
 			b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s", app, serviceID), nil)
 			check(json.Unmarshal(b, &service))
 
-			/*'%s/%s' % (application, service['name']),
-			'%s@%s' % (service['repository'], service['repository_tag']),
-			service['image'][:12],
-			service['state'].capitalize(),
-			service['container_number'],
-			dateutil.parser.parse(service['creation_date']).replace(tzinfo=None),
-			', '.join(ips),
-			*/
-
-			//ips := []string{}
-			/* DOING PER YESNAULT for _, container := range service["containers"].(map[string]interface{}) {
-				fmt.Printf("container: %+v \n", container)
-				for name, network := range container["network"].(map[string]interface{}) {
-					fmt.Printf("%s:%s\n", name, network["ip"])
-					append(ips, fmt.Sprintf("%s:%s", name, network["ip"]))
+			ips := []string{}
+			for _, container := range service["containers"].(map[string]interface{}) {
+				for name, network := range container.(map[string]interface{})["network"].(map[string]interface{}) {
+					ips = append(ips, fmt.Sprintf("%s:%s", name, network.(map[string]interface{})["ip"]))
 				}
-			}*/
+			}
 
-			fmt.Fprintf(w, "%s/%s\t%s@%s\t%s\t%s\t%s\t%s\n",
+			fmt.Fprintf(w, "%s/%s\t%s@%s\t%s\t%s\t%d\t%s\t%s\n",
 				app, service["name"],
 				service["repository"],
 				service["repository_tag"],
 				service["image"].(string)[:12],
 				strings.ToUpper(service["state"].(string)),
-				service["container_number"],
-				service["creation_date"].(string)[:19])
+				int(service["container_number"].(float64)),
+				service["creation_date"].(string)[:19],
+				strings.Join(ips, ","))
 
 			w.Flush()
 		}
