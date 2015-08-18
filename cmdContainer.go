@@ -27,20 +27,15 @@ var cmdContainer = &cobra.Command{
 
 var cmdContainerAttach = &cobra.Command{
 	Use:   "attach",
-	Short: "Attach to a container console : sailgo container attach <applicationName> <containerId>",
-	Long: `Attach to a container console : sailgo container attach <applicationName> <containerId>
+	Short: "Attach to a container console : sailgo container attach <applicationName>/<containerId>",
+	Long: `Attach to a container console : sailgo container attach <applicationName>/<containerId>
 	\"example : sailgo container attach myApp myContainerId"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sailgo container attach <applicationName> <containerId>. Please see sailgo container attach --help")
+			fmt.Println("Invalid usage. sailgo container attach <applicationName>/<containerId>. Please see sailgo container attach --help")
 		} else {
-			t := strings.Split(args[0], "/")
-			if len(t) != 2 {
-				fmt.Println("Invalid usage. sailgo service attach <applicationName>/<serviceId>. Please see sailgo container attach --help")
-			} else {
-				containerAttach(t[0], t[1])
-			}
+			containerAttach(args[0])
 		}
 	},
 }
@@ -69,18 +64,13 @@ var cmdContainerInspect = &cobra.Command{
 	},
 }
 
-func containerAttach(application, service string) {
-	//TODO
-	/*ns, container, _ = parse_repository(args.container, args.api_user)
-	  path = '/applications/%s/containers/%s/attach' % (ns, container)
-	  r = api_request(args, 'GET', path, stream=True)
-	  try:
-	      for line in r.iter_lines(chunk_size=1):
-	          print line
-	  except (KeyboardInterrupt, IOError):
-	      pass
-	*/
-	//reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s/attach?stream", application, service), nil, true)
+func containerAttach(containerID string) {
+	t := strings.Split(containerID, "/")
+	if len(t) != 2 {
+		fmt.Println("Invalid usage. sailgo service inspect <applicationName>/<serviceId>. Please see sailgo service inspect --help")
+	} else {
+		streamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s/attach", t[0], t[1]), nil)
+	}
 }
 
 func containerList(apps []string) {

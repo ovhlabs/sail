@@ -12,7 +12,6 @@ go get && go build && ./sailgo -h
 ```
 TODO based on python version of sail 0.5.5
 
-sail containers attach   Attach to a container console
 sail containers logs     Fetch the logs of a container
 
 sail compose             Docker compose
@@ -22,7 +21,6 @@ sail compose get         Export Docker compose receipt
 sail services                Services
 sail services add            Add a new docker service
 sail services rm             Delete a docker service
-sail services attach         Attach to the console of the service containers
 sail services logs           Fetch the logs of a service
 sail services redeploy       Redeploy a docker service
 sail services stop           Stop a docker service
@@ -67,11 +65,13 @@ sail apps inspect       Details of an app
 sail apps domain-list   List domains and routes on the HTTP load balancer
 
 sail containers          Containers
+sail containers attach   Attach to a container console
 sail containers ps       List docker containers
 sail containers inspect  Inspect a docker container
 
 sail repositories list   List the docker repository
 
+sail services attach         Attach to the console of the service containers
 sail services inspect        Inspect a docker service
 sail services ps             List docker services
 

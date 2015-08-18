@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -72,7 +74,15 @@ func reqWantJSON(method string, wantCode int, path string, body []byte) string {
 	return getJSON(reqWant(method, wantCode, path, body))
 }
 
+func streamWant(method string, wantCode int, path string, jsonStr []byte) {
+	apiRequest(method, wantCode, path, jsonStr, true)
+}
+
 func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
+	return apiRequest(method, wantCode, path, jsonStr, false)
+}
+
+func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream bool) []byte {
 
 	readConfig()
 
@@ -97,11 +107,23 @@ func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 		fmt.Printf("Response Headers : %s\n", resp.Header)
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Printf("Response Body : %s\n", string(body))
+		os.Exit(1)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	check(err)
-	return body
+	if stream {
+		reader := bufio.NewReader(resp.Body)
+		for {
+			line, _ := reader.ReadBytes('\n')
+			if string(line) != "" {
+				log.Print(string(line))
+			}
+		}
+	} else {
+		body, err := ioutil.ReadAll(resp.Body)
+		check(err)
+		return body
+	}
+
 }
 
 func getListApplications(args []string) []string {

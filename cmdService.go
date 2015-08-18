@@ -12,13 +12,13 @@ import (
 )
 
 func init() {
+	cmdService.AddCommand(cmdServiceAttach)
 	cmdService.AddCommand(cmdServiceList)
 	cmdService.AddCommand(cmdServiceInspect)
 
 	// TODO
 	// sail services add            Add a new docker service
 	// sail services rm             Delete a docker service
-	// sail services attach         Attach to the console of the service containers
 	// sail services logs           Fetch the logs of a service
 	// sail services redeploy       Redeploy a docker service
 	// sail services stop           Stop a docker service
@@ -35,6 +35,21 @@ var cmdService = &cobra.Command{
 	Short:   "Service commands : sailgo service --help",
 	Long:    `Service commands : sailgo service <command>`,
 	Aliases: []string{"services"},
+}
+
+var cmdServiceAttach = &cobra.Command{
+	Use:   "attach",
+	Short: "Attach to a service console : sailgo service attach <applicationName>/<serviceId>",
+	Long: `Attach to a service console : sailgo service attach <applicationName>/<serviceId>
+	\"example : sailgo service attach myApp myServiceId"
+	`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			fmt.Println("Invalid usage. sailgo service attach <applicationName>/<serviceId>. Please see sailgo service attach --help")
+		} else {
+			serviceAttach(args[0])
+		}
+	},
 }
 
 var cmdServiceList = &cobra.Command{
@@ -59,6 +74,15 @@ var cmdServiceInspect = &cobra.Command{
 			serviceInspect(args[0])
 		}
 	},
+}
+
+func serviceAttach(serviceID string) {
+	t := strings.Split(serviceID, "/")
+	if len(t) != 2 {
+		fmt.Println("Invalid usage. sailgo service inspect <applicationName>/<serviceId>. Please see sailgo service inspect --help")
+	} else {
+		streamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s/attach", t[0], t[1]), nil)
+	}
 }
 
 func serviceInspect(serviceID string) {
