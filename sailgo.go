@@ -1,21 +1,18 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
-
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
-)
 
-var verbose, pretty bool
-var host, user, password, configDir string
-var home = os.Getenv("HOME")
+	"stash.ovh.net/sailabove/sailgo/application"
+	"stash.ovh.net/sailabove/sailgo/compose"
+	"stash.ovh.net/sailabove/sailgo/container"
+	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sailgo/me"
+	"stash.ovh.net/sailabove/sailgo/network"
+	"stash.ovh.net/sailabove/sailgo/repository"
+	"stash.ovh.net/sailabove/sailgo/service"
+	"stash.ovh.net/sailabove/sailgo/version"
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "sailgo",
@@ -25,133 +22,25 @@ var rootCmd = &cobra.Command{
 
 func main() {
 	addCommands()
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	rootCmd.PersistentFlags().BoolVarP(&pretty, "pretty", "t", false, "Pretty Print Json Output")
-	rootCmd.PersistentFlags().StringVarP(&host, "host", "H", "sailabove.io", "Docker index host, facultative if you have a "+home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&user, "user", "u", "", "Docker index user, facultative if you have a "+home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "", "Docker index password, facultative if you have a "+home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&configDir, "configDir", "", home+"/.docker", "configuration directory, default is "+home+"/.docker/")
+	rootCmd.PersistentFlags().BoolVarP(&internal.Verbose, "verbose", "v", false, "verbose output")
+	rootCmd.PersistentFlags().BoolVarP(&internal.Pretty, "pretty", "t", false, "Pretty Print Json Output")
+	rootCmd.PersistentFlags().StringVarP(&internal.Host, "host", "H", "sailabove.io", "Docker index host, facultative if you have a "+internal.Home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&internal.User, "user", "u", "", "Docker index user, facultative if you have a "+internal.Home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&internal.Password, "password", "p", "", "Docker index password, facultative if you have a "+internal.Home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&internal.ConfigDir, "configDir", "", internal.Home+"/.docker", "configuration directory, default is "+internal.Home+"/.docker/")
 
 	rootCmd.Execute()
 }
 
 // AddCommands adds child commands to the root command rootCmd.
 func addCommands() {
-	rootCmd.AddCommand(cmdApplication)
-	rootCmd.AddCommand(cmdCompose)
-	rootCmd.AddCommand(cmdConfig)
-	rootCmd.AddCommand(cmdContainer)
-	rootCmd.AddCommand(cmdMe)
-	rootCmd.AddCommand(cmdNetwork)
-	rootCmd.AddCommand(cmdRepository)
-	rootCmd.AddCommand(cmdService)
-	rootCmd.AddCommand(cmdVersion)
-}
-
-func initRequest(req *http.Request) {
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "Sailabove sailgo CLI/"+VERSION)
-}
-
-func getHTTPClient() *http.Client {
-	tr := &http.Transport{}
-	return &http.Client{Transport: tr}
-}
-
-func getWantJSON(path string) string {
-	return getJSON(reqWant("GET", http.StatusOK, path, nil))
-}
-
-func postWantJSON(path string) string {
-	return getJSON(reqWant("POST", http.StatusCreated, path, nil))
-}
-
-func deleteWantJSON(path string) string {
-	return getJSON(reqWant("DELETE", http.StatusOK, path, nil))
-}
-
-func reqWantJSON(method string, wantCode int, path string, body []byte) string {
-	return getJSON(reqWant(method, wantCode, path, body))
-}
-
-func streamWant(method string, wantCode int, path string, jsonStr []byte) {
-	apiRequest(method, wantCode, path, jsonStr, true)
-}
-
-func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
-	return apiRequest(method, wantCode, path, jsonStr, false)
-}
-
-func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream bool) []byte {
-
-	err := readConfig()
-	if err != nil {
-		fmt.Printf("Error reading configuration: %s\n", err)
-		os.Exit(1)
-	}
-
-	var req *http.Request
-	if jsonStr != nil {
-		req, _ = http.NewRequest(method, host+path, bytes.NewReader(jsonStr))
-	} else {
-		req, _ = http.NewRequest(method, host+path, nil)
-	}
-
-	initRequest(req)
-	req.SetBasicAuth(user, password)
-	resp, err := getHTTPClient().Do(req)
-	check(err)
-	defer resp.Body.Close()
-
-	if resp.StatusCode != wantCode || verbose {
-		fmt.Printf("Response Status : %s\n", resp.Status)
-		fmt.Printf("Request path : %s\n", host+path)
-		fmt.Printf("Request Headers : %s\n", req.Header)
-		fmt.Printf("Request Body : %s\n", string(jsonStr))
-		fmt.Printf("Response Headers : %s\n", resp.Header)
-		body, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Response Body : %s\n", string(body))
-		if !verbose {
-			os.Exit(1)
-		}
-	}
-
-	if stream {
-		reader := bufio.NewReader(resp.Body)
-		for {
-			line, _ := reader.ReadBytes('\n')
-			if string(line) != "" {
-				log.Print(string(line))
-			}
-		}
-	} else {
-		body, err := ioutil.ReadAll(resp.Body)
-		check(err)
-		return body
-	}
-
-}
-
-func getListApplications(args []string) []string {
-	apps := []string{}
-	if len(args) == 0 {
-		b := reqWant("GET", http.StatusOK, "/applications", nil)
-		err := json.Unmarshal(b, &apps)
-		check(err)
-	}
-	return apps
-}
-func getJSON(s []byte) string {
-	if pretty {
-		var out bytes.Buffer
-		json.Indent(&out, s, "", "  ")
-		return out.String()
-	}
-	return string(s)
-}
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
+	rootCmd.AddCommand(application.Cmd)
+	rootCmd.AddCommand(compose.Cmd)
+	rootCmd.AddCommand(internal.Cmd)
+	rootCmd.AddCommand(container.Cmd)
+	rootCmd.AddCommand(me.Cmd)
+	rootCmd.AddCommand(network.Cmd)
+	rootCmd.AddCommand(repository.Cmd)
+	rootCmd.AddCommand(service.Cmd)
+	rootCmd.AddCommand(version.Cmd)
 }

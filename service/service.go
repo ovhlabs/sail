@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"encoding/json"
@@ -9,16 +9,18 @@ import (
 	"text/tabwriter"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+
+	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
 func init() {
-	cmdService.AddCommand(cmdServiceAttach)
-	cmdService.AddCommand(cmdServiceList)
-	cmdService.AddCommand(cmdServiceInspect)
-
-	// TODO
-	// sail services add            Add a new docker service
-	// sail services rm             Delete a docker service
+	Cmd.AddCommand(cmdServiceAttach)
+	Cmd.AddCommand(cmdServiceList)
+	Cmd.AddCommand(cmdServiceInspect)
+	//Cmd.AddCommand(cmdServiceAdd)
+	Cmd.AddCommand(addCmd())
+	Cmd.AddCommand(rmCmd())
+	//TODO
 	// sail services logs           Fetch the logs of a service
 	// sail services redeploy       Redeploy a docker service
 	// sail services stop           Stop a docker service
@@ -30,7 +32,7 @@ func init() {
 
 }
 
-var cmdService = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "service",
 	Short:   "Service commands : sailgo service --help",
 	Long:    `Service commands : sailgo service <command>`,
@@ -57,7 +59,7 @@ var cmdServiceList = &cobra.Command{
 	Short:   "List the docker services : sailgo service list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
-		serviceList(getListApplications(args))
+		serviceList(internal.GetListApplications(args))
 	},
 }
 
@@ -81,7 +83,7 @@ func serviceAttach(serviceID string) {
 	if len(t) != 2 {
 		fmt.Println("Invalid usage. sailgo service attach <applicationName>/<serviceId>. Please see sailgo service attach --help")
 	} else {
-		streamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s/attach", t[0], t[1]), nil)
+		internal.StreamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s/attach", t[0], t[1]), nil)
 	}
 }
 
@@ -90,7 +92,7 @@ func serviceInspect(serviceID string) {
 	if len(t) != 2 {
 		fmt.Println("Invalid usage. sailgo service inspect <applicationName>/<serviceId>. Please see sailgo service inspect --help")
 	} else {
-		fmt.Println(getWantJSON(fmt.Sprintf("/applications/%s/services/%s", t[0], t[1])))
+		fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/services/%s", t[0], t[1])))
 	}
 }
 
@@ -102,11 +104,11 @@ func serviceList(apps []string) {
 	services := []string{}
 	var service map[string]interface{}
 	for _, app := range apps {
-		b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services", app), nil)
-		check(json.Unmarshal(b, &services))
+		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services", app), nil)
+		internal.Check(json.Unmarshal(b, &services))
 		for _, serviceID := range services {
-			b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s", app, serviceID), nil)
-			check(json.Unmarshal(b, &service))
+			b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s", app, serviceID), nil)
+			internal.Check(json.Unmarshal(b, &service))
 
 			ips := []string{}
 			for _, container := range service["containers"].(map[string]interface{}) {

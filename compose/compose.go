@@ -1,4 +1,4 @@
-package main
+package compose
 
 import (
 	"fmt"
@@ -7,11 +7,11 @@ import (
 )
 
 func init() {
-	cmdCompose.AddCommand(cmdComposeUp)
-	cmdCompose.AddCommand(cmdComposeGet)
+	Cmd.AddCommand(cmdComposeUp)
+	Cmd.AddCommand(cmdComposeGet)
 }
 
-var cmdCompose = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "compose",
 	Short:   "Compose commands : sailgo compose --help",
 	Long:    `Compose commands : sailgo compose <command>`,

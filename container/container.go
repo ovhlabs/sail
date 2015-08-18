@@ -1,4 +1,4 @@
-package main
+package container
 
 import (
 	"encoding/json"
@@ -9,16 +9,18 @@ import (
 	"text/tabwriter"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+
+	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
 func init() {
-	cmdContainer.AddCommand(cmdContainerList)
-	cmdContainer.AddCommand(cmdContainerInspect)
-	cmdContainer.AddCommand(cmdContainerAttach)
+	Cmd.AddCommand(cmdContainerList)
+	Cmd.AddCommand(cmdContainerInspect)
+	Cmd.AddCommand(cmdContainerAttach)
 
 }
 
-var cmdContainer = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "container",
 	Short:   "Container commands : sailgo container --help",
 	Long:    `Container commands : sailgo container <command>`,
@@ -45,7 +47,7 @@ var cmdContainerList = &cobra.Command{
 	Short:   "List docker containers : sailgo container list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
-		containerList(getListApplications(args))
+		containerList(internal.GetListApplications(args))
 	},
 }
 
@@ -59,7 +61,7 @@ var cmdContainerInspect = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("Invalid usage. sailgo container inspect <applicationName> <containerId>. Please see sailgo container inspect --help")
 		} else {
-			fmt.Println(getWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
+			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
 		}
 	},
 }
@@ -69,7 +71,7 @@ func containerAttach(containerID string) {
 	if len(t) != 2 {
 		fmt.Println("Invalid usage. sailgo service inspect <applicationName>/<serviceId>. Please see sailgo service inspect --help")
 	} else {
-		streamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s/attach", t[0], t[1]), nil)
+		internal.StreamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s/attach", t[0], t[1]), nil)
 	}
 }
 
@@ -81,11 +83,11 @@ func containerList(apps []string) {
 	containers := []string{}
 	var container map[string]interface{}
 	for _, app := range apps {
-		b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers", app), nil)
-		check(json.Unmarshal(b, &containers))
+		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers", app), nil)
+		internal.Check(json.Unmarshal(b, &containers))
 		for _, containerID := range containers {
-			b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s", app, containerID), nil)
-			check(json.Unmarshal(b, &container))
+			b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s", app, containerID), nil)
+			internal.Check(json.Unmarshal(b, &container))
 			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t\n", app, container["service"], container["name"], strings.ToUpper(container["state"].(string)), container["deployment_date"])
 			w.Flush()
 		}

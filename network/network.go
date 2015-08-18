@@ -1,4 +1,4 @@
-package main
+package network
 
 import (
 	"encoding/json"
@@ -9,11 +9,13 @@ import (
 	"text/tabwriter"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+
+	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
 func init() {
-	cmdNetwork.AddCommand(cmdNetworkList)
-	cmdNetwork.AddCommand(cmdNetworkInspect)
+	Cmd.AddCommand(cmdNetworkList)
+	Cmd.AddCommand(cmdNetworkInspect)
 
 	// TODO
 	// sail networks add        Add a new private network
@@ -22,7 +24,7 @@ func init() {
 
 }
 
-var cmdNetwork = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "network",
 	Short:   "Network commands : sailgo network --help",
 	Long:    `Network commands : sailgo network <command>`,
@@ -34,7 +36,7 @@ var cmdNetworkList = &cobra.Command{
 	Short:   "List the docker private networks : sailgo network list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
-		networkList(getListApplications(args))
+		networkList(internal.GetListApplications(args))
 	},
 }
 
@@ -62,16 +64,16 @@ func networkInspect(networkID string) {
 		var network map[string]interface{}
 		var ranges []string
 
-		b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks/%s", t[0], t[1]), nil)
-		check(json.Unmarshal(b, &network))
+		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks/%s", t[0], t[1]), nil)
+		internal.Check(json.Unmarshal(b, &network))
 
-		brange := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks/%s/ranges", t[0], t[1]), nil)
-		check(json.Unmarshal(brange, &ranges))
+		brange := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks/%s/ranges", t[0], t[1]), nil)
+		internal.Check(json.Unmarshal(brange, &ranges))
 
 		network["range"] = ranges
 		n, err := json.Marshal(network)
-		check(err)
-		fmt.Println(getJSON(n))
+		internal.Check(err)
+		fmt.Println(internal.GetJSON(n))
 	}
 }
 
@@ -83,11 +85,11 @@ func networkList(apps []string) {
 	networks := []string{}
 	var network map[string]interface{}
 	for _, app := range apps {
-		b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks", app), nil)
-		check(json.Unmarshal(b, &networks))
+		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks", app), nil)
+		internal.Check(json.Unmarshal(b, &networks))
 		for _, networkID := range networks {
-			b := reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks/%s", app, networkID), nil)
-			check(json.Unmarshal(b, &network))
+			b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/networks/%s", app, networkID), nil)
+			internal.Check(json.Unmarshal(b, &network))
 
 			subnet := network["subnet"]
 			if network["subnet"] == nil || network["subnet"] == "" {

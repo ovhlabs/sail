@@ -1,20 +1,24 @@
-package main
+package internal
 
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/docker/docker/cliconfig"
-
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
 )
 
+var Host, User, Password, ConfigDir string
+var Verbose, Pretty bool
+var Home = os.Getenv("HOME")
+
 func init() {
-	cmdConfig.AddCommand(cmdConfigShow)
+	Cmd.AddCommand(cmdConfigShow)
 }
 
-var cmdConfig = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "config",
 	Short:   "Config commands : sailgo config --help",
 	Long:    `Config commands : sailgo config <command>`,
@@ -30,50 +34,51 @@ var cmdConfigShow = &cobra.Command{
 }
 
 func configShow() {
-	readConfig()
-	fmt.Printf("username:%s\n", user)
-	fmt.Printf("host:%s\n", host)
+	ReadConfig()
+	fmt.Printf("username:%s\n", User)
+	fmt.Printf("host:%s\n", Host)
 }
 
-func readConfig() error {
+func ReadConfig() error {
 
 	// if --user / --password are in args, take them.
-	if user != "" && password != "" {
+	if User != "" && Password != "" {
 		return nil
 	}
 
 	// otherwise try to take from docker config.json file
-	c, err := cliconfig.Load(configDir)
+	c, err := cliconfig.Load(ConfigDir)
 	if err != nil {
-		fmt.Printf("Error while reading config file in %s\n", configDir)
+		fmt.Printf("Error while reading config file in %s\n", ConfigDir)
 		return err
 	}
 
 	if len(c.AuthConfigs) <= 0 {
-		return fmt.Errorf("No Auth found in config file in %s", configDir)
+		return fmt.Errorf("No Auth found in config file in %s", ConfigDir)
 	}
 
 	for authHost, a := range c.AuthConfigs {
-		if authHost == host {
-			if verbose {
+
+		if authHost == Host {
+			if Verbose {
 				fmt.Printf("Found in config file : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
 
-			if user == "" {
-				user = a.Username
+			if User == "" {
+				User = a.Username
 			}
-			if password == "" {
-				password = a.Password
+			if Password == "" {
+				Password = a.Password
 			}
 
-			if verbose {
+			if Verbose {
 				fmt.Printf("Computed configuration : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
 			break
 		}
 	}
 
-	if user == "" || password == "" || host == "" {
+	if User == "" || Password == "" || Host == "" {
 		return fmt.Errorf("Invalid configuration, check user, password and host")
 	}
 
@@ -82,36 +87,36 @@ func readConfig() error {
 }
 
 func expandRegistryURL() {
-	host = host + "/v1"
-	if strings.HasPrefix(host, "http") || strings.HasPrefix(host, "https") {
+	Host = Host + "/v1"
+	if strings.HasPrefix(Host, "http") || strings.HasPrefix(Host, "https") {
 		return
 	}
-	if ping("https://" + host) {
-		host = "https://" + host
+	if ping("https://" + Host) {
+		Host = "https://" + Host
 		return
 	}
 
-	host = "http://" + host
+	Host = "http://" + Host
 	return
 }
 
 func ping(hostname string) bool {
 	urlPing := hostname + "/_ping"
-	if verbose {
+	if Verbose {
 		fmt.Printf("Try ping on %s\n", urlPing)
 	}
 	req, _ := http.NewRequest("GET", urlPing, nil)
 	initRequest(req)
 	resp, err := getHTTPClient().Do(req)
-	check(err)
+	Check(err)
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
-		if verbose {
+		if Verbose {
 			fmt.Printf("Ping OK on %s\n", urlPing)
 		}
 		return true
 	}
-	if verbose {
+	if Verbose {
 		fmt.Printf("Ping KO on %s\n", urlPing)
 	}
 	return false

@@ -1,4 +1,4 @@
-package main
+package repository
 
 import (
 	"encoding/json"
@@ -9,17 +9,19 @@ import (
 	"text/tabwriter"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+
+	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
 func init() {
-	cmdRepository.AddCommand(cmdRepositoryList)
+	Cmd.AddCommand(cmdRepositoryList)
 
 	// TODO
 	//sail repository add    Add a new docker repository
 	//sail repository rm     Delete a repository
 }
 
-var cmdRepository = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "repository",
 	Short:   "Repository commands : sailgo repository --help",
 	Long:    `Repository commands : sailgo repository <command>`,
@@ -31,7 +33,7 @@ var cmdRepositoryList = &cobra.Command{
 	Short:   "List the docker repository : sailgo repository list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
-		repositoryList(getListApplications(args))
+		repositoryList(internal.GetListApplications(args))
 	},
 }
 
@@ -43,11 +45,11 @@ func repositoryList(apps []string) {
 	repositories := []string{}
 	var repository map[string]interface{}
 	for _, app := range apps {
-		b := reqWant("GET", http.StatusOK, fmt.Sprintf("/repositories/%s", app), nil)
-		check(json.Unmarshal(b, &repositories))
+		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/repositories/%s", app), nil)
+		internal.Check(json.Unmarshal(b, &repositories))
 		for _, repositoryID := range repositories {
-			b := reqWant("GET", http.StatusOK, fmt.Sprintf("/repositories/%s/%s", app, repositoryID), nil)
-			check(json.Unmarshal(b, &repository))
+			b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/repositories/%s/%s", app, repositoryID), nil)
+			internal.Check(json.Unmarshal(b, &repository))
 
 			tags := repository["tags"]
 			if tags == "" {

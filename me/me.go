@@ -1,4 +1,4 @@
-package main
+package me
 
 import (
 	"encoding/json"
@@ -6,14 +6,16 @@ import (
 	"net/http"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+
+	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
 func init() {
-	cmdMe.AddCommand(cmdMeShow)
-	cmdMe.AddCommand(cmdMeSetAcl)
+	Cmd.AddCommand(cmdMeShow)
+	Cmd.AddCommand(cmdMeSetAcl)
 }
 
-var cmdMe = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "me",
 	Short:   "Me commands : sailgo me --help",
 	Long:    `Me commands : sailgo me <command>`,
@@ -24,7 +26,7 @@ var cmdMeShow = &cobra.Command{
 	Use:   "show",
 	Short: "Show account details : sailgo me show",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(getWantJSON("/users"))
+		fmt.Println(internal.GetWantJSON("/users"))
 	},
 }
 
@@ -37,7 +39,7 @@ var cmdMeSetAcl = &cobra.Command{
 	Aliases: []string{"setAcls", "set-acls", "set-acl"},
 	Run: func(cmd *cobra.Command, args []string) {
 		jsonStr, err := json.Marshal(args)
-		check(err)
-		fmt.Println(reqWantJSON("PUT", http.StatusOK, "/user/acl", jsonStr))
+		internal.Check(err)
+		fmt.Println(internal.ReqWantJSON("PUT", http.StatusOK, "/user/acl", jsonStr))
 	},
 }

@@ -1,22 +1,24 @@
-package main
+package application
 
 import (
 	"fmt"
 
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+
+	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
 func init() {
-	cmdApplication.AddCommand(cmdApplicationList)
-	cmdApplication.AddCommand(cmdApplicationInspect)
+	Cmd.AddCommand(cmdApplicationList)
+	Cmd.AddCommand(cmdApplicationInspect)
 
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainList)
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainAttach)
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainDetach)
-	cmdApplication.AddCommand(cmdApplicationDomain)
+	Cmd.AddCommand(cmdApplicationDomain)
 }
 
-var cmdApplication = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "application",
 	Short:   "Application commands : sailgo application --help",
 	Long:    `Application commands : sailgo application <command>`,
@@ -28,7 +30,7 @@ var cmdApplicationList = &cobra.Command{
 	Short:   "List granted apps : sailgo application list",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(getWantJSON("/applications"))
+		fmt.Println(internal.GetWantJSON("/applications"))
 	},
 }
 
@@ -42,7 +44,7 @@ var cmdApplicationInspect = &cobra.Command{
 		if len(args) == 0 || args[0] == "" {
 			fmt.Println("Invalid usage. Please see sailgo application inspect --help")
 		} else {
-			fmt.Println(getWantJSON(fmt.Sprintf("/applications/%s", args[0])))
+			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s", args[0])))
 		}
 	},
 }
@@ -63,7 +65,7 @@ var cmdApplicationDomainList = &cobra.Command{
 			fmt.Println("Invalid usage. Please see sailgo application domain list --help")
 		} else {
 			// cmdApplicationDomainList TODO ? Tab view with headers ['DOMAIN', 'SERVICE', 'METHOD', 'PATTERN']
-			fmt.Println(getWantJSON(fmt.Sprintf("/applications/%s/attached-domains", args[0])))
+			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/attached-domains", args[0])))
 		}
 	},
 }
@@ -76,7 +78,7 @@ var cmdApplicationDomainAttach = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("Invalid usage. Please see sailgo application domain attach --help")
 		} else {
-			fmt.Println(postWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
+			fmt.Println(internal.PostWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}
 	},
 }
@@ -89,7 +91,7 @@ var cmdApplicationDomainDetach = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("Invalid usage. Please see sailgo application domain attach --help")
 		} else {
-			fmt.Println(deleteWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
+			fmt.Println(internal.DeleteWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}
 	},
 }
