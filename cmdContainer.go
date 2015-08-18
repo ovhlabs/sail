@@ -14,6 +14,7 @@ import (
 func init() {
 	cmdContainer.AddCommand(cmdContainerList)
 	cmdContainer.AddCommand(cmdContainerInspect)
+	cmdContainer.AddCommand(cmdContainerAttach)
 
 }
 
@@ -22,6 +23,26 @@ var cmdContainer = &cobra.Command{
 	Short:   "Container commands : sailgo container --help",
 	Long:    `Container commands : sailgo container <command>`,
 	Aliases: []string{"c", "containers"},
+}
+
+var cmdContainerAttach = &cobra.Command{
+	Use:   "attach",
+	Short: "Attach to a container console : sailgo container attach <applicationName> <containerId>",
+	Long: `Attach to a container console : sailgo container attach <applicationName> <containerId>
+	\"example : sailgo container attach myApp myContainerId"
+	`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			fmt.Println("Invalid usage. sailgo container attach <applicationName> <containerId>. Please see sailgo container attach --help")
+		} else {
+			t := strings.Split(args[0], "/")
+			if len(t) != 2 {
+				fmt.Println("Invalid usage. sailgo service attach <applicationName>/<serviceId>. Please see sailgo container attach --help")
+			} else {
+				containerAttach(t[0], t[1])
+			}
+		}
+	},
 }
 
 var cmdContainerList = &cobra.Command{
@@ -48,8 +69,21 @@ var cmdContainerInspect = &cobra.Command{
 	},
 }
 
-func containerList(apps []string) {
+func containerAttach(application, service string) {
+	//TODO
+	/*ns, container, _ = parse_repository(args.container, args.api_user)
+	  path = '/applications/%s/containers/%s/attach' % (ns, container)
+	  r = api_request(args, 'GET', path, stream=True)
+	  try:
+	      for line in r.iter_lines(chunk_size=1):
+	          print line
+	  except (KeyboardInterrupt, IOError):
+	      pass
+	*/
+	//reqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s/attach?stream", application, service), nil, true)
+}
 
+func containerList(apps []string) {
 	w := tabwriter.NewWriter(os.Stdout, 20, 1, 3, ' ', 0)
 	titles := []string{"APPLICATION", "SERVICE", "CONTAINER", "STATE", "DEPLOYED"}
 	fmt.Fprintln(w, strings.Join(titles, "\t"))
