@@ -84,7 +84,11 @@ func reqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 
 func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream bool) []byte {
 
-	readConfig()
+	err := readConfig()
+	if err != nil {
+		fmt.Printf("Error reading configuration: %s\n", err)
+		os.Exit(1)
+	}
 
 	var req *http.Request
 	if jsonStr != nil {

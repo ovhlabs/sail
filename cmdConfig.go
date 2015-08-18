@@ -50,7 +50,7 @@ func readConfig() error {
 	}
 
 	if len(c.AuthConfigs) <= 0 {
-		return fmt.Errorf("No Auth found in config file in %s\n", configDir)
+		return fmt.Errorf("No Auth found in config file in %s", configDir)
 	}
 
 	for authHost, a := range c.AuthConfigs {
