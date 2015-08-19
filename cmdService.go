@@ -79,7 +79,7 @@ var cmdServiceInspect = &cobra.Command{
 func serviceAttach(serviceID string) {
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sailgo service inspect <applicationName>/<serviceId>. Please see sailgo service inspect --help")
+		fmt.Println("Invalid usage. sailgo service attach <applicationName>/<serviceId>. Please see sailgo service attach --help")
 	} else {
 		streamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s/attach", t[0], t[1]), nil)
 	}

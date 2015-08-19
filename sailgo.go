@@ -107,7 +107,9 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 		fmt.Printf("Response Headers : %s\n", resp.Header)
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Printf("Response Body : %s\n", string(body))
-		os.Exit(1)
+		if !verbose {
+			os.Exit(1)
+		}
 	}
 
 	if stream {
