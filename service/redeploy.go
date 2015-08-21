@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 
 	"stash.ovh.net/sailabove/sailgo/internal"
 )
