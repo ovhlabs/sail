@@ -59,11 +59,15 @@ func addCmd() *cobra.Command {
 	cmd.Flags().StringSliceVarP(&addPublish, "publish", "", nil, "Publish a container's port to the host")
 	cmd.Flags().StringVarP(&cmdServiceAddGateway, "gateway", "", "", "network-input:network-output")
 	cmd.Flags().StringVarP(&cmdServiceAddBody.RestartPolicy, "restart", "", "no", "{no|always[:<max>]|on-failure[:<max>]}")
-	cmd.Flags().StringVarP(&cmdServiceAddVolume, "volume", "", "", "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&batch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().BoolVarP(&cmdServiceAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdServiceAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
-	//	toto = cmd.Flags().String
+
+	cmd.Flags().StringVarP(&cmdServiceAddBody.ContainerWorkdir, "workdir", "", "", "override docker workdir")
+	cmd.Flags().StringVarP(&cmdServiceAddBody.ContainerEntrypoint, "entrypoint", "", "", "override docker entrypoint")
+	cmd.Flags().StringVarP(&cmdServiceAddBody.ContainerUser, "user", "", "", "override docker entrypoint")
+	cmd.Flags().StringVarP(&cmdServiceAddVolume, "volume", "", "", "/path:size] (Size in GB)")
+
 	return cmd
 }
 
@@ -127,6 +131,16 @@ func cmdServiceAdd(cmd *cobra.Command, args []string) {
 
 func serviceAdd(args ServiceAdd) {
 
+	// TODO volumes
+	// TODO command
+	// TODO gateway
+	// TODO redeploy
+
+	// Check if args.ContainerEnvironment is null
+	if args.ContainerEnvironment == nil {
+		args.ContainerEnvironment = make([]string, 0)
+	}
+
 	// Parse ContainerNetworks arguments
 	for _, network := range cmdServiceAddNetwork {
 		args.ContainerNetwork[network] = make(map[string]string)
@@ -135,7 +149,7 @@ func serviceAdd(args ServiceAdd) {
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(addPublish)
 
-	path := fmt.Sprintf("/applications/%s/services/%s?stream", args.Namespace, args.Service)
+	path := fmt.Sprintf("/applications/%s/services/%s", args.Namespace, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
 		fmt.Printf("Fatal: %s\n", err)
@@ -152,6 +166,7 @@ func serviceAdd(args ServiceAdd) {
 		}
 	} else {
 		path = path + "?stream"
+		fmt.Println("Attaching to container(s) console...")
 		internal.StreamWant("POST", http.StatusOK, path, body)
 	}
 }
