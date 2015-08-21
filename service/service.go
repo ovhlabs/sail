@@ -6,6 +6,7 @@ func init() {
 	Cmd.AddCommand(cmdServiceAttach)
 	Cmd.AddCommand(cmdServiceList)
 	Cmd.AddCommand(cmdServiceInspect)
+	Cmd.AddCommand(cmdServiceStop)
 	Cmd.AddCommand(redeployCmd())
 	Cmd.AddCommand(addCmd())
 	Cmd.AddCommand(rmCmd())

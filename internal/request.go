@@ -21,31 +21,42 @@ func getHTTPClient() *http.Client {
 	return &http.Client{Transport: tr}
 }
 
+// GetWantJSON GET on path and return string of JSON
 func GetWantJSON(path string) string {
 	return GetJSON(ReqWant("GET", http.StatusOK, path, nil))
 }
 
+// PostWantJSON POST on path and return string of JSON
 func PostWantJSON(path string) string {
 	return GetJSON(ReqWant("POST", http.StatusCreated, path, nil))
 }
 
+// PostBodyWantJSON POST a body on path and return string of JSON
+func PostBodyWantJSON(path string, body []byte) string {
+	return GetJSON(ReqWant("POST", http.StatusCreated, path, body))
+}
+
+// DeleteWantJSON on path and return string of JSON
 func DeleteWantJSON(path string) string {
 	return GetJSON(ReqWant("DELETE", http.StatusOK, path, nil))
 }
 
+// ReqWantJSON requests with a method on a path, check wantCode and returns string of JSON
 func ReqWantJSON(method string, wantCode int, path string, body []byte) string {
 	return GetJSON(ReqWant(method, wantCode, path, body))
 }
 
+// StreamWant request a path with method and stream result
 func StreamWant(method string, wantCode int, path string, jsonStr []byte) {
-	ApiRequest(method, wantCode, path, jsonStr, true)
+	apiRequest(method, wantCode, path, jsonStr, true)
 }
 
+// ReqWant requests with a method on a path, check wantCode and returns []byte
 func ReqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
-	return ApiRequest(method, wantCode, path, jsonStr, false)
+	return apiRequest(method, wantCode, path, jsonStr, false)
 }
 
-func ApiRequest(method string, wantCode int, path string, jsonStr []byte, stream bool) []byte {
+func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream bool) []byte {
 
 	err := ReadConfig()
 	if err != nil {
@@ -102,6 +113,7 @@ func ApiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	}
 }
 
+// GetListApplications returns list of applications, GET on /applications
 func GetListApplications(args []string) []string {
 	apps := []string{}
 	if len(args) == 0 {
@@ -112,6 +124,7 @@ func GetListApplications(args []string) []string {
 	return apps
 }
 
+// GetJSON return string of JSON, prettify if flag pretty is true
 func GetJSON(s []byte) string {
 	if Pretty {
 		var out bytes.Buffer
@@ -121,6 +134,7 @@ func GetJSON(s []byte) string {
 	return string(s)
 }
 
+// Check checks e and panic if not nil
 func Check(e error) {
 	if e != nil {
 		panic(e)

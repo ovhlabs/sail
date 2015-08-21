@@ -23,7 +23,6 @@ sail services add            Add a new docker service
 sail services rm             Delete a docker service
 sail services logs           Fetch the logs of a service
 sail services redeploy       Redeploy a docker service
-sail services stop           Stop a docker service
 sail services start          Start a docker service
 sail services scale          Scale a docker service
 sail services domain-list    List domains on the HTTP load balancer
@@ -74,6 +73,7 @@ sail repositories list   List the docker repository
 sail services attach         Attach to the console of the service containers
 sail services inspect        Inspect a docker service
 sail services ps             List docker services
+sail services stop           Stop a docker service
 
 sail networks list       List the docker private networks
 sail networks inspect    Inspect the docker private networks
