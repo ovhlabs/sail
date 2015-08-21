@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/docker/docker/cliconfig"
-	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+	"github.com/docker/docker/cliconfig"
+	"github.com/spf13/cobra"
 )
 
 var Host, User, Password, ConfigDir string

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 
 	"stash.ovh.net/sailabove/sailgo/application"
 	"stash.ovh.net/sailabove/sailgo/compose"
