@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"stash.ovh.net/sailabove/sailgo/Godeps/_workspace/src/github.com/spf13/cobra"
 
 	"stash.ovh.net/sailabove/sailgo/application"
@@ -43,4 +45,20 @@ func addCommands() {
 	rootCmd.AddCommand(repository.Cmd)
 	rootCmd.AddCommand(service.Cmd)
 	rootCmd.AddCommand(version.Cmd)
+	rootCmd.AddCommand(autocompleteCmd)
+}
+
+var autocompleteCmd = &cobra.Command{
+	Use:   "autocomplete <path>",
+	Short: "Generate bash autocompletion file for sail",
+	Long:  `Generate bash autocompletion file for sail`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			fmt.Printf("Wrong usage: sail autocomplete <path>\n")
+			return
+		}
+		rootCmd.GenBashCompletionFile(args[0])
+		fmt.Printf("Completion file generated.\n")
+		fmt.Printf("You may now run `source %s`\n", args[0])
+	},
 }
