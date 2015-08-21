@@ -11,6 +11,7 @@ func init() {
 	Cmd.AddCommand(cmdComposeGet)
 }
 
+// Cmd compose
 var Cmd = &cobra.Command{
 	Use:     "compose",
 	Short:   "Compose commands : sailgo compose --help",

@@ -14,6 +14,7 @@ func init() {
 	Cmd.Flags().BoolVarP(&versionNewLine, "versionNewLine", "", true, "New line after version number.")
 }
 
+// Cmd version
 var Cmd = &cobra.Command{
 	Use:     "version",
 	Short:   "Display Version of sailgo : sailgo version",

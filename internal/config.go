@@ -18,6 +18,7 @@ func init() {
 	Cmd.AddCommand(cmdConfigShow)
 }
 
+// Cmd config
 var Cmd = &cobra.Command{
 	Use:     "config",
 	Short:   "Config commands : sailgo config --help",

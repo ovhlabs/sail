@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 )
 
+// Error type
 type Error struct {
 	Status  string `json:"error_status"`
 	Message string `json:"error_details"`
 	Code    int    `json:"error"`
 }
 
+// DecodeError return an Error struct from json
 func DecodeError(data []byte) *Error {
 	var e Error
 
