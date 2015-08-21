@@ -17,12 +17,11 @@ func init() {
 	Cmd.AddCommand(cmdServiceAttach)
 	Cmd.AddCommand(cmdServiceList)
 	Cmd.AddCommand(cmdServiceInspect)
-	//Cmd.AddCommand(cmdServiceAdd)
+	Cmd.AddCommand(redeployCmd())
 	Cmd.AddCommand(addCmd())
 	Cmd.AddCommand(rmCmd())
 	//TODO
 	// sail services logs           Fetch the logs of a service
-	// sail services redeploy       Redeploy a docker service
 	// sail services stop           Stop a docker service
 	// sail services start          Start a docker service
 	// sail services scale          Scale a docker service
