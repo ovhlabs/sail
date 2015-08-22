@@ -3,11 +3,9 @@ package repository
 import "github.com/spf13/cobra"
 
 func init() {
+	Cmd.AddCommand(cmdRepositoryAdd)
+	Cmd.AddCommand(cmdRepositoryRm)
 	Cmd.AddCommand(cmdRepositoryList)
-
-	// TODO
-	//sail repository add    Add a new docker repository
-	//sail repository rm     Delete a repository
 }
 
 // Cmd repository

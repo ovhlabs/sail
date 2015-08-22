@@ -12,31 +12,24 @@ go get && go build && ./sailgo -h
 ```
 TODO based on python version of sail 0.5.5
 
-sail containers logs     Fetch the logs of a container
+sail containers logs          Fetch the logs of a container
 
-sail compose             Docker compose
-sail compose up          Create and start containers
-sail compose get         Export Docker compose receipt
+sail compose up               Create and start containers
+sail compose get              Export Docker compose receipt
 
-sail services                Services
+sail services start           Start a docker service
+sail services scale           Scale a docker service
+sail services domain-list     List domains on the HTTP load balancer
+sail services domain-attach   Attach a domain on the HTTP load balancer
+sail services domain-detach   Detach a domain from the HTTP load balancer
+
+```
+
+## CURRENT IN REWRITE
+```
 sail services add            Add a new docker service
-sail services rm             Delete a docker service
-sail services logs           Fetch the logs of a service
 sail services redeploy       Redeploy a docker service
-sail services start          Start a docker service
-sail services scale          Scale a docker service
-sail services domain-list    List domains on the HTTP load balancer
-sail services domain-attach  Attach a domain on the HTTP load balancer
-sail services domain-detach  Detach a domain from the HTTP load balancer
 
-sail repositories        Repositories
-sail repositories add    Add a new docker repository
-sail repositories rm     Delete a repository
-
-sail networks            Networks
-sail networks add        Add a new private network
-sail networks range-add  Add an allocation range to a private network
-sail networks rm         Delete a private network
 ```
 
 ## DONE TO TEST
@@ -47,6 +40,14 @@ sail apps domain-attach       Attach a domain on the HTTP load balancer
 
 sail apps domain-detach       Detach a domain from the HTTP load balancer
 --> sail application domain detach applicationName domainName
+
+sail networks range-add  Add an allocation range to a private network
+
+sail services logs           Fetch the logs of a service
+
+sail repositories add         Add a new docker repository
+sail repositories rm          Delete a repository
+
 ```
 
 ## DONE & TESTED
@@ -73,9 +74,20 @@ sail repositories list   List the docker repository
 sail services attach         Attach to the console of the service containers
 sail services inspect        Inspect a docker service
 sail services ps             List docker services
+sail services rm             Delete a docker service
 sail services stop           Stop a docker service
 
+sail networks add        Add a new private network
+sail networks rm         Delete a private network
 sail networks list       List the docker private networks
 sail networks inspect    Inspect the docker private networks
+
+```
+
+## Bugs SA
+```
+
+./sailgo network add myApp/privateb 172.31.0.0/24
+--> Return 200 (OK) instead of 201 (Created)
 
 ```

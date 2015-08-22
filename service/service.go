@@ -7,12 +7,11 @@ func init() {
 	Cmd.AddCommand(cmdServiceList)
 	Cmd.AddCommand(cmdServiceInspect)
 	Cmd.AddCommand(cmdServiceStop)
+	Cmd.AddCommand(logsCmd())
 	Cmd.AddCommand(redeployCmd())
 	Cmd.AddCommand(addCmd())
 	Cmd.AddCommand(rmCmd())
 	//TODO
-	// sail services logs           Fetch the logs of a service
-	// sail services stop           Stop a docker service
 	// sail services start          Start a docker service
 	// sail services scale          Scale a docker service
 	// sail services domain-list    List domains on the HTTP load balancer

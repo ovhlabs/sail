@@ -13,9 +13,10 @@ import (
 func rmCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "rm",
-		Short: "Remove a docker service: sail service rm <applicationName>/<serviceId>",
-		Run:   cmdServiceRm,
+		Use:     "rm",
+		Short:   "Remove a docker service: sail service rm <applicationName>/<serviceId>",
+		Run:     cmdServiceRm,
+		Aliases: []string{"delete", "remove"},
 	}
 	return cmd
 }

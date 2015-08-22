@@ -26,11 +26,9 @@ func redeployCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "redeploy",
-		Short: "Remove a docker service: sail service redeploy <applicationName>/<serviceId>",
-		Long: `
-sail services redeploy [-h] [--model MODEL] [--pool POOL] [--user USER]
-											 service`,
-		Run: cmdRedeploy,
+		Short: "Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>",
+		Long:  `Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>`,
+		Run:   cmdRedeploy,
 	}
 
 	cmd.Flags().StringVarP(&redeployBody.ContainerModel, "model", "", "", "Container model")
@@ -66,7 +64,7 @@ type Redeploy struct {
 	ContainerNumber      int                          `json:"container_number,omitempty"`
 	RepositoryTag        string                       `json:"repository_tag,omitempty"`
 	Links                map[string]map[string]string `json:"links,omitempty"`
-	Namespace            string                       `json:"namespace,omitempty"`
+	Application          string                       `json:"namespace,omitempty"`
 	ContainerWorkdir     string                       `json:"container_workdir,omitempty"`
 	ContainerEnvironment []string                     `json:"container_environment,omitempty"`
 	ContainerModel       string                       `json:"container_model,omitempty"`
@@ -87,7 +85,7 @@ func cmdRedeploy(cmd *cobra.Command, args []string) {
 	}
 
 	// Get args
-	redeployBody.Namespace = split[0]
+	redeployBody.Application = split[0]
 	redeployBody.Service = split[1]
 	serviceRedeploy(redeployBody)
 }
@@ -102,7 +100,7 @@ func serviceRedeploy(args Redeploy) {
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(redeployPublished)
 
-	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", args.Namespace, args.Service)
+	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
 		fmt.Printf("Fatal: %s\n", err)

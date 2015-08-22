@@ -63,6 +63,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&batch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
+	// TODO [--pool <name>  use private hosts pool <name>]
 	//	toto = cmd.Flags().String
 	return cmd
 }
