@@ -87,7 +87,7 @@ type Add struct {
 	ContainerNumber      int                          `json:"container_number"`
 	RepositoryTag        string                       `json:"repository_tag"`
 	Links                map[string]map[string]string `json:"links"`
-	Namespace            string                       `json:"namespace"`
+	Application          string                       `json:"namespace"`
 	ContainerWorkdir     string                       `json:"container_workdir"`
 	ContainerEnvironment []string                     `json:"container_environment"`
 	ContainerModel       string                       `json:"container_model"`
@@ -101,7 +101,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
 
 	if len(args) != 2 {
-		fmt.Printf("Invalid usage. sailgo service add <application>/<repository>[tag] <service>. Please see sailgo service add --help\n")
+		fmt.Printf("Invalid usage. sailgo service add <application>/<repository>[:tag] <service>. Please see sailgo service add --help\n")
 		return
 	}
 
@@ -119,7 +119,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	// Split namespace and repository
 	split = strings.Split(cmdAddBody.Repository, "/")
 	if len(split) > 1 {
-		cmdAddBody.Namespace = split[0]
+		cmdAddBody.Application = split[0]
 		cmdAddBody.Repository = split[1]
 	}
 
@@ -136,7 +136,7 @@ func serviceAdd(args Add) {
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(addPublish)
 
-	path := fmt.Sprintf("/applications/%s/services/%s?stream", args.Namespace, args.Service)
+	path := fmt.Sprintf("/applications/%s/services/%s?stream", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
 		fmt.Printf("Fatal: %s\n", err)
