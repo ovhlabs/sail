@@ -1,12 +1,16 @@
 package service
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+	"stash.ovh.net/sailabove/sailgo/service/domain"
+)
 
 func init() {
 	Cmd.AddCommand(cmdServiceAttach)
 	Cmd.AddCommand(cmdServiceList)
 	Cmd.AddCommand(cmdServiceInspect)
 	Cmd.AddCommand(cmdServiceStop)
+	Cmd.AddCommand(domain.Cmd)
 	Cmd.AddCommand(logsCmd())
 	Cmd.AddCommand(redeployCmd())
 	Cmd.AddCommand(addCmd())
@@ -14,9 +18,6 @@ func init() {
 	//TODO
 	// sail services start          Start a docker service
 	// sail services scale          Scale a docker service
-	// sail services domain-list    List domains on the HTTP load balancer
-	// sail services domain-attach  Attach a domain on the HTTP load balancer
-	// sail services domain-detach  Detach a domain from the HTTP load balancer
 
 }
 

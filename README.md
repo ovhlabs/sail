@@ -19,9 +19,6 @@ sail compose get              Export Docker compose receipt
 
 sail services start           Start a docker service
 sail services scale           Scale a docker service
-sail services domain-list     List domains on the HTTP load balancer
-sail services domain-attach   Attach a domain on the HTTP load balancer
-sail services domain-detach   Detach a domain from the HTTP load balancer
 
 ```
 
@@ -43,7 +40,9 @@ sail apps domain-detach       Detach a domain from the HTTP load balancer
 
 sail networks range-add  Add an allocation range to a private network
 
-sail services logs           Fetch the logs of a service
+sail services logs            Fetch the logs of a service
+sail services domain attach   Attach a domain on the HTTP load balancer
+sail services domain detach   Detach a domain from the HTTP load balancer
 
 sail repositories add         Add a new docker repository
 sail repositories rm          Delete a repository
@@ -76,6 +75,8 @@ sail services inspect        Inspect a docker service
 sail services ps             List docker services
 sail services rm             Delete a docker service
 sail services stop           Stop a docker service
+
+sail services domain list     List domains on the HTTP load balancer
 
 sail networks add        Add a new private network
 sail networks rm         Delete a private network

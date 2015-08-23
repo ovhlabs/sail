@@ -41,6 +41,11 @@ func DeleteWantJSON(path string) string {
 	return GetJSON(ReqWant("DELETE", http.StatusOK, path, nil))
 }
 
+// DeleteBodyWantJSON on path and return string of JSON
+func DeleteBodyWantJSON(path string, body []byte) string {
+	return GetJSON(ReqWant("DELETE", http.StatusOK, path, body))
+}
+
 // ReqWantJSON requests with a method on a path, check wantCode and returns string of JSON
 func ReqWantJSON(method string, wantCode int, path string, body []byte) string {
 	return GetJSON(ReqWant(method, wantCode, path, body))

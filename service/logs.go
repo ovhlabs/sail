@@ -22,10 +22,11 @@ func logsCmd() *cobra.Command {
 		Run:   cmdLogs,
 	}
 
-	cmd.Flags().IntVarP(&logsBody.Tail, "tail", "", 10, "Return N last lines, before offset")
+	cmd.Flags().IntVarP(&logsBody.Tail, "tail", "", 0, "Return N last lines, before offset")
 	cmd.Flags().IntVarP(&logsBody.Head, "head", "", 0, "Return N first lines, after offset")
 	cmd.Flags().IntVarP(&logsBody.Offset, "offset", "", 0, "Offset result by N line")
-	cmd.Flags().StringVarP(&logsBody.Period, "period", "", "", "Lucene compatible period")
+	cmd.Flags().StringVarP(&logsBody.Period, "period", "", "24 hours ago", "Lucene compatible period")
+	cmd.Flags().StringVarP(&logsBody.Search, "search", "", "", "Only return matching lines")
 
 	return cmd
 }
@@ -40,6 +41,7 @@ type Logs struct {
 	Head       int    `json:"head,omitempty"`
 	Offset     int    `json:"offset,omitempty"`
 	Period     string `json:"period,omitempty"`
+	Search     string `json:"search,omitempty"`
 }
 
 func cmdLogs(cmd *cobra.Command, args []string) {
