@@ -82,7 +82,7 @@ type Add struct {
 	Repository           string                       `json:"repository"`
 	ContainerUser        string                       `json:"container_user"`
 	RestartPolicy        string                       `json:"restart_policy"`
-	ContainerCommand     []string                     `json:"container_command"`
+	ContainerCommand     string                       `json:"container_command"`
 	ContainerNetwork     map[string]map[string]string `json:"container_network"`
 	ContainerEntrypoint  string                       `json:"container_user"`
 	ContainerNumber      int                          `json:"container_number"`
@@ -100,7 +100,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.Links = make(map[string]string)
 	cmdAddBody.Volumes = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
-	cmdAddBody.ContainerCommand = make([]string, 0)
+	//cmdAddBody.ContainerCommand = make([]string, 0)
 
 	if len(args) != 2 {
 		fmt.Printf("Invalid usage. sailgo service add <application>/<repository>[:tag] <service>. Please see sailgo service add --help\n")
