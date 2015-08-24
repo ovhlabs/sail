@@ -10,9 +10,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Host, User, Password, ConfigDir string
-var Verbose, Pretty bool
-var Home = os.Getenv("HOME")
+var (
+	// Host points to the sailabove infrastructure wanted
+	Host string
+	// User of sailabove to use
+	User string
+	// Password of sailabove account to use
+	Password string
+	// ConfigDir points to the Docker configuration directory
+	ConfigDir string
+	// Verbose conditions the quantity of output of api requests
+	Verbose bool
+	// Pretty conditions the output of some commands
+	Pretty bool
+	// Home fetches the user home directory
+	Home = os.Getenv("HOME")
+)
 
 func init() {
 	Cmd.AddCommand(cmdConfigShow)
@@ -40,6 +53,7 @@ func configShow() {
 	fmt.Printf("host:%s\n", Host)
 }
 
+// ReadConfig fetches docker config from ConfigDir
 func ReadConfig() error {
 
 	// if --user / --password are in args, take them.
