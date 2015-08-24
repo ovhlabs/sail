@@ -199,11 +199,11 @@ func serviceAdd(args Add) {
 		e := internal.DecodeError(line)
 		if e != nil {
 			fmt.Println(e)
-		}
-		if e.Code == 409 && cmdAddRedeploy {
-			fmt.Printf("Starting redeploy...\n")
-			ensureMode(args)
-			return
+			if e.Code == 409 && cmdAddRedeploy {
+				fmt.Printf("Starting redeploy...\n")
+				ensureMode(args)
+				return
+			}
 		}
 		if err != nil && err == io.EOF {
 			return
