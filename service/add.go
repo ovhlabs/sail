@@ -58,7 +58,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&cmdAddLink, "link", "", "", "name:alias")
 	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{"public", "private"}, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&cmdAddNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
-	cmd.Flags().StringSliceVarP(&addPublish, "publish", "", nil, "Publish a container's port to the host")
+	cmd.Flags().StringSliceVarP(&addPublish, "publish", "p", nil, "Publish a container's port to the host")
 	cmd.Flags().StringVarP(&cmdAddGateway, "gateway", "", "", "network-input:network-output")
 	cmd.Flags().StringVarP(&cmdAddBody.RestartPolicy, "restart", "", "no", "{no|always[:<max>]|on-failure[:<max>]}")
 	cmd.Flags().StringVarP(&cmdAddVolume, "volume", "", "", "/path:size] (Size in GB)")
