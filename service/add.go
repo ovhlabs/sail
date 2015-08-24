@@ -89,7 +89,7 @@ type Add struct {
 	RepositoryTag        string                       `json:"repository_tag"`
 	Links                map[string]string            `json:"links"`
 	Application          string                       `json:"namespace"`
-	ContainerWorkdir     string                       `json:"container_workdir"`
+	ContainerWorkdir     string                       `json:"container_workdir,omitempty"`
 	ContainerEnvironment []string                     `json:"container_environment"`
 	ContainerModel       string                       `json:"container_model"`
 	ContainerPorts       map[string][]PortConfig      `json:"container_ports"`
