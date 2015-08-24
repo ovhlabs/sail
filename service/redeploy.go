@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -115,9 +116,19 @@ func serviceRedeploy(args Redeploy) {
 		} else {
 			fmt.Printf("%s\n", ret)
 		}
-	} else {
-		path = path + "?stream"
-		fmt.Println("Attaching to container(s) console...")
-		internal.StreamWant("POST", http.StatusOK, path, body)
+		return
+	}
+
+	fmt.Println("Attaching to container(s) console...")
+	buffer, _, err := internal.Stream("POST", path+"?stream", body)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+		os.Exit(1)
+	}
+
+	err = internal.DisplayStream(buffer)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+		os.Exit(1)
 	}
 }

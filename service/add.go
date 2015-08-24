@@ -1,9 +1,11 @@
 package service
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
-	"net/http"
+	"io"
+	"os"
 	"strconv"
 	"strings"
 
@@ -64,7 +66,6 @@ func addCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
 	// TODO [--pool <name>  use private hosts pool <name>]
-	//	toto = cmd.Flags().String
 	return cmd
 }
 
@@ -99,6 +100,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.Links = make(map[string]map[string]string)
 	cmdAddBody.Volumes = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
+	cmdAddBody.ContainerCommand = make([]string, 0)
 
 	if len(args) != 2 {
 		fmt.Printf("Invalid usage. sailgo service add <application>/<repository>[:tag] <service>. Please see sailgo service add --help\n")
@@ -128,6 +130,10 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 
 func serviceAdd(args Add) {
 
+	if args.ContainerEnvironment == nil {
+		args.ContainerEnvironment = make([]string, 0)
+	}
+
 	// Parse ContainerNetworks arguments
 	for _, network := range cmdAddNetwork {
 		args.ContainerNetwork[network] = make(map[string]string)
@@ -136,7 +142,7 @@ func serviceAdd(args Add) {
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(addPublish)
 
-	path := fmt.Sprintf("/applications/%s/services/%s?stream", args.Application, args.Service)
+	path := fmt.Sprintf("/applications/%s/services/%s", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
 		fmt.Printf("Fatal: %s\n", err)
@@ -144,17 +150,94 @@ func serviceAdd(args Add) {
 	}
 
 	if batch {
-		ret := internal.ReqWant("POST", http.StatusOK, path, body)
+		ret, code, err := internal.Request("POST", path, body)
+
+		// http.Request failed for some reason
+		if err != nil {
+			fmt.Printf("Error: %s\n", err)
+			return
+		}
+
+		//  If we are in ensure mode, fallback to redeploy
+		if code == 409 && cmdAddRedeploy {
+			ensureMode(args)
+			return
+		}
+
+		// If API returned a json error
 		e := internal.DecodeError(ret)
 		if e != nil {
 			fmt.Printf("%s\n", e)
-		} else {
-			fmt.Printf("%s\n", ret)
+			return
 		}
-	} else {
-		path = path + "?stream"
-		internal.StreamWant("POST", http.StatusOK, path, body)
+
+		// Just print data
+		fmt.Printf("%s\n", ret)
+		return
 	}
+
+	fmt.Println("Attaching to container(s) console...")
+	buffer, code, err := internal.Stream("POST", path+"?stream", body)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+		return
+	}
+
+	if code == 409 && cmdAddRedeploy {
+		ensureMode(args)
+		return
+	}
+
+	reader := bufio.NewReader(buffer)
+
+	for {
+		line, err := reader.ReadBytes('\n')
+		m := internal.DecodeMessage(line)
+		if m != nil {
+			fmt.Println(m.Message)
+		}
+		e := internal.DecodeError(line)
+		if e != nil {
+			fmt.Println(e)
+		}
+		if e.Code == 409 && cmdAddRedeploy {
+			fmt.Printf("Starting redeploy...\n")
+			ensureMode(args)
+			return
+		}
+		if err != nil && err == io.EOF {
+			return
+		}
+		if err != nil {
+			fmt.Printf("Error: %s\n", err)
+			os.Exit(1)
+		}
+	}
+
+	// TODO service start
+}
+
+func ensureMode(args Add) {
+	redeployBatch = batch
+	redeployBody := Redeploy{
+		Service:              args.Service,
+		Volumes:              args.Volumes,
+		Repository:           args.Repository,
+		ContainerUser:        args.ContainerUser,
+		RestartPolicy:        args.RestartPolicy,
+		ContainerCommand:     args.ContainerCommand,
+		ContainerNetwork:     args.ContainerNetwork,
+		ContainerEntrypoint:  args.ContainerEntrypoint,
+		ContainerNumber:      args.ContainerNumber,
+		RepositoryTag:        args.RepositoryTag,
+		Links:                args.Links,
+		Application:          args.Application,
+		ContainerWorkdir:     args.ContainerWorkdir,
+		ContainerEnvironment: args.ContainerEnvironment,
+		ContainerModel:       args.ContainerModel,
+		ContainerPorts:       args.ContainerPorts,
+	}
+	serviceRedeploy(redeployBody)
 }
 
 func parsePublishedPort(args []string) map[string][]PortConfig {

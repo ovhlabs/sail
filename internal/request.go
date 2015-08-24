@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -115,6 +116,87 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	} else {
 		Check(err)
 		return body
+	}
+}
+
+// Request executes an authentificated HTTP request on $path given $method and $args
+func Request(method string, path string, args []byte) ([]byte, int, error) {
+	respBody, code, err := Stream(method, path, args)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if respBody == nil {
+		panic("what ?")
+	}
+	defer respBody.Close()
+
+	var body []byte
+	body, err = ioutil.ReadAll(respBody)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if Verbose {
+		fmt.Printf("Response Body : %s\n", body)
+	}
+
+	return body, code, nil
+}
+
+// Stream makes an authenticated http request and return io.ReadCloser
+func Stream(method string, path string, args []byte) (io.ReadCloser, int, error) {
+	err := ReadConfig()
+	if err != nil {
+		fmt.Printf("Error reading configuration: %s\n", err)
+		os.Exit(1)
+	}
+
+	var req *http.Request
+	if args != nil {
+		req, _ = http.NewRequest(method, Host+path, bytes.NewReader(args))
+	} else {
+		req, _ = http.NewRequest(method, Host+path, nil)
+	}
+
+	initRequest(req)
+	req.SetBasicAuth(User, Password)
+	resp, err := getHTTPClient().Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if Verbose {
+		fmt.Printf("Response Status : %s\n", resp.Status)
+		fmt.Printf("Request path : %s\n", Host+path)
+		fmt.Printf("Request Headers : %s\n", req.Header)
+		fmt.Printf("Request Body : %s\n", string(args))
+		fmt.Printf("Response Headers : %s\n", resp.Header)
+	}
+
+	return resp.Body, resp.StatusCode, nil
+}
+
+// DisplayStream decode each line from http buffer and print either message or error
+func DisplayStream(buffer io.ReadCloser) error {
+	reader := bufio.NewReader(buffer)
+
+	for {
+		line, err := reader.ReadBytes('\n')
+		m := DecodeMessage(line)
+		if m != nil {
+			fmt.Println(m.Message)
+		}
+		e := DecodeError(line)
+		if e != nil {
+			fmt.Println(e)
+		}
+		if err != nil && err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
 	}
 }
 

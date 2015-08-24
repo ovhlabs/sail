@@ -20,9 +20,33 @@ func DecodeError(data []byte) *Error {
 		return nil
 	}
 
+	if e.Message == "" && e.Status == "" {
+		return nil
+	}
 	return &e
 }
 
 func (e *Error) String() string {
 	return e.Status + ": " + e.Message
+}
+
+// Message type
+type Message struct {
+	Message string `json:"message"`
+	Type    string `json:"type"`
+}
+
+// DecodeMessage return a Message struct from json
+func DecodeMessage(data []byte) *Message {
+	var m Message
+
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return nil
+	}
+
+	if m.Message == "" && m.Type == "" {
+		return nil
+	}
+	return &m
 }
