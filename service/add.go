@@ -1,11 +1,9 @@
 package service
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
-	"os"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -14,7 +12,7 @@ import (
 	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
-var cmdAddLink []string
+var cmdAddLink string
 var cmdAddNetworkAllow string
 var addPublish []string
 var cmdAddGateway string
@@ -55,10 +53,10 @@ func addCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVarP(&cmdAddBody.ContainerModel, "model", "", "x1", "Container model")
 	cmd.Flags().IntVarP(&cmdAddBody.ContainerNumber, "number", "", 1, "Number of container to run")
-	cmd.Flags().StringSliceVarP(&cmdAddLink, "link", "", nil, "name:alias")
+	cmd.Flags().StringVarP(&cmdAddLink, "link", "", "", "name:alias")
 	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{"public", "private"}, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&cmdAddNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
-	cmd.Flags().StringSliceVarP(&addPublish, "publish", "p", nil, "Publish a container's port to the host")
+	cmd.Flags().StringSliceVarP(&addPublish, "publish", "", nil, "Publish a container's port to the host")
 	cmd.Flags().StringVarP(&cmdAddGateway, "gateway", "", "", "network-input:network-output")
 	cmd.Flags().StringVarP(&cmdAddBody.RestartPolicy, "restart", "", "no", "{no|always[:<max>]|on-failure[:<max>]}")
 	cmd.Flags().StringVarP(&cmdAddVolume, "volume", "", "", "/path:size] (Size in GB)")
@@ -66,6 +64,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
 	// TODO [--pool <name>  use private hosts pool <name>]
+	//	toto = cmd.Flags().String
 	return cmd
 }
 
@@ -82,12 +81,12 @@ type Add struct {
 	Repository           string                       `json:"repository"`
 	ContainerUser        string                       `json:"container_user"`
 	RestartPolicy        string                       `json:"restart_policy"`
-	ContainerCommand     string                       `json:"container_command"`
+	ContainerCommand     []string                     `json:"container_command,omitempty"`
 	ContainerNetwork     map[string]map[string]string `json:"container_network"`
 	ContainerEntrypoint  string                       `json:"container_user"`
 	ContainerNumber      int                          `json:"container_number"`
 	RepositoryTag        string                       `json:"repository_tag"`
-	Links                map[string]string            `json:"links"`
+	Links                map[string]map[string]string `json:"links"`
 	Application          string                       `json:"namespace"`
 	ContainerWorkdir     string                       `json:"container_workdir"`
 	ContainerEnvironment []string                     `json:"container_environment"`
@@ -97,10 +96,9 @@ type Add struct {
 
 func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.ContainerNetwork = make(map[string]map[string]string)
-	cmdAddBody.Links = make(map[string]string)
+	cmdAddBody.Links = make(map[string]map[string]string)
 	cmdAddBody.Volumes = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
-	//cmdAddBody.ContainerCommand = make([]string, 0)
 
 	if len(args) != 2 {
 		fmt.Printf("Invalid usage. sailgo service add <application>/<repository>[:tag] <service>. Please see sailgo service add --help\n")
@@ -130,20 +128,6 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 
 func serviceAdd(args Add) {
 
-	if args.ContainerEnvironment == nil {
-		args.ContainerEnvironment = make([]string, 0)
-	}
-
-	// Parse links
-	for _, link := range cmdAddLink {
-		t := strings.Split(link, ":")
-		if len(t) == 1 {
-			args.Links[t[0]] = t[0]
-		} else {
-			args.Links[t[0]] = t[1]
-		}
-	}
-
 	// Parse ContainerNetworks arguments
 	for _, network := range cmdAddNetwork {
 		args.ContainerNetwork[network] = make(map[string]string)
@@ -152,7 +136,7 @@ func serviceAdd(args Add) {
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(addPublish)
 
-	path := fmt.Sprintf("/applications/%s/services/%s", args.Application, args.Service)
+	path := fmt.Sprintf("/applications/%s/services/%s?stream", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
 		fmt.Printf("Fatal: %s\n", err)
@@ -160,95 +144,17 @@ func serviceAdd(args Add) {
 	}
 
 	if batch {
-		ret, code, err := internal.Request("POST", path, body)
-
-		// http.Request failed for some reason
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			return
-		}
-
-		//  If we are in ensure mode, fallback to redeploy
-		if code == 409 && cmdAddRedeploy {
-			ensureMode(args)
-			return
-		}
-
-		// If API returned a json error
+		ret := internal.ReqWant("POST", http.StatusOK, path, body)
 		e := internal.DecodeError(ret)
 		if e != nil {
 			fmt.Printf("%s\n", e)
-			return
+		} else {
+			fmt.Printf("%s\n", ret)
 		}
-
-		// Just print data
-		fmt.Printf("%s\n", ret)
-		return
+	} else {
+		path = path + "?stream"
+		internal.StreamWant("POST", http.StatusOK, path, body)
 	}
-
-	buffer, code, err := internal.Stream("POST", path+"?stream", body)
-	if err != nil {
-		fmt.Printf("Error: %s\n", err)
-		return
-	}
-
-	if code == 409 && cmdAddRedeploy {
-		ensureMode(args)
-		return
-	}
-
-	reader := bufio.NewReader(buffer)
-
-	for {
-		line, err := reader.ReadBytes('\n')
-		m := internal.DecodeMessage(line)
-		if m != nil {
-			fmt.Println(m.Message)
-		}
-		e := internal.DecodeError(line)
-		if e != nil {
-			fmt.Println(e)
-			if e.Code == 409 && cmdAddRedeploy {
-				fmt.Printf("Starting redeploy...\n")
-				ensureMode(args)
-				return
-			}
-			os.Exit(1)
-		}
-		if err != nil && err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			os.Exit(1)
-		}
-	}
-
-	fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
-	serviceStart(args.Application, args.Service, batch)
-}
-
-func ensureMode(args Add) {
-	redeployBatch = batch
-	redeployBody := Redeploy{
-		Service:              args.Service,
-		Volumes:              args.Volumes,
-		Repository:           args.Repository,
-		ContainerUser:        args.ContainerUser,
-		RestartPolicy:        args.RestartPolicy,
-		ContainerCommand:     args.ContainerCommand,
-		ContainerNetwork:     args.ContainerNetwork,
-		ContainerEntrypoint:  args.ContainerEntrypoint,
-		ContainerNumber:      args.ContainerNumber,
-		RepositoryTag:        args.RepositoryTag,
-		Links:                args.Links,
-		Application:          args.Application,
-		ContainerWorkdir:     args.ContainerWorkdir,
-		ContainerEnvironment: args.ContainerEnvironment,
-		ContainerModel:       args.ContainerModel,
-		ContainerPorts:       args.ContainerPorts,
-	}
-	serviceRedeploy(redeployBody)
 }
 
 func parsePublishedPort(args []string) map[string][]PortConfig {
