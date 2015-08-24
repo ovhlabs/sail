@@ -186,7 +186,6 @@ func serviceAdd(args Add) {
 		return
 	}
 
-	fmt.Println("Attaching to container(s) console...")
 	buffer, code, err := internal.Stream("POST", path+"?stream", body)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
@@ -214,9 +213,10 @@ func serviceAdd(args Add) {
 				ensureMode(args)
 				return
 			}
+			os.Exit(1)
 		}
 		if err != nil && err == io.EOF {
-			return
+			break
 		}
 		if err != nil {
 			fmt.Printf("Error: %s\n", err)
@@ -224,7 +224,8 @@ func serviceAdd(args Add) {
 		}
 	}
 
-	// TODO service start
+	fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
+	serviceStart(args.Application, args.Service, batch)
 }
 
 func ensureMode(args Add) {

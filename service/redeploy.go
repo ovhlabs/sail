@@ -129,7 +129,6 @@ func serviceRedeploy(args Redeploy) {
 		return
 	}
 
-	fmt.Println("Attaching to container(s) console...")
 	buffer, _, err := internal.Stream("POST", path+"?stream", body)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
@@ -141,4 +140,7 @@ func serviceRedeploy(args Redeploy) {
 		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
+
+	fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
+	serviceStart(args.Application, args.Service, redeployBatch)
 }
