@@ -14,7 +14,7 @@ import (
 	"stash.ovh.net/sailabove/sailgo/internal"
 )
 
-var cmdAddLink string
+var cmdAddLink []string
 var cmdAddNetworkAllow string
 var addPublish []string
 var cmdAddGateway string
@@ -55,7 +55,7 @@ func addCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVarP(&cmdAddBody.ContainerModel, "model", "", "x1", "Container model")
 	cmd.Flags().IntVarP(&cmdAddBody.ContainerNumber, "number", "", 1, "Number of container to run")
-	cmd.Flags().StringVarP(&cmdAddLink, "link", "", "", "name:alias")
+	cmd.Flags().StringSliceVarP(&cmdAddLink, "link", "", nil, "name:alias")
 	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{"public", "private"}, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&cmdAddNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
 	cmd.Flags().StringSliceVarP(&addPublish, "publish", "p", nil, "Publish a container's port to the host")
@@ -132,6 +132,11 @@ func serviceAdd(args Add) {
 
 	if args.ContainerEnvironment == nil {
 		args.ContainerEnvironment = make([]string, 0)
+	}
+
+	// Parse links
+	for _, link := range cmdAddLink {
+		args.Links[link] = make(map[string]string)
 	}
 
 	// Parse ContainerNetworks arguments
