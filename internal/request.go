@@ -189,7 +189,7 @@ func DisplayStream(buffer io.ReadCloser) error {
 		}
 		e := DecodeError(line)
 		if e != nil {
-			fmt.Println(e)
+			return e
 		}
 		if err != nil && err == io.EOF {
 			return nil

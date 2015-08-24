@@ -16,9 +16,7 @@ func init() {
 	Cmd.AddCommand(addCmd())
 	Cmd.AddCommand(rmCmd())
 	Cmd.AddCommand(startCmd())
-	//TODO
-	// sail services scale          Scale a docker service
-
+	Cmd.AddCommand(scaleCmd())
 }
 
 // Cmd service

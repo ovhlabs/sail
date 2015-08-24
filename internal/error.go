@@ -30,6 +30,10 @@ func (e *Error) String() string {
 	return e.Status + ": " + e.Message
 }
 
+func (e *Error) Error() string {
+	return e.String()
+}
+
 // Message type
 type Message struct {
 	Message string `json:"message"`
