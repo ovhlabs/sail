@@ -87,7 +87,7 @@ type Add struct {
 	ContainerEntrypoint  string                       `json:"container_user"`
 	ContainerNumber      int                          `json:"container_number"`
 	RepositoryTag        string                       `json:"repository_tag"`
-	Links                map[string]map[string]string `json:"links"`
+	Links                map[string]string            `json:"links"`
 	Application          string                       `json:"namespace"`
 	ContainerWorkdir     string                       `json:"container_workdir"`
 	ContainerEnvironment []string                     `json:"container_environment"`
@@ -97,7 +97,7 @@ type Add struct {
 
 func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.ContainerNetwork = make(map[string]map[string]string)
-	cmdAddBody.Links = make(map[string]map[string]string)
+	cmdAddBody.Links = make(map[string]string)
 	cmdAddBody.Volumes = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
 	cmdAddBody.ContainerCommand = make([]string, 0)
@@ -136,7 +136,12 @@ func serviceAdd(args Add) {
 
 	// Parse links
 	for _, link := range cmdAddLink {
-		args.Links[link] = make(map[string]string)
+		t := strings.Split(link, ":")
+		if len(t) == 1 {
+			args.Links[t[0]] = t[0]
+		} else {
+			args.Links[t[0]] = t[1]
+		}
 	}
 
 	// Parse ContainerNetworks arguments

@@ -64,7 +64,7 @@ type Redeploy struct {
 	ContainerEntrypoint  string                       `json:"container_user,omitempty"`
 	ContainerNumber      int                          `json:"container_number,omitempty"`
 	RepositoryTag        string                       `json:"repository_tag,omitempty"`
-	Links                map[string]map[string]string `json:"links,omitempty"`
+	Links                map[string]string            `json:"links,omitempty"`
 	Application          string                       `json:"namespace,omitempty"`
 	ContainerWorkdir     string                       `json:"container_workdir,omitempty"`
 	ContainerEnvironment []string                     `json:"container_environment,omitempty"`
@@ -92,6 +92,16 @@ func cmdRedeploy(cmd *cobra.Command, args []string) {
 }
 
 func serviceRedeploy(args Redeploy) {
+
+	// Parse links
+	for _, link := range redeployLink {
+		t := strings.Split(link, ":")
+		if len(t) == 1 {
+			args.Links[t[0]] = t[0]
+		} else {
+			args.Links[t[0]] = t[1]
+		}
+	}
 
 	// Parse ContainerNetworks arguments
 	for _, network := range redeployNetwork {
