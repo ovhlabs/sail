@@ -15,7 +15,7 @@ var cmdNetworkRangeAdd = &cobra.Command{
 	Long:    `Add an allocation range to a private network : sailgo network range-add <applicationName>/<networkId> <ipFrom> <ipTo>`,
 	Aliases: []string{"range-add"},
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
+		if len(args) != 3 {
 			fmt.Println("Invalid usage. sailgo network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sailgo network range-add --help")
 		} else {
 			networkRangeAdd(args[0], args[1], args[2])
