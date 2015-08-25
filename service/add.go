@@ -17,8 +17,8 @@ import (
 var cmdAddLink []string
 var cmdAddNetworkAllow string
 var addPublish []string
-var cmdAddGateway string
-var cmdAddVolume string
+var cmdAddGateway []string
+var cmdAddVolume []string
 var batch bool
 var cmdAddRedeploy bool
 var cmdAddBody Add
@@ -59,9 +59,9 @@ func addCmd() *cobra.Command {
 	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{"public", "private"}, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&cmdAddNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
 	cmd.Flags().StringSliceVarP(&addPublish, "publish", "p", nil, "Publish a container's port to the host")
-	cmd.Flags().StringVarP(&cmdAddGateway, "gateway", "", "", "network-input:network-output")
+	cmd.Flags().StringSliceVar(&cmdAddGateway, "gateway", nil, "network-input:network-output")
 	cmd.Flags().StringVarP(&cmdAddBody.RestartPolicy, "restart", "", "no", "{no|always[:<max>]|on-failure[:<max>]}")
-	cmd.Flags().StringVarP(&cmdAddVolume, "volume", "", "", "/path:size] (Size in GB)")
+	cmd.Flags().StringSliceVar(&cmdAddVolume, "volume", nil, "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&batch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
@@ -75,30 +75,34 @@ type PortConfig struct {
 	Network       string `json:"network,omitempty"`
 }
 
+// VolumeConfig is a parameter of Add to modify mounted volumes
+type VolumeConfig struct {
+	Size string `json:"size"`
+}
+
 // Add struct holds all parameters sent to /applications/%s/services/%s?stream
 type Add struct {
-	Service              string                       `json:"-"`
-	Volumes              map[string]string            `json:"volumes,omitempty"`
-	Repository           string                       `json:"repository"`
-	ContainerUser        string                       `json:"container_user"`
-	RestartPolicy        string                       `json:"restart_policy"`
-	ContainerCommand     []string                     `json:"container_command,omitempty"`
-	ContainerNetwork     map[string]map[string]string `json:"container_network"`
-	ContainerEntrypoint  string                       `json:"container_user"`
-	ContainerNumber      int                          `json:"container_number"`
-	RepositoryTag        string                       `json:"repository_tag"`
-	Links                map[string]string            `json:"links"`
-	Application          string                       `json:"namespace"`
-	ContainerWorkdir     string                       `json:"container_workdir,omitempty"`
-	ContainerEnvironment []string                     `json:"container_environment"`
-	ContainerModel       string                       `json:"container_model"`
-	ContainerPorts       map[string][]PortConfig      `json:"container_ports"`
+	Service              string                         `json:"-"`
+	Volumes              map[string]VolumeConfig        `json:"volumes,omitempty"`
+	Repository           string                         `json:"repository"`
+	ContainerUser        string                         `json:"container_user"`
+	RestartPolicy        string                         `json:"restart_policy"`
+	ContainerCommand     []string                       `json:"container_command,omitempty"`
+	ContainerNetwork     map[string]map[string][]string `json:"container_network"`
+	ContainerEntrypoint  string                         `json:"container_user"`
+	ContainerNumber      int                            `json:"container_number"`
+	RepositoryTag        string                         `json:"repository_tag"`
+	Links                map[string]string              `json:"links"`
+	Application          string                         `json:"namespace"`
+	ContainerWorkdir     string                         `json:"container_workdir,omitempty"`
+	ContainerEnvironment []string                       `json:"container_environment"`
+	ContainerModel       string                         `json:"container_model"`
+	ContainerPorts       map[string][]PortConfig        `json:"container_ports"`
 }
 
 func cmdAdd(cmd *cobra.Command, args []string) {
-	cmdAddBody.ContainerNetwork = make(map[string]map[string]string)
+	cmdAddBody.ContainerNetwork = make(map[string]map[string][]string)
 	cmdAddBody.Links = make(map[string]string)
-	cmdAddBody.Volumes = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
 	cmdAddBody.ContainerCommand = make([]string, 0)
 
@@ -134,6 +138,22 @@ func serviceAdd(args Add) {
 		args.ContainerEnvironment = make([]string, 0)
 	}
 
+	// Parse volumes
+	if len(cmdAddVolume) > 0 {
+		args.Volumes = make(map[string]VolumeConfig)
+	}
+	for _, vol := range cmdAddVolume {
+		t := strings.Split(vol, ":")
+		if len(t) == 2 {
+			args.Volumes[t[0]] = VolumeConfig{Size: t[1]}
+		} else if len(t) == 1 {
+			args.Volumes[t[0]] = VolumeConfig{Size: "10"}
+		} else {
+			fmt.Printf("Error: Volume parameter '%s' not formated correctly\n", vol)
+			os.Exit(1)
+		}
+	}
+
 	// Parse links
 	for _, link := range cmdAddLink {
 		t := strings.Split(link, ":")
@@ -146,7 +166,24 @@ func serviceAdd(args Add) {
 
 	// Parse ContainerNetworks arguments
 	for _, network := range cmdAddNetwork {
-		args.ContainerNetwork[network] = make(map[string]string)
+		args.ContainerNetwork[network] = make(map[string][]string)
+	}
+
+	for _, gat := range cmdAddGateway {
+		t := strings.Split(gat, ":")
+		if len(t) != 2 {
+			fmt.Printf("Invalid gateway parameter, should be \"input:output\"")
+			os.Exit(1)
+		}
+		if _, ok := args.ContainerNetwork[t[0]]; !ok {
+			fmt.Printf("Not configured input network %s\n", t[0])
+			os.Exit(1)
+		}
+		if _, ok := args.ContainerNetwork[t[1]]; !ok {
+			fmt.Printf("Not configured onput network %s\n", t[1])
+			os.Exit(1)
+		}
+		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
 	}
 
 	// Parse ContainerPorts

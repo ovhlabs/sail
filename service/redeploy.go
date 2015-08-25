@@ -54,22 +54,22 @@ func redeployCmd() *cobra.Command {
 
 // Redeploy struct holds all parameters sent to /applications/%s/services/%s/redeploy
 type Redeploy struct {
-	Service              string                       `json:"-"`
-	Volumes              map[string]string            `json:"volumes,omitempty"`
-	Repository           string                       `json:"repository,omitempty"`
-	ContainerUser        string                       `json:"container_user,omitempty"`
-	RestartPolicy        string                       `json:"restart_policy,omitempty"`
-	ContainerCommand     []string                     `json:"container_command,omitempty"`
-	ContainerNetwork     map[string]map[string]string `json:"container_network,omitempty"`
-	ContainerEntrypoint  string                       `json:"container_user,omitempty"`
-	ContainerNumber      int                          `json:"container_number,omitempty"`
-	RepositoryTag        string                       `json:"repository_tag,omitempty"`
-	Links                map[string]string            `json:"links,omitempty"`
-	Application          string                       `json:"namespace,omitempty"`
-	ContainerWorkdir     string                       `json:"container_workdir,omitempty"`
-	ContainerEnvironment []string                     `json:"container_environment,omitempty"`
-	ContainerModel       string                       `json:"container_model,omitempty"`
-	ContainerPorts       map[string][]PortConfig      `json:"container_ports,omitempty"`
+	Service              string                         `json:"-"`
+	Volumes              map[string]VolumeConfig        `json:"volumes,omitempty"`
+	Repository           string                         `json:"repository,omitempty"`
+	ContainerUser        string                         `json:"container_user,omitempty"`
+	RestartPolicy        string                         `json:"restart_policy,omitempty"`
+	ContainerCommand     []string                       `json:"container_command,omitempty"`
+	ContainerNetwork     map[string]map[string][]string `json:"container_network,omitempty"`
+	ContainerEntrypoint  string                         `json:"container_user,omitempty"`
+	ContainerNumber      int                            `json:"container_number,omitempty"`
+	RepositoryTag        string                         `json:"repository_tag,omitempty"`
+	Links                map[string]string              `json:"links,omitempty"`
+	Application          string                         `json:"namespace,omitempty"`
+	ContainerWorkdir     string                         `json:"container_workdir,omitempty"`
+	ContainerEnvironment []string                       `json:"container_environment,omitempty"`
+	ContainerModel       string                         `json:"container_model,omitempty"`
+	ContainerPorts       map[string][]PortConfig        `json:"container_ports,omitempty"`
 }
 
 func cmdRedeploy(cmd *cobra.Command, args []string) {
@@ -105,7 +105,7 @@ func serviceRedeploy(args Redeploy) {
 
 	// Parse ContainerNetworks arguments
 	for _, network := range redeployNetwork {
-		args.ContainerNetwork[network] = make(map[string]string)
+		args.ContainerNetwork[network] = make(map[string][]string)
 	}
 
 	// Parse ContainerPorts
