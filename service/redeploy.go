@@ -93,6 +93,23 @@ func cmdRedeploy(cmd *cobra.Command, args []string) {
 
 func serviceRedeploy(args Redeploy) {
 
+	// Parse volumes
+	if len(redeployVolume) > 0 {
+		args.Volumes = make(map[string]VolumeConfig)
+	}
+
+	for _, vol := range redeployVolume {
+		t := strings.Split(vol, ":")
+		if len(t) == 2 {
+			args.Volumes[t[0]] = VolumeConfig{Size: t[1]}
+		} else if len(t) == 1 {
+			args.Volumes[t[0]] = VolumeConfig{Size: "10"}
+		} else {
+			fmt.Printf("Error: Volume parameter '%s' not formated correctly\n", vol)
+			os.Exit(1)
+		}
+	}
+
 	// Parse links
 	for _, link := range redeployLink {
 		t := strings.Split(link, ":")
@@ -104,8 +121,28 @@ func serviceRedeploy(args Redeploy) {
 	}
 
 	// Parse ContainerNetworks arguments
+	if len(redeployNetwork) > 0 {
+		args.ContainerNetwork = make(map[string]map[string][]string)
+	}
 	for _, network := range redeployNetwork {
 		args.ContainerNetwork[network] = make(map[string][]string)
+	}
+
+	for _, gat := range redeployGateway {
+		t := strings.Split(gat, ":")
+		if len(t) != 2 {
+			fmt.Printf("Invalid gateway parameter, should be \"input:output\"")
+			os.Exit(1)
+		}
+		if _, ok := args.ContainerNetwork[t[0]]; !ok {
+			fmt.Printf("Not configured input network %s\n", t[0])
+			os.Exit(1)
+		}
+		if _, ok := args.ContainerNetwork[t[1]]; !ok {
+			fmt.Printf("Not configured onput network %s\n", t[1])
+			os.Exit(1)
+		}
+		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
 	}
 
 	// Parse ContainerPorts
