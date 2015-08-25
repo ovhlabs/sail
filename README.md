@@ -17,21 +17,16 @@ sail containers logs          Fetch the logs of a container
 sail compose up               Create and start containers
 sail compose get              Export Docker compose receipt
 
-sail services start           Start a docker service
-sail services scale           Scale a docker service
-
-```
-
-## CURRENT IN REWRITE
-```
-sail services add            Add a new docker service
-sail services redeploy       Redeploy a docker service
-
 ```
 
 ## DONE TO TEST
 
 ```
+sail services add            Add a new docker service
+sail services redeploy       Redeploy a docker service
+sail services start           Start a docker service
+sail services scale           Scale a docker service
+
 sail apps domain-attach       Attach a domain on the HTTP load balancer
 --> sail application domain attach applicationName domainName
 
