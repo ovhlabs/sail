@@ -12,8 +12,6 @@ go get && go build && ./sailgo -h
 ```
 TODO based on python version of sail 0.5.5
 
-sail containers logs          Fetch the logs of a container
-
 sail compose up               Create and start containers
 sail compose get              Export Docker compose receipt
 
@@ -26,6 +24,8 @@ sail services add            Add a new docker service
 sail services redeploy       Redeploy a docker service
 sail services start           Start a docker service
 sail services scale           Scale a docker service
+
+sail containers logs          Fetch the logs of a container
 
 sail apps domain-attach       Attach a domain on the HTTP load balancer
 --> sail application domain attach applicationName domainName

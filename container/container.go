@@ -12,7 +12,7 @@ func init() {
 	Cmd.AddCommand(cmdContainerList)
 	Cmd.AddCommand(cmdContainerInspect)
 	Cmd.AddCommand(cmdContainerAttach)
-
+	Cmd.AddCommand(cmdContainerLogs())
 }
 
 // Cmd container
