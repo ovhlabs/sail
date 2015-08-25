@@ -1,0 +1,17 @@
+{
+	"ImportPath": "stash.ovh.net/sailabove/sailgo",
+	"GoVersion": "go1.5",
+	"Packages": [
+		"github.com/howeyc/gopass"
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/howeyc/gopass",
+			"Rev": "10b54de414cc9693221d5ff2ae14fd2fbf1b0ac1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "81bf7719a6b7ce9b665598222362b50122dfc13b"
+		}
+	]
+}
