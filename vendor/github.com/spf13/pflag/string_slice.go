@@ -44,7 +44,8 @@ func stringSliceConv(sval string) (interface{}, error) {
 	if len(sval) == 0 {
 		return []string{}, nil
 	}
-	v := strings.Split(sval, ",")
+	//v := strings.Split(sval, ",")
+	v := []string{sval}
 	return v, nil
 }
 
