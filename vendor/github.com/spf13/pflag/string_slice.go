@@ -21,7 +21,8 @@ func newStringSliceValue(val []string, p *[]string) *stringSliceValue {
 }
 
 func (s *stringSliceValue) Set(val string) error {
-	v := strings.Split(val, ",")
+	//v := strings.Split(val, ",")
+	v := []string{val}
 	if !s.changed {
 		*s.value = v
 	} else {
