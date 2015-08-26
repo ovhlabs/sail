@@ -14,7 +14,7 @@ import (
 
 var cmdServiceList = &cobra.Command{
 	Use:     "list",
-	Short:   "List the docker services : sail service list [applicationName]",
+	Short:   "List the docker services: sail service list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		serviceList(internal.GetListApplications(args))

@@ -12,9 +12,9 @@ import (
 
 var cmdServiceStop = &cobra.Command{
 	Use:   "stop",
-	Short: "Stop a docker service : sail service stop <applicationName>/<serviceId>",
-	Long: `Stop a docker service : sail service stop <applicationName>/<serviceId>
-	\"example : sail service stop myApp/myService"
+	Short: "Stop a docker service: sail service stop <applicationName>/<serviceId>",
+	Long: `Stop a docker service: sail service stop <applicationName>/<serviceId>
+	\"example: sail service stop myApp/myService"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

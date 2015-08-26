@@ -14,7 +14,7 @@ var versionNewLine bool
 // Cmd version
 var Cmd = &cobra.Command{
 	Use:     "version",
-	Short:   "Display Version of sail : sail version",
+	Short:   "Display Version of sail: sail version",
 	Long:    `sail version`,
 	Aliases: []string{"v"},
 	Run: func(cmd *cobra.Command, args []string) {

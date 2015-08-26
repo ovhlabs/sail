@@ -14,9 +14,9 @@ import (
 var cmdNetworkInspect = &cobra.Command{
 	Use:     "inspect",
 	Aliases: []string{"show"},
-	Short:   "Inspect the docker private networks : sail network inspect <applicationName>/<networkId>",
-	Long: `Inspect the docker private networks : sail network inspect <applicationName>/<networkId>
-	\"example : sail network inspect myApp"
+	Short:   "Inspect the docker private networks: sail network inspect <applicationName>/<networkId>",
+	Long: `Inspect the docker private networks: sail network inspect <applicationName>/<networkId>
+	\"example: sail network inspect myApp"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

@@ -16,7 +16,7 @@ var usageList = "Invalid usage. sail service domain list <applicationName>/<netw
 
 var cmdDomainList = &cobra.Command{
 	Use:     "list",
-	Short:   "List domains on the HTTP load balancer : sail service domain list <applicationName>/<serviceId>",
+	Short:   "List domains on the HTTP load balancer: sail service domain list <applicationName>/<serviceId>",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

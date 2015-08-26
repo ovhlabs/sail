@@ -35,14 +35,14 @@ func init() {
 // Cmd config
 var Cmd = &cobra.Command{
 	Use:     "config",
-	Short:   "Config commands : sail config --help",
-	Long:    `Config commands : sail config <command>`,
+	Short:   "Config commands: sail config --help",
+	Long:    `Config commands: sail config <command>`,
 	Aliases: []string{"c"},
 }
 
 var cmdConfigShow = &cobra.Command{
 	Use:   "show",
-	Short: "Show Configuration : sail config show",
+	Short: "Show Configuration: sail config show",
 	Run: func(cmd *cobra.Command, args []string) {
 		configShow()
 	},
@@ -89,7 +89,7 @@ func ReadConfig() error {
 
 		if authHost == Host {
 			if Verbose {
-				fmt.Fprintf(os.Stderr, "Found in config file : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
+				fmt.Fprintf(os.Stderr, "Found in config file: Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
 
 			if User == "" {
@@ -100,7 +100,7 @@ func ReadConfig() error {
 			}
 
 			if Verbose {
-				fmt.Fprintf(os.Stderr, "Computed configuration : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
+				fmt.Fprintf(os.Stderr, "Computed configuration: Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
 			break
 		}

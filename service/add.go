@@ -219,7 +219,7 @@ func serviceAdd(args Add) {
 		}
 
 		// Just print data
-		fmt.Fprintf(os.Stderr, "%s\n", ret)
+		internal.FormatOutputDef(ret)
 		return
 	}
 

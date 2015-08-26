@@ -11,7 +11,7 @@ func init() {
 // Cmd repository
 var Cmd = &cobra.Command{
 	Use:     "repository",
-	Short:   "Repository commands : sail repository --help",
-	Long:    `Repository commands : sail repository <command>`,
+	Short:   "Repository commands: sail repository --help",
+	Long:    `Repository commands: sail repository <command>`,
 	Aliases: []string{"repo", "repositories"},
 }

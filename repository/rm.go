@@ -12,8 +12,8 @@ import (
 
 var cmdRepositoryRm = &cobra.Command{
 	Use:     "rm",
-	Short:   "Delete a repository : sail repository rm <applicationName>/<repositoryId>",
-	Long:    `Delete a repository : sail repository rm <applicationName>/<repositoryId>`,
+	Short:   "Delete a repository: sail repository rm <applicationName>/<repositoryId>",
+	Long:    `Delete a repository: sail repository rm <applicationName>/<repositoryId>`,
 	Aliases: []string{"delete", "remove"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

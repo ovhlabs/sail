@@ -14,7 +14,7 @@ import (
 
 var cmdNetworkList = &cobra.Command{
 	Use:     "list",
-	Short:   "List the docker private networks : sail network list [applicationName]",
+	Short:   "List the docker private networks: sail network list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		networkList(internal.GetListApplications(args))

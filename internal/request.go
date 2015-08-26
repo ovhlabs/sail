@@ -89,13 +89,13 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	}
 
 	if resp.StatusCode != wantCode || Verbose {
-		fmt.Fprintf(os.Stderr, "Response Status : %s\n", resp.Status)
-		fmt.Fprintf(os.Stderr, "Request path : %s\n", Host+path)
-		fmt.Fprintf(os.Stderr, "Request Headers : %s\n", req.Header)
-		fmt.Fprintf(os.Stderr, "Request Body : %s\n", string(jsonStr))
-		fmt.Fprintf(os.Stderr, "Response Headers : %s\n", resp.Header)
+		fmt.Fprintf(os.Stderr, "Response Status: %s\n", resp.Status)
+		fmt.Fprintf(os.Stderr, "Request path: %s\n", Host+path)
+		fmt.Fprintf(os.Stderr, "Request Headers: %s\n", req.Header)
+		fmt.Fprintf(os.Stderr, "Request Body: %s\n", string(jsonStr))
+		fmt.Fprintf(os.Stderr, "Response Headers: %s\n", resp.Header)
 		if err == nil {
-			fmt.Fprintf(os.Stderr, "Response Body : %s\n", string(body))
+			fmt.Fprintf(os.Stderr, "Response Body: %s\n", string(body))
 		}
 		if !Verbose {
 			os.Exit(1)
@@ -138,7 +138,7 @@ func Request(method string, path string, args []byte) ([]byte, int, error) {
 	}
 
 	if Verbose {
-		fmt.Fprintf(os.Stderr, "Response Body : %s\n", body)
+		fmt.Fprintf(os.Stderr, "Response Body: %s\n", body)
 	}
 
 	return body, code, nil
@@ -167,11 +167,11 @@ func Stream(method string, path string, args []byte) (io.ReadCloser, int, error)
 	}
 
 	if Verbose {
-		fmt.Fprintf(os.Stderr, "Response Status : %s\n", resp.Status)
-		fmt.Fprintf(os.Stderr, "Request path : %s\n", Host+path)
-		fmt.Fprintf(os.Stderr, "Request Headers : %s\n", req.Header)
-		fmt.Fprintf(os.Stderr, "Request Body : %s\n", string(args))
-		fmt.Fprintf(os.Stderr, "Response Headers : %s\n", resp.Header)
+		fmt.Fprintf(os.Stderr, "Response Status: %s\n", resp.Status)
+		fmt.Fprintf(os.Stderr, "Request path: %s\n", Host+path)
+		fmt.Fprintf(os.Stderr, "Request Headers: %s\n", req.Header)
+		fmt.Fprintf(os.Stderr, "Request Body: %s\n", string(args))
+		fmt.Fprintf(os.Stderr, "Response Headers: %s\n", resp.Header)
 	}
 
 	return resp.Body, resp.StatusCode, nil

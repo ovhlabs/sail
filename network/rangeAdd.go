@@ -12,8 +12,8 @@ import (
 
 var cmdNetworkRangeAdd = &cobra.Command{
 	Use:     "rangeAdd",
-	Short:   "Add an allocation range to a private network : sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>",
-	Long:    `Add an allocation range to a private network : sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>`,
+	Short:   "Add an allocation range to a private network: sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>",
+	Long:    `Add an allocation range to a private network: sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>`,
 	Aliases: []string{"range-add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 3 {

@@ -12,8 +12,8 @@ import (
 
 var cmdNetworkRm = &cobra.Command{
 	Use:     "rm",
-	Short:   "Remove a private network : sail network rm <applicationName>/<networkId>",
-	Long:    `Remove a private network : sail network rm <applicationName>/<networkId>`,
+	Short:   "Remove a private network: sail network rm <applicationName>/<networkId>",
+	Long:    `Remove a private network: sail network rm <applicationName>/<networkId>`,
 	Aliases: []string{"delete", "remove"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

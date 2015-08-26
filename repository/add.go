@@ -14,8 +14,8 @@ import (
 var cmdRepositoryAdd = &cobra.Command{
 	// FIXME: only support adding from source via CLI, type external. Rename to 'register' ?
 	Use:   "add",
-	Short: "Add a new repository : sail repository add <applicationName>/<repositoryId> <type> [source]",
-	Long: `Add a new repository : sail repository add <applicationName>/<repositoryId> <type> [source]
+	Short: "Add a new repository: sail repository add <applicationName>/<repositoryId> <type> [source]",
+	Long: `Add a new repository: sail repository add <applicationName>/<repositoryId> <type> [source]
 
 	<type> The type of repository {hosted,external}
 	[source] For external repositories, the source (e.g. registry.hub.docker.com/redis)

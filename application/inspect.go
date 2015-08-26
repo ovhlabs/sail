@@ -11,9 +11,9 @@ import (
 var cmdApplicationInspect = &cobra.Command{
 	Use:     "inspect",
 	Aliases: []string{"show"},
-	Short:   "Details of an app : sail application inspect <applicationName>",
-	Long: `Details of an app : sail application inspect <applicationName>
-	\"example : sail application inspect myApp"
+	Short:   "Details of an app: sail application inspect <applicationName>",
+	Long: `Details of an app: sail application inspect <applicationName>
+	\"example: sail application inspect myApp"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 || args[0] == "" {

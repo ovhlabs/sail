@@ -15,8 +15,8 @@ func init() {
 // Cmd compose
 var Cmd = &cobra.Command{
 	Use:     "compose",
-	Short:   "Compose commands : sail compose --help",
-	Long:    `Compose commands : sail compose <command>`,
+	Short:   "Compose commands: sail compose --help",
+	Long:    `Compose commands: sail compose <command>`,
 	Aliases: []string{"comp"},
 }
 

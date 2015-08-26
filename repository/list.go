@@ -14,7 +14,7 @@ import (
 
 var cmdRepositoryList = &cobra.Command{
 	Use:     "list",
-	Short:   "List the docker repository : sail repository list [applicationName]",
+	Short:   "List the docker repository: sail repository list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		repositoryList(internal.GetListApplications(args))

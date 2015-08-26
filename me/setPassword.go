@@ -16,7 +16,7 @@ var cmdMeSetPassword = &cobra.Command{
 	Use:   "setPassword",
 	Short: "Set account password: sail me setPassword [<password>]",
 	Long: `Set account password: sail me setAcl <ip> [<ip> ... ]
-	"example : sail me setPassword"
+	"example: sail me setPassword"
 	Note: After running this command, you will need to run "docker login sailabove.io"
 	`,
 	Aliases: []string{"password", "set-password"},
@@ -42,12 +42,12 @@ func cmdSetPassword(cmd *cobra.Command, args []string) {
 		confirm := gopass.GetPasswd()
 
 		if !bytes.Equal(password, confirm) {
-			fmt.Fprintln(os.Stderr, "Error : Passwords do not match")
+			fmt.Fprintln(os.Stderr, "Error: Passwords do not match")
 			return
 		}
 
 		if len(password) == 0 {
-			fmt.Fprintln(os.Stderr, "Error : Password Required")
+			fmt.Fprintln(os.Stderr, "Error: Password Required")
 			return
 		}
 

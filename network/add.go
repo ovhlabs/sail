@@ -13,8 +13,8 @@ import (
 
 var cmdNetworkAdd = &cobra.Command{
 	Use:   "add",
-	Short: "Add a new private network : sail network add <applicationName>/<networkId> subnet",
-	Long:  `Add a new private network : sail network add <applicationName>/<networkId> subnet`,
+	Short: "Add a new private network: sail network add <applicationName>/<networkId> subnet",
+	Long:  `Add a new private network: sail network add <applicationName>/<networkId> subnet`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
 			fmt.Fprintln(os.Stderr, "Invalid usage. sail network add <applicationName>/<networkId> subnet. Please see sail network add --help")

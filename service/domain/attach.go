@@ -14,7 +14,7 @@ import (
 var usageDomainAttach = "Invalid usage. sail service attach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sail service attach --help"
 var cmdDomainAttach = &cobra.Command{
 	Use:     "attach",
-	Short:   "Attach a domain on the HTTP load balancer : sail service domain attach <applicationName>/<serviceId> <domain> <pattern> <method>",
+	Short:   "Attach a domain on the HTTP load balancer: sail service domain attach <applicationName>/<serviceId> <domain> <pattern> <method>",
 	Aliases: []string{"add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 4 {

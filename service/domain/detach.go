@@ -14,7 +14,7 @@ import (
 var usageDomainDetach = "Invalid usage. sail service detach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sail service detach --help"
 var cmdDomainDetach = &cobra.Command{
 	Use:     "detach",
-	Short:   "Detach a domain on the HTTP load balancer : sail service domain detach <applicationName>/<serviceId> <domain> <pattern> <method>",
+	Short:   "Detach a domain on the HTTP load balancer: sail service domain detach <applicationName>/<serviceId> <domain> <pattern> <method>",
 	Aliases: []string{"rm", "remove", "delete"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 4 {

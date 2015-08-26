@@ -22,7 +22,7 @@ func init() {
 // Cmd service
 var Cmd = &cobra.Command{
 	Use:     "service",
-	Short:   "Service commands : sail service --help",
-	Long:    `Service commands : sail service <command>`,
+	Short:   "Service commands: sail service --help",
+	Long:    `Service commands: sail service <command>`,
 	Aliases: []string{"services"},
 }
