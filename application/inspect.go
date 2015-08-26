@@ -18,7 +18,7 @@ var cmdApplicationInspect = &cobra.Command{
 		if len(args) == 0 || args[0] == "" {
 			fmt.Println("Invalid usage. Please see sail application inspect --help")
 		} else {
-			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s", args[0])))
+			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s", args[0])))
 		}
 	},
 }

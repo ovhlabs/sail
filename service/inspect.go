@@ -29,6 +29,6 @@ func serviceInspect(serviceID string) {
 	if len(t) != 2 {
 		fmt.Println("Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
 	} else {
-		fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/services/%s", t[0], t[1])))
+		internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/services/%s", t[0], t[1])))
 	}
 }

@@ -44,6 +44,6 @@ func networkInspect(networkID string) {
 		network["range"] = ranges
 		n, err := json.Marshal(network)
 		internal.Check(err)
-		fmt.Println(internal.GetJSON(n))
+		internal.FormatOutputDef(n)
 	}
 }

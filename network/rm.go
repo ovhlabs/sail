@@ -31,5 +31,5 @@ func networkRemove(networkID string) {
 	}
 
 	path := fmt.Sprintf("/applications/%s/networks/%s", t[0], t[1])
-	fmt.Println(internal.DeleteWantJSON(path))
+	internal.FormatOutputDef(internal.DeleteWantJSON(path))
 }

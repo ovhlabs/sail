@@ -40,5 +40,5 @@ func serviceRm(namespace string, name string) {
 	path := fmt.Sprintf("/applications/%s/services/%s", namespace, name)
 	data := internal.ReqWant("DELETE", http.StatusOK, path, nil)
 	// TODO Check for json error here
-	fmt.Printf("%s\n", data)
+	internal.FormatOutputDef(data)
 }

@@ -2,7 +2,6 @@ package me
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/spf13/cobra"
@@ -19,6 +18,6 @@ var cmdMeSetAcl = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		jsonStr, err := json.Marshal(args)
 		internal.Check(err)
-		fmt.Println(internal.ReqWantJSON("PUT", http.StatusOK, "/user/acl", jsonStr))
+		internal.FormatOutputDef(internal.ReqWantJSON("PUT", http.StatusOK, "/user/acl", jsonStr))
 	},
 }

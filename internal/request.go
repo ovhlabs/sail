@@ -22,34 +22,34 @@ func getHTTPClient() *http.Client {
 	return &http.Client{Transport: tr}
 }
 
-// GetWantJSON GET on path and return string of JSON
-func GetWantJSON(path string) string {
-	return GetJSON(ReqWant("GET", http.StatusOK, path, nil))
+// GetWantJSON GET on path and return []byte of JSON
+func GetWantJSON(path string) []byte {
+	return ReqWant("GET", http.StatusOK, path, nil)
 }
 
-// PostWantJSON POST on path and return string of JSON
-func PostWantJSON(path string) string {
-	return GetJSON(ReqWant("POST", http.StatusCreated, path, nil))
+// PostWantJSON POST on path and return []byte of JSON
+func PostWantJSON(path string) []byte {
+	return ReqWant("POST", http.StatusCreated, path, nil)
 }
 
-// PostBodyWantJSON POST a body on path and return string of JSON
-func PostBodyWantJSON(path string, body []byte) string {
-	return GetJSON(ReqWant("POST", http.StatusCreated, path, body))
+// PostBodyWantJSON POST a body on path and return []byte of JSON
+func PostBodyWantJSON(path string, body []byte) []byte {
+	return ReqWant("POST", http.StatusCreated, path, body)
 }
 
-// DeleteWantJSON on path and return string of JSON
-func DeleteWantJSON(path string) string {
-	return GetJSON(ReqWant("DELETE", http.StatusOK, path, nil))
+// DeleteWantJSON on path and return []byte of JSON
+func DeleteWantJSON(path string) []byte {
+	return ReqWant("DELETE", http.StatusOK, path, nil)
 }
 
-// DeleteBodyWantJSON on path and return string of JSON
-func DeleteBodyWantJSON(path string, body []byte) string {
-	return GetJSON(ReqWant("DELETE", http.StatusOK, path, body))
+// DeleteBodyWantJSON on path and return []byte of JSON
+func DeleteBodyWantJSON(path string, body []byte) []byte {
+	return ReqWant("DELETE", http.StatusOK, path, body)
 }
 
-// ReqWantJSON requests with a method on a path, check wantCode and returns string of JSON
-func ReqWantJSON(method string, wantCode int, path string, body []byte) string {
-	return GetJSON(ReqWant(method, wantCode, path, body))
+// ReqWantJSON requests with a method on a path, check wantCode and returns []byte of JSON
+func ReqWantJSON(method string, wantCode int, path string, body []byte) []byte {
+	return ReqWant(method, wantCode, path, body)
 }
 
 // StreamWant request a path with method and stream result
@@ -209,16 +209,6 @@ func GetListApplications(args []string) []string {
 		Check(err)
 	}
 	return apps
-}
-
-// GetJSON return string of JSON, prettify if flag pretty is true
-func GetJSON(s []byte) string {
-	if Pretty {
-		var out bytes.Buffer
-		json.Indent(&out, s, "", "  ")
-		return out.String()
-	}
-	return string(s)
 }
 
 // Check checks e and panic if not nil

@@ -10,10 +10,6 @@ import (
 
 var versionNewLine bool
 
-func init() {
-	Cmd.Flags().BoolVarP(&versionNewLine, "versionNewLine", "", true, "New line after version number.")
-}
-
 // Cmd version
 var Cmd = &cobra.Command{
 	Use:     "version",
@@ -21,11 +17,12 @@ var Cmd = &cobra.Command{
 	Long:    `sail version`,
 	Aliases: []string{"v"},
 	Run: func(cmd *cobra.Command, args []string) {
-		if versionNewLine {
-			fmt.Printf("Version sail : %s\n", internal.VERSION)
-			internal.ReadConfig()
-		} else {
-			fmt.Printf(internal.VERSION)
-		}
+		version := fmt.Sprintf("\"%s\"", internal.VERSION)
+		internal.FormatOutput([]byte(version), prettyFormater)
 	},
+}
+
+func prettyFormater(data []byte) {
+	fmt.Printf("Version sail: %s\n", internal.VERSION)
+	internal.ReadConfig()
 }

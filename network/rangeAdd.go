@@ -31,6 +31,6 @@ func networkRangeAdd(networkID, ipFrom, ipTo string) {
 	}
 
 	path := fmt.Sprintf("/applications/%s/networks/%s/ranges/%s-%s", t[0], t[1], ipFrom, ipTo)
-	fmt.Println(internal.PostWantJSON(path))
+	internal.FormatOutputDef(internal.PostWantJSON(path))
 
 }

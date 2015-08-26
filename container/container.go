@@ -34,7 +34,7 @@ var cmdContainerInspect = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("Invalid usage. sail container inspect <applicationName> <containerId>. Please see sail container inspect --help")
 		} else {
-			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
+			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
 		}
 	},
 }

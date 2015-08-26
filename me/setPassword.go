@@ -58,5 +58,5 @@ func cmdSetPassword(cmd *cobra.Command, args []string) {
 
 	jsonStr, err := json.Marshal(cmdUsersBody)
 	internal.Check(err)
-	fmt.Println(internal.ReqWantJSON("PUT", http.StatusOK, "/users", jsonStr))
+	internal.FormatOutputDef(internal.ReqWantJSON("PUT", http.StatusOK, "/users", jsonStr))
 }

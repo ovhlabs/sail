@@ -35,6 +35,6 @@ func serviceDomainDetach(serviceID, domain string, args domainStruct) {
 	internal.Check(err)
 
 	path := fmt.Sprintf("/applications/%s/services/%s/attached-routes/%s", t[0], t[1], domain)
-	fmt.Println(internal.DeleteBodyWantJSON(path, body))
+	internal.FormatOutputDef(internal.DeleteBodyWantJSON(path, body))
 
 }

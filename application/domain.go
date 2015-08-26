@@ -23,7 +23,7 @@ var cmdApplicationDomainList = &cobra.Command{
 			fmt.Println("Invalid usage. Please see sail application domain list --help")
 		} else {
 			// cmdApplicationDomainList TODO ? Tab view with headers ['DOMAIN', 'SERVICE', 'METHOD', 'PATTERN']
-			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/attached-domains", args[0])))
+			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/attached-domains", args[0])))
 		}
 	},
 }
@@ -36,7 +36,7 @@ var cmdApplicationDomainAttach = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("Invalid usage. Please see sail application domain attach --help")
 		} else {
-			fmt.Println(internal.PostWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
+			internal.FormatOutputDef(internal.PostWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}
 	},
 }
@@ -49,7 +49,7 @@ var cmdApplicationDomainDetach = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("Invalid usage. Please see sail application domain attach --help")
 		} else {
-			fmt.Println(internal.DeleteWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
+			internal.FormatOutputDef(internal.DeleteWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}
 	},
 }

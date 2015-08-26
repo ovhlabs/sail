@@ -11,6 +11,7 @@ import (
 )
 
 var cmdRepositoryAdd = &cobra.Command{
+	// FIXME: only support adding from source via CLI, type external. Rename to 'register' ?
 	Use:   "add",
 	Short: "Add a new repository : sail repository add <applicationName>/<repositoryId> <type> [source]",
 	Long: `Add a new repository : sail repository add <applicationName>/<repositoryId> <type> [source]
@@ -49,6 +50,6 @@ func repositoryAdd(repositoryID string, args repositoryAddStruct) {
 	internal.Check(err)
 
 	path := fmt.Sprintf("/repositories/%s/%s", t[0], t[1])
-	fmt.Println(internal.PostBodyWantJSON(path, body))
+	internal.FormatOutputDef(internal.PostBodyWantJSON(path, body))
 
 }

@@ -21,8 +21,8 @@ var (
 	ConfigDir string
 	// Verbose conditions the quantity of output of api requests
 	Verbose bool
-	// Pretty conditions the output of some commands
-	Pretty bool
+	// Format to use for output. One of 'json', 'yaml', 'pretty'
+	Format string
 	// Home fetches the user home directory
 	Home = os.Getenv("HOME")
 )

@@ -39,6 +39,6 @@ func networkAdd(networkID string, args networkAddStruct) {
 	internal.Check(err)
 
 	path := fmt.Sprintf("/applications/%s/networks/%s", t[0], t[1])
-	fmt.Println(internal.PostBodyWantJSON(path, body))
+	internal.FormatOutputDef(internal.PostBodyWantJSON(path, body))
 
 }

@@ -31,6 +31,7 @@ func serviceStop(serviceID string) {
 	} else {
 		var empty map[string]interface{}
 		em, _ := json.Marshal(empty)
-		fmt.Println(internal.PostBodyWantJSON(fmt.Sprintf("/applications/%s/services/%s/stop", t[0], t[1]), em))
+		//TODO: attach + print stream (stop logs)
+		internal.FormatOutputDef(internal.PostBodyWantJSON(fmt.Sprintf("/applications/%s/services/%s/stop", t[0], t[1]), em))
 	}
 }

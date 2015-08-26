@@ -246,7 +246,9 @@ func serviceAdd(args Add) {
 		if e != nil {
 			fmt.Println(e)
 			if e.Code == 409 && cmdAddRedeploy {
-				fmt.Printf("Starting redeploy...\n")
+				if internal.Format == "pretty" {
+					fmt.Printf("Starting redeploy...\n")
+				}
 				ensureMode(args)
 				return
 			}
@@ -261,7 +263,9 @@ func serviceAdd(args Add) {
 		}
 	}
 
-	fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
+	if internal.Format == "pretty" {
+		fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
+	}
 	serviceStart(args.Application, args.Service, batch)
 }
 

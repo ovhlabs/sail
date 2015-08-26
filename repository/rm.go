@@ -31,5 +31,5 @@ func repositoryRemove(repositoryID string) {
 	}
 
 	path := fmt.Sprintf("/repositories/%s/%s", t[0], t[1])
-	fmt.Println(internal.DeleteWantJSON(path))
+	internal.FormatOutputDef(internal.DeleteWantJSON(path))
 }
