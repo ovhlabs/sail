@@ -177,7 +177,4 @@ func serviceRedeploy(args Redeploy) {
 		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
-	serviceStart(args.Application, args.Service, redeployBatch)
 }
