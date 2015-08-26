@@ -155,17 +155,6 @@ func serviceRedeploy(args Redeploy) {
 		return
 	}
 
-	if redeployBatch {
-		ret := internal.ReqWant("POST", http.StatusOK, path, body)
-		e := internal.DecodeError(ret)
-		if e != nil {
-			fmt.Printf("%s\n", e)
-		} else {
-			fmt.Printf("%s\n", ret)
-		}
-		return
-	}
-
 	buffer, _, err := internal.Stream("POST", path+"?stream", body)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
