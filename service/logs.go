@@ -72,5 +72,11 @@ func serviceLogs(args Logs) {
 		return
 	}
 
-	fmt.Println(internal.ReqWantJSON("GET", http.StatusOK, path, body))
+	b := internal.ReqWant("GET", http.StatusOK, path, body)
+	logs := [][]string{}
+	err = json.Unmarshal(b, &logs)
+	internal.Check(err)
+	for i := range logs {
+		fmt.Printf("%s %s %s\n", logs[i][0], logs[i][1], logs[i][2])
+	}
 }
