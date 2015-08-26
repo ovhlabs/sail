@@ -8,14 +8,14 @@ import (
 
 	"github.com/howeyc/gopass"
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var cmdMeSetPassword = &cobra.Command{
 	Use:   "setPassword",
-	Short: "Set account password: sailgo me setPassword [<password>]",
-	Long: `Set account password: sailgo me setAcl <ip> [<ip> ... ]
-	"example : sailgo me setPassword"
+	Short: "Set account password: sail me setPassword [<password>]",
+	Long: `Set account password: sail me setAcl <ip> [<ip> ... ]
+	"example : sail me setPassword"
 	Note: After running this command, you will need to run "docker login sailabove.io"
 	`,
 	Aliases: []string{"password", "set-password"},
@@ -52,7 +52,7 @@ func cmdSetPassword(cmd *cobra.Command, args []string) {
 
 		cmdUsersBody.Password = string(password[:])
 	default:
-		fmt.Println("Invalid usage. sailgo me password [<password>]. Please see sailgo me password --help")
+		fmt.Println("Invalid usage. sail me password [<password>]. Please see sail me password --help")
 		return
 	}
 

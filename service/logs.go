@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var (
@@ -45,7 +45,7 @@ type Logs struct {
 }
 
 func cmdLogs(cmd *cobra.Command, args []string) {
-	usage := "Invalid usage. sailgo service logs <applicationName>/<serviceId>. Please see sailgo service logs --help\n"
+	usage := "Invalid usage. sail service logs <applicationName>/<serviceId>. Please see sail service logs --help\n"
 	if len(args) != 1 {
 		fmt.Printf(usage)
 		return

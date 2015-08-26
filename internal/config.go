@@ -34,14 +34,14 @@ func init() {
 // Cmd config
 var Cmd = &cobra.Command{
 	Use:     "config",
-	Short:   "Config commands : sailgo config --help",
-	Long:    `Config commands : sailgo config <command>`,
+	Short:   "Config commands : sail config --help",
+	Long:    `Config commands : sail config <command>`,
 	Aliases: []string{"c"},
 }
 
 var cmdConfigShow = &cobra.Command{
 	Use:   "show",
-	Short: "Show Configuration : sailgo config show",
+	Short: "Show Configuration : sail config show",
 	Run: func(cmd *cobra.Command, args []string) {
 		configShow()
 	},

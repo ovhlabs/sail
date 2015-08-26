@@ -3,8 +3,8 @@ Sailabove Command Line
 
 # How to build
 ```
-git clone ssh://git@stash.ovh.net:7999/sailabove/sailgo.git && cd sailgo
-go get && go build && ./sailgo -h
+git clone ssh://git@stash.ovh.net:7999/sailabove/sail.git && cd sail
+go get && go build && ./sail -h
 ```
 
 # Roadmap Rewrite
@@ -83,7 +83,7 @@ sail networks inspect    Inspect the docker private networks
 ## Bugs SA
 ```
 
-./sailgo network add myApp/privateb 172.31.0.0/24
+./sail network add myApp/privateb 172.31.0.0/24
 --> Return 200 (OK) instead of 201 (Created)
 
 ```

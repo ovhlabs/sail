@@ -14,7 +14,7 @@ import (
 
 func initRequest(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "Sailabove sailgo CLI/"+VERSION)
+	req.Header.Set("User-Agent", "Sailabove sail CLI/"+VERSION)
 }
 
 func getHTTPClient() *http.Client {

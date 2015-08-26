@@ -11,8 +11,8 @@ func init() {
 // Cmd domain
 var Cmd = &cobra.Command{
 	Use:     "domain",
-	Short:   "Service Domain commands : sailgo service domain --help",
-	Long:    `Service Domain commands : sailgo service domain <command>`,
+	Short:   "Service Domain commands : sail service domain --help",
+	Long:    `Service Domain commands : sail service domain <command>`,
 	Aliases: []string{"domains"},
 }
 

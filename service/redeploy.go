@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var (
@@ -73,7 +73,7 @@ type Redeploy struct {
 }
 
 func cmdRedeploy(cmd *cobra.Command, args []string) {
-	usage := "Invalid usage. sailgo service redeploy <applicationName>/<serviceId>. Please see sailgo service redeploy --help\n"
+	usage := "Invalid usage. sail service redeploy <applicationName>/<serviceId>. Please see sail service redeploy --help\n"
 	if len(args) != 1 {
 		fmt.Printf(usage)
 		return

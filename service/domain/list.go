@@ -9,14 +9,14 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
-var usageList = "Invalid usage. sailgo service domain list <applicationName>/<networkId>. Please see sailgo domain list --help"
+var usageList = "Invalid usage. sail service domain list <applicationName>/<networkId>. Please see sail domain list --help"
 
 var cmdDomainList = &cobra.Command{
 	Use:     "list",
-	Short:   "List domains on the HTTP load balancer : sailgo service domain list <applicationName>/<serviceId>",
+	Short:   "List domains on the HTTP load balancer : sail service domain list <applicationName>/<serviceId>",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

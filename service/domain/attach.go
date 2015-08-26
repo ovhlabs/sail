@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"strings"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 
 	"github.com/spf13/cobra"
 )
 
-var usageDomainAttach = "Invalid usage. sailgo service attach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sailgo service attach --help"
+var usageDomainAttach = "Invalid usage. sail service attach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sail service attach --help"
 var cmdDomainAttach = &cobra.Command{
 	Use:     "attach",
-	Short:   "Attach a domain on the HTTP load balancer : sailgo service domain attach <applicationName>/<serviceId> <domain> <pattern> <method>",
+	Short:   "Attach a domain on the HTTP load balancer : sail service domain attach <applicationName>/<serviceId> <domain> <pattern> <method>",
 	Aliases: []string{"add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 4 {

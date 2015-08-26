@@ -5,19 +5,19 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sailgo/application"
-	"stash.ovh.net/sailabove/sailgo/compose"
-	"stash.ovh.net/sailabove/sailgo/container"
-	"stash.ovh.net/sailabove/sailgo/internal"
-	"stash.ovh.net/sailabove/sailgo/me"
-	"stash.ovh.net/sailabove/sailgo/network"
-	"stash.ovh.net/sailabove/sailgo/repository"
-	"stash.ovh.net/sailabove/sailgo/service"
-	"stash.ovh.net/sailabove/sailgo/version"
+	"stash.ovh.net/sailabove/sail/application"
+	"stash.ovh.net/sailabove/sail/compose"
+	"stash.ovh.net/sailabove/sail/container"
+	"stash.ovh.net/sailabove/sail/internal"
+	"stash.ovh.net/sailabove/sail/me"
+	"stash.ovh.net/sailabove/sail/network"
+	"stash.ovh.net/sailabove/sail/repository"
+	"stash.ovh.net/sailabove/sail/service"
+	"stash.ovh.net/sailabove/sail/version"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "sailgo",
+	Use:   "sail",
 	Short: "Sailabove - Command Line Tool",
 	Long:  `Sailabove - Command Line Tool`,
 }

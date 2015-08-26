@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"strings"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 
 	"github.com/spf13/cobra"
 )
 
 var cmdNetworkRangeAdd = &cobra.Command{
 	Use:     "rangeAdd",
-	Short:   "Add an allocation range to a private network : sailgo network range-add <applicationName>/<networkId> <ipFrom> <ipTo>",
-	Long:    `Add an allocation range to a private network : sailgo network range-add <applicationName>/<networkId> <ipFrom> <ipTo>`,
+	Short:   "Add an allocation range to a private network : sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>",
+	Long:    `Add an allocation range to a private network : sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>`,
 	Aliases: []string{"range-add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 3 {
-			fmt.Println("Invalid usage. sailgo network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sailgo network range-add --help")
+			fmt.Println("Invalid usage. sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sail network range-add --help")
 		} else {
 			networkRangeAdd(args[0], args[1], args[2])
 		}
@@ -26,7 +26,7 @@ var cmdNetworkRangeAdd = &cobra.Command{
 func networkRangeAdd(networkID, ipFrom, ipTo string) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sailgo network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sailgo network range-add --help")
+		fmt.Println("Invalid usage. sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sail network range-add --help")
 		return
 	}
 

@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var scaleBatch bool

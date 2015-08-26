@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 func init() {
@@ -18,20 +18,20 @@ func init() {
 // Cmd container
 var Cmd = &cobra.Command{
 	Use:     "container",
-	Short:   "Container commands : sailgo container --help",
-	Long:    `Container commands : sailgo container <command>`,
+	Short:   "Container commands : sail container --help",
+	Long:    `Container commands : sail container <command>`,
 	Aliases: []string{"c", "containers"},
 }
 
 var cmdContainerInspect = &cobra.Command{
 	Use:   "inspect",
-	Short: "Inspect a docker container : sailgo container inspect <applicationName> <containerId>",
-	Long: `Inspect a docker container : sailgo container inspect <applicationName> <containerId>
-	\"example : sailgo container inspect myApp"
+	Short: "Inspect a docker container : sail container inspect <applicationName> <containerId>",
+	Long: `Inspect a docker container : sail container inspect <applicationName> <containerId>
+	\"example : sail container inspect myApp"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Println("Invalid usage. sailgo container inspect <applicationName> <containerId>. Please see sailgo container inspect --help")
+			fmt.Println("Invalid usage. sail container inspect <applicationName> <containerId>. Please see sail container inspect --help")
 		} else {
 			fmt.Println(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
 		}

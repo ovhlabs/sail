@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"strings"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 
 	"github.com/spf13/cobra"
 )
 
 var cmdRepositoryAdd = &cobra.Command{
 	Use:   "add",
-	Short: "Add a new repository : sailgo repository add <applicationName>/<repositoryId> <type> [source]",
-	Long: `Add a new repository : sailgo repository add <applicationName>/<repositoryId> <type> [source]
+	Short: "Add a new repository : sail repository add <applicationName>/<repositoryId> <type> [source]",
+	Long: `Add a new repository : sail repository add <applicationName>/<repositoryId> <type> [source]
 
 	<type> The type of repository {hosted,external}
 	[source] For external repositories, the source (e.g. registry.hub.docker.com/redis)
@@ -21,7 +21,7 @@ var cmdRepositoryAdd = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
-			fmt.Println("Invalid usage. sailgo repository add <applicationName>/<repositoryId> <type> [source]. Please see sailgo repository add --help")
+			fmt.Println("Invalid usage. sail repository add <applicationName>/<repositoryId> <type> [source]. Please see sail repository add --help")
 		} else {
 			source := ""
 			if len(args) == 3 {
@@ -41,7 +41,7 @@ type repositoryAddStruct struct {
 func repositoryAdd(repositoryID string, args repositoryAddStruct) {
 	t := strings.Split(repositoryID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sailgo repository add <applicationName>/<repositoryId>. Please see sailgo repository add --help")
+		fmt.Println("Invalid usage. sail repository add <applicationName>/<repositoryId>. Please see sail repository add --help")
 		return
 	}
 

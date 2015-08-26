@@ -1,5 +1,5 @@
 {
-	"ImportPath": "stash.ovh.net/sailabove/sailgo",
+	"ImportPath": "stash.ovh.net/sailabove/sail",
 	"GoVersion": "go1.5",
 	"Packages": [
 		"github.com/howeyc/gopass"

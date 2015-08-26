@@ -9,12 +9,12 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var cmdContainerList = &cobra.Command{
 	Use:     "list",
-	Short:   "List docker containers : sailgo container list [applicationName]",
+	Short:   "List docker containers : sail container list [applicationName]",
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		containerList(internal.GetListApplications(args))

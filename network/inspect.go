@@ -7,18 +7,18 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var cmdNetworkInspect = &cobra.Command{
 	Use:   "inspect",
-	Short: "Inspect the docker private networks : sailgo network inspect <applicationName>/<networkId>",
-	Long: `Inspect the docker private networks : sailgo network inspect <applicationName>/<networkId>
-	\"example : sailgo network inspect myApp"
+	Short: "Inspect the docker private networks : sail network inspect <applicationName>/<networkId>",
+	Long: `Inspect the docker private networks : sail network inspect <applicationName>/<networkId>
+	\"example : sail network inspect myApp"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sailgo network inspect <applicationName>/<networkId>. Please see sailgo network inspect --help")
+			fmt.Println("Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
 		} else {
 			networkInspect(args[0])
 		}
@@ -28,7 +28,7 @@ var cmdNetworkInspect = &cobra.Command{
 func networkInspect(networkID string) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sailgo network inspect <applicationName>/<networkId>. Please see sailgo network inspect --help")
+		fmt.Println("Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
 	} else {
 
 		var network map[string]interface{}

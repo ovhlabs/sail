@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var cmdAddLink []string
@@ -107,7 +107,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.ContainerCommand = make([]string, 0)
 
 	if len(args) != 2 {
-		fmt.Printf("Invalid usage. sailgo service add <application>/<repository>[:tag] <service>. Please see sailgo service add --help\n")
+		fmt.Printf("Invalid usage. sail service add <application>/<repository>[:tag] <service>. Please see sail service add --help\n")
 		return
 	}
 

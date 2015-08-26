@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sailgo/internal"
+	"stash.ovh.net/sailabove/sail/internal"
 )
 
 var versionNewLine bool
@@ -17,12 +17,12 @@ func init() {
 // Cmd version
 var Cmd = &cobra.Command{
 	Use:     "version",
-	Short:   "Display Version of sailgo : sailgo version",
-	Long:    `sailgo version`,
+	Short:   "Display Version of sail : sail version",
+	Long:    `sail version`,
 	Aliases: []string{"v"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if versionNewLine {
-			fmt.Printf("Version sailgo : %s\n", internal.VERSION)
+			fmt.Printf("Version sail : %s\n", internal.VERSION)
 			internal.ReadConfig()
 		} else {
 			fmt.Printf(internal.VERSION)

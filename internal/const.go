@@ -1,4 +1,4 @@
 package internal
 
-// VERSION of sailgo
+// VERSION of sail
 const VERSION = "0.0.1"
