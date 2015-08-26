@@ -26,9 +26,9 @@ func main() {
 	addCommands()
 	rootCmd.PersistentFlags().BoolVarP(&internal.Verbose, "verbose", "v", false, "verbose output")
 	rootCmd.PersistentFlags().BoolVarP(&internal.Pretty, "pretty", "T", false, "Pretty Print Json Output")
-	rootCmd.PersistentFlags().StringVarP(&internal.Host, "host", "H", "sailabove.io", "Docker index host, facultative if you have a "+internal.Home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&internal.User, "user", "U", "", "Docker index user, facultative if you have a "+internal.Home+"/.docker/config.json file")
-	rootCmd.PersistentFlags().StringVarP(&internal.Password, "password", "P", "", "Docker index password, facultative if you have a "+internal.Home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&internal.Host, "host", "H", "sailabove.io", "Docker index host, optional if you have a "+internal.Home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&internal.User, "user", "U", "", "Docker index user, optional if you have a "+internal.Home+"/.docker/config.json file")
+	rootCmd.PersistentFlags().StringVarP(&internal.Password, "password", "P", "", "Docker index password, optional if you have a "+internal.Home+"/.docker/config.json file")
 	rootCmd.PersistentFlags().StringVarP(&internal.ConfigDir, "configDir", "", internal.Home+"/.docker", "configuration directory, default is "+internal.Home+"/.docker/")
 	rootCmd.Execute()
 }
