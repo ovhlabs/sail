@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 	"stash.ovh.net/sailabove/sail/internal"
@@ -76,7 +78,12 @@ func serviceLogs(args Logs) {
 	logs := [][]string{}
 	err = json.Unmarshal(b, &logs)
 	internal.Check(err)
+	w := tabwriter.NewWriter(os.Stdout, 20, 1, 3, ' ', 0)
+	titles := []string{"TIMESTAMP", "ID", "LOG"}
+	fmt.Fprintln(w, strings.Join(titles, "\t"))
+
 	for i := range logs {
-		fmt.Printf("%s %s %s\n", logs[i][0], logs[i][1], logs[i][2])
+		fmt.Fprintf(w, "%s\t%s\t%s\n", logs[i][0], logs[i][1], logs[i][2])
+		w.Flush()
 	}
 }
