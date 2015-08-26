@@ -3,6 +3,7 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"stash.ovh.net/sailabove/sail/internal"
@@ -22,7 +23,7 @@ var cmdRepositoryAdd = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
-			fmt.Println("Invalid usage. sail repository add <applicationName>/<repositoryId> <type> [source]. Please see sail repository add --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail repository add <applicationName>/<repositoryId> <type> [source]. Please see sail repository add --help")
 		} else {
 			source := ""
 			if len(args) == 3 {
@@ -42,7 +43,7 @@ type repositoryAddStruct struct {
 func repositoryAdd(repositoryID string, args repositoryAddStruct) {
 	t := strings.Split(repositoryID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail repository add <applicationName>/<repositoryId>. Please see sail repository add --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail repository add <applicationName>/<repositoryId>. Please see sail repository add --help")
 		return
 	}
 

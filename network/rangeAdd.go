@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"stash.ovh.net/sailabove/sail/internal"
@@ -16,7 +17,7 @@ var cmdNetworkRangeAdd = &cobra.Command{
 	Aliases: []string{"range-add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 3 {
-			fmt.Println("Invalid usage. sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sail network range-add --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sail network range-add --help")
 		} else {
 			networkRangeAdd(args[0], args[1], args[2])
 		}
@@ -26,7 +27,7 @@ var cmdNetworkRangeAdd = &cobra.Command{
 func networkRangeAdd(networkID, ipFrom, ipTo string) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sail network range-add --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail network range-add <applicationName>/<networkId> <ipFrom> <ipTo>. Please see sail network range-add --help")
 		return
 	}
 

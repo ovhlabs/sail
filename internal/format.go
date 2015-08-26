@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ghodss/yaml"
+	"os"
 )
 
 // FormatOutput autmatically formats json based output based on user choice.
@@ -18,7 +19,7 @@ func FormatOutput(data []byte, prettyFormatter func([]byte)) {
 	case "yaml":
 		yamlFormatter(data)
 	default:
-		fmt.Printf("Invalid formater %s. Use one of 'pretty', 'json', 'yaml'\n", Format)
+		fmt.Fprintf(os.Stderr, "Invalid formater %s. Use one of 'pretty', 'json', 'yaml'\n", Format)
 		return
 	}
 }

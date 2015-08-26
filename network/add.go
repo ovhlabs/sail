@@ -3,6 +3,7 @@ package network
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"stash.ovh.net/sailabove/sail/internal"
@@ -16,7 +17,7 @@ var cmdNetworkAdd = &cobra.Command{
 	Long:  `Add a new private network : sail network add <applicationName>/<networkId> subnet`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Println("Invalid usage. sail network add <applicationName>/<networkId> subnet. Please see sail network add --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail network add <applicationName>/<networkId> subnet. Please see sail network add --help")
 		} else {
 			n := networkAddStruct{Subnet: args[1]}
 			networkAdd(args[0], n)
@@ -31,7 +32,7 @@ type networkAddStruct struct {
 func networkAdd(networkID string, args networkAddStruct) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail network add <applicationName>/<networkId>. Please see sail network add --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail network add <applicationName>/<networkId>. Please see sail network add --help")
 		return
 	}
 

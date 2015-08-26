@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -24,12 +25,12 @@ func rmCmd() *cobra.Command {
 func cmdServiceRm(cmd *cobra.Command, args []string) {
 	usage := "Invalid usage. sail service rm <applicationName>/<serviceId>"
 	if len(args) == 0 {
-		fmt.Println(usage)
+		fmt.Fprintln(os.Stderr, usage)
 		return
 	}
 	argsS := strings.Split(args[0], "/")
 	if len(argsS) != 2 {
-		fmt.Println(usage)
+		fmt.Fprintln(os.Stderr, usage)
 		return
 	}
 

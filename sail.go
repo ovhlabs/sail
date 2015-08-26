@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -53,11 +54,11 @@ var autocompleteCmd = &cobra.Command{
 	Long:  `Generate bash autocompletion file for sail`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Printf("Wrong usage: sail autocomplete <path>\n")
+			fmt.Fprintf(os.Stderr, "Wrong usage: sail autocomplete <path>\n")
 			return
 		}
 		rootCmd.GenBashCompletionFile(args[0])
-		fmt.Printf("Completion file generated.\n")
-		fmt.Printf("You may now run `source %s`\n", args[0])
+		fmt.Fprintf(os.Stderr, "Completion file generated.\n")
+		fmt.Fprintf(os.Stderr, "You may now run `source %s`\n", args[0])
 	},
 }

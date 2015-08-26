@@ -107,7 +107,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.ContainerCommand = make([]string, 0)
 
 	if len(args) != 2 {
-		fmt.Printf("Invalid usage. sail service add <application>/<repository>[:tag] <service>. Please see sail service add --help\n")
+		fmt.Fprintf(os.Stderr, "Invalid usage. sail service add <application>/<repository>[:tag] <service>. Please see sail service add --help\n")
 		return
 	}
 
@@ -149,7 +149,7 @@ func serviceAdd(args Add) {
 		} else if len(t) == 1 {
 			args.Volumes[t[0]] = VolumeConfig{Size: "10"}
 		} else {
-			fmt.Printf("Error: Volume parameter '%s' not formated correctly\n", vol)
+			fmt.Fprintf(os.Stderr, "Error: Volume parameter '%s' not formated correctly\n", vol)
 			os.Exit(1)
 		}
 	}
@@ -172,15 +172,15 @@ func serviceAdd(args Add) {
 	for _, gat := range cmdAddGateway {
 		t := strings.Split(gat, ":")
 		if len(t) != 2 {
-			fmt.Printf("Invalid gateway parameter, should be \"input:output\"")
+			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\"")
 			os.Exit(1)
 		}
 		if _, ok := args.ContainerNetwork[t[0]]; !ok {
-			fmt.Printf("Not configured input network %s\n", t[0])
+			fmt.Fprintf(os.Stderr, "Not configured input network %s\n", t[0])
 			os.Exit(1)
 		}
 		if _, ok := args.ContainerNetwork[t[1]]; !ok {
-			fmt.Printf("Not configured onput network %s\n", t[1])
+			fmt.Fprintf(os.Stderr, "Not configured onput network %s\n", t[1])
 			os.Exit(1)
 		}
 		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
@@ -192,7 +192,7 @@ func serviceAdd(args Add) {
 	path := fmt.Sprintf("/applications/%s/services/%s", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
-		fmt.Printf("Fatal: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Fatal: %s\n", err)
 		return
 	}
 
@@ -201,7 +201,7 @@ func serviceAdd(args Add) {
 
 		// http.Request failed for some reason
 		if err != nil {
-			fmt.Printf("Error: %s\n", err)
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 			return
 		}
 
@@ -214,18 +214,18 @@ func serviceAdd(args Add) {
 		// If API returned a json error
 		e := internal.DecodeError(ret)
 		if e != nil {
-			fmt.Printf("%s\n", e)
+			fmt.Fprintf(os.Stderr, "%s\n", e)
 			return
 		}
 
 		// Just print data
-		fmt.Printf("%s\n", ret)
+		fmt.Fprintf(os.Stderr, "%s\n", ret)
 		return
 	}
 
 	buffer, code, err := internal.Stream("POST", path+"?stream", body)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return
 	}
 
@@ -240,14 +240,14 @@ func serviceAdd(args Add) {
 		line, err := reader.ReadBytes('\n')
 		m := internal.DecodeMessage(line)
 		if m != nil {
-			fmt.Println(m.Message)
+			fmt.Fprintln(os.Stderr, m.Message)
 		}
 		e := internal.DecodeError(line)
 		if e != nil {
-			fmt.Println(e)
+			fmt.Fprintln(os.Stderr, e)
 			if e.Code == 409 && cmdAddRedeploy {
 				if internal.Format == "pretty" {
-					fmt.Printf("Starting redeploy...\n")
+					fmt.Fprintf(os.Stderr, "Starting redeploy...\n")
 				}
 				ensureMode(args)
 				return
@@ -258,13 +258,13 @@ func serviceAdd(args Add) {
 			break
 		}
 		if err != nil {
-			fmt.Printf("Error: %s\n", err)
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 			os.Exit(1)
 		}
 	}
 
 	if internal.Format == "pretty" {
-		fmt.Printf("Starting service %s/%s...\n", args.Application, args.Service)
+		fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
 	}
 	serviceStart(args.Application, args.Service, batch)
 }

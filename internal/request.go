@@ -66,7 +66,7 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 
 	err := ReadConfig()
 	if err != nil {
-		fmt.Printf("Error reading configuration: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error reading configuration: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -89,13 +89,13 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	}
 
 	if resp.StatusCode != wantCode || Verbose {
-		fmt.Printf("Response Status : %s\n", resp.Status)
-		fmt.Printf("Request path : %s\n", Host+path)
-		fmt.Printf("Request Headers : %s\n", req.Header)
-		fmt.Printf("Request Body : %s\n", string(jsonStr))
-		fmt.Printf("Response Headers : %s\n", resp.Header)
+		fmt.Fprintf(os.Stderr, "Response Status : %s\n", resp.Status)
+		fmt.Fprintf(os.Stderr, "Request path : %s\n", Host+path)
+		fmt.Fprintf(os.Stderr, "Request Headers : %s\n", req.Header)
+		fmt.Fprintf(os.Stderr, "Request Body : %s\n", string(jsonStr))
+		fmt.Fprintf(os.Stderr, "Response Headers : %s\n", resp.Header)
 		if err == nil {
-			fmt.Printf("Response Body : %s\n", string(body))
+			fmt.Fprintf(os.Stderr, "Response Body : %s\n", string(body))
 		}
 		if !Verbose {
 			os.Exit(1)
@@ -138,7 +138,7 @@ func Request(method string, path string, args []byte) ([]byte, int, error) {
 	}
 
 	if Verbose {
-		fmt.Printf("Response Body : %s\n", body)
+		fmt.Fprintf(os.Stderr, "Response Body : %s\n", body)
 	}
 
 	return body, code, nil
@@ -148,7 +148,7 @@ func Request(method string, path string, args []byte) ([]byte, int, error) {
 func Stream(method string, path string, args []byte) (io.ReadCloser, int, error) {
 	err := ReadConfig()
 	if err != nil {
-		fmt.Printf("Error reading configuration: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error reading configuration: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -167,11 +167,11 @@ func Stream(method string, path string, args []byte) (io.ReadCloser, int, error)
 	}
 
 	if Verbose {
-		fmt.Printf("Response Status : %s\n", resp.Status)
-		fmt.Printf("Request path : %s\n", Host+path)
-		fmt.Printf("Request Headers : %s\n", req.Header)
-		fmt.Printf("Request Body : %s\n", string(args))
-		fmt.Printf("Response Headers : %s\n", resp.Header)
+		fmt.Fprintf(os.Stderr, "Response Status : %s\n", resp.Status)
+		fmt.Fprintf(os.Stderr, "Request path : %s\n", Host+path)
+		fmt.Fprintf(os.Stderr, "Request Headers : %s\n", req.Header)
+		fmt.Fprintf(os.Stderr, "Request Body : %s\n", string(args))
+		fmt.Fprintf(os.Stderr, "Response Headers : %s\n", resp.Header)
 	}
 
 	return resp.Body, resp.StatusCode, nil
@@ -185,7 +185,7 @@ func DisplayStream(buffer io.ReadCloser) error {
 		line, err := reader.ReadBytes('\n')
 		m := DecodeMessage(line)
 		if m != nil {
-			fmt.Println(m.Message)
+			fmt.Fprintln(os.Stderr, m.Message)
 		}
 		e := DecodeError(line)
 		if e != nil {

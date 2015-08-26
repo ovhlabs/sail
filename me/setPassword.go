@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/howeyc/gopass"
 	"github.com/spf13/cobra"
@@ -34,25 +35,25 @@ func cmdSetPassword(cmd *cobra.Command, args []string) {
 	case 1:
 		cmdUsersBody.Password = args[0]
 	case 0:
-		fmt.Print("Password: ")
+		fmt.Fprint(os.Stderr, "Password: ")
 		password := gopass.GetPasswd()
 
-		fmt.Print("Confirm password: ")
+		fmt.Fprint(os.Stderr, "Confirm password: ")
 		confirm := gopass.GetPasswd()
 
 		if !bytes.Equal(password, confirm) {
-			fmt.Println("Error : Passwords do not match")
+			fmt.Fprintln(os.Stderr, "Error : Passwords do not match")
 			return
 		}
 
 		if len(password) == 0 {
-			fmt.Println("Error : Password Required")
+			fmt.Fprintln(os.Stderr, "Error : Password Required")
 			return
 		}
 
 		cmdUsersBody.Password = string(password[:])
 	default:
-		fmt.Println("Invalid usage. sail me password [<password>]. Please see sail me password --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail me password [<password>]. Please see sail me password --help")
 		return
 	}
 

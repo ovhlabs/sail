@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -47,10 +48,22 @@ var cmdConfigShow = &cobra.Command{
 	},
 }
 
+type configStruct struct {
+	Username string `json:"username"`
+	Host     string `json:"host"`
+}
+
 func configShow() {
+	var config configStruct
+
 	ReadConfig()
-	fmt.Printf("username:%s\n", User)
-	fmt.Printf("host:%s\n", Host)
+	config.Username = User
+	config.Host = Host
+
+	data, err := json.Marshal(config)
+	Check(err)
+
+	FormatOutputDef(data)
 }
 
 // ReadConfig fetches docker config from ConfigDir
@@ -64,7 +77,7 @@ func ReadConfig() error {
 	// otherwise try to take from docker config.json file
 	c, err := cliconfig.Load(ConfigDir)
 	if err != nil {
-		fmt.Printf("Error while reading config file in %s\n", ConfigDir)
+		fmt.Fprintf(os.Stderr, "Error while reading config file in %s\n", ConfigDir)
 		return err
 	}
 
@@ -76,7 +89,7 @@ func ReadConfig() error {
 
 		if authHost == Host {
 			if Verbose {
-				fmt.Printf("Found in config file : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
+				fmt.Fprintf(os.Stderr, "Found in config file : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
 
 			if User == "" {
@@ -87,7 +100,7 @@ func ReadConfig() error {
 			}
 
 			if Verbose {
-				fmt.Printf("Computed configuration : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
+				fmt.Fprintf(os.Stderr, "Computed configuration : Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
 			break
 		}
@@ -118,7 +131,7 @@ func expandRegistryURL() {
 func ping(hostname string) bool {
 	urlPing := hostname + "/_ping"
 	if Verbose {
-		fmt.Printf("Try ping on %s\n", urlPing)
+		fmt.Fprintf(os.Stderr, "Try ping on %s\n", urlPing)
 	}
 	req, _ := http.NewRequest("GET", urlPing, nil)
 	initRequest(req)
@@ -127,12 +140,12 @@ func ping(hostname string) bool {
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
 		if Verbose {
-			fmt.Printf("Ping OK on %s\n", urlPing)
+			fmt.Fprintf(os.Stderr, "Ping OK on %s\n", urlPing)
 		}
 		return true
 	}
 	if Verbose {
-		fmt.Printf("Ping KO on %s\n", urlPing)
+		fmt.Fprintf(os.Stderr, "Ping KO on %s\n", urlPing)
 	}
 	return false
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -19,7 +20,7 @@ var cmdNetworkInspect = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
 		} else {
 			networkInspect(args[0])
 		}
@@ -29,7 +30,7 @@ var cmdNetworkInspect = &cobra.Command{
 func networkInspect(networkID string) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
 	} else {
 
 		var network map[string]interface{}

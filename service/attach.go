@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ var cmdServiceAttach = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sail service attach <applicationName>/<serviceId>. Please see sail service attach --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail service attach <applicationName>/<serviceId>. Please see sail service attach --help")
 		} else {
 			serviceAttach(args[0])
 		}
@@ -27,7 +28,7 @@ var cmdServiceAttach = &cobra.Command{
 func serviceAttach(serviceID string) {
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail service attach <applicationName>/<serviceId>. Please see sail service attach --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail service attach <applicationName>/<serviceId>. Please see sail service attach --help")
 	} else {
 		internal.StreamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s/attach", t[0], t[1]), nil)
 	}

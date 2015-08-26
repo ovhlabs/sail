@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"stash.ovh.net/sailabove/sail/internal"
@@ -16,7 +17,7 @@ var cmdNetworkRm = &cobra.Command{
 	Aliases: []string{"delete", "remove"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sail network rm <applicationName>/<networkId>. Please see sail network rm --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail network rm <applicationName>/<networkId>. Please see sail network rm --help")
 		} else {
 			networkRemove(args[0])
 		}
@@ -26,7 +27,7 @@ var cmdNetworkRm = &cobra.Command{
 func networkRemove(networkID string) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail network rm <applicationName>/<networkId>. Please see sail network rm --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail network rm <applicationName>/<networkId>. Please see sail network rm --help")
 		return
 	}
 

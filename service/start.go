@@ -30,13 +30,13 @@ func startCmd() *cobra.Command {
 func cmdStart(cmd *cobra.Command, args []string) {
 
 	if len(args) != 1 {
-		fmt.Println(startUsage)
+		fmt.Fprintln(os.Stderr, startUsage)
 		os.Exit(1)
 	}
 
 	t := strings.Split(args[0], "/")
 	if len(t) != 2 {
-		fmt.Println(startUsage)
+		fmt.Fprintln(os.Stderr, startUsage)
 		os.Exit(1)
 	}
 
@@ -48,13 +48,13 @@ func serviceStart(app string, service string, batch bool) {
 
 	buffer, _, err := internal.Stream("POST", path, []byte("{}"))
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
 
 	err = internal.DisplayStream(buffer)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
 

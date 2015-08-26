@@ -49,13 +49,13 @@ type Logs struct {
 func cmdLogs(cmd *cobra.Command, args []string) {
 	usage := "Invalid usage. sail service logs <applicationName>/<serviceId>. Please see sail service logs --help\n"
 	if len(args) != 1 {
-		fmt.Printf(usage)
+		fmt.Fprintf(os.Stderr, usage)
 		return
 	}
 
 	split := strings.Split(args[0], "/")
 	if len(split) != 2 {
-		fmt.Printf(usage)
+		fmt.Fprintf(os.Stderr, usage)
 		return
 	}
 
@@ -70,7 +70,7 @@ func serviceLogs(args Logs) {
 	path := fmt.Sprintf("/applications/%s/services/%s/logs", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
-		fmt.Printf("Fatal: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Fatal: %s\n", err)
 		return
 	}
 

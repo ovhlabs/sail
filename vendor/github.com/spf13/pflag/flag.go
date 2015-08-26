@@ -44,8 +44,8 @@ to parse the command line into the defined flags.
 
 Flags may then be used directly. If you're using the flags themselves,
 they are all pointers; if you bind to variables, they're values.
-	fmt.Println("ip has value ", *ip)
-	fmt.Println("flagvar has value ", flagvar)
+	fmt.Fprintln(os.Stderr, "ip has value ", *ip)
+	fmt.Fprintln(os.Stderr, "flagvar has value ", flagvar)
 
 After parsing, the arguments after the flag are available as the
 slice flag.Args() or individually as flag.Arg(i).

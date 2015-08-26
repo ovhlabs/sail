@@ -3,6 +3,7 @@ package container
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ var cmdContainerAttach = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sail container attach <applicationName>/<containerId>. Please see sail container attach --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail container attach <applicationName>/<containerId>. Please see sail container attach --help")
 		} else {
 			containerAttach(args[0])
 		}
@@ -27,7 +28,7 @@ var cmdContainerAttach = &cobra.Command{
 func containerAttach(containerID string) {
 	t := strings.Split(containerID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
 	} else {
 		internal.StreamWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/containers/%s/attach", t[0], t[1]), nil)
 	}

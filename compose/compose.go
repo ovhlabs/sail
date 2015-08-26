@@ -2,6 +2,7 @@ package compose
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +25,7 @@ var cmdComposeUp = &cobra.Command{
 	Short: "sail compose up <namespace>",
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO sail compose up
-		fmt.Println("sail compose up TO BE IMPLEMENTED")
+		fmt.Fprintln(os.Stderr, "sail compose up TO BE IMPLEMENTED")
 	},
 }
 
@@ -33,6 +34,6 @@ var cmdComposeGet = &cobra.Command{
 	Short: "sail compose get <namespace>",
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO  sail compose get
-		fmt.Println("sail compose get TO BE IMPLEMENTED")
+		fmt.Fprintln(os.Stderr, "sail compose get TO BE IMPLEMENTED")
 	},
 }

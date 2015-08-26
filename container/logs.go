@@ -37,13 +37,13 @@ func cmdLogs(cmd *cobra.Command, args []string) {
 	usage := "usage: sail containers logs <applicationName>/<containerId>"
 
 	if len(args) != 1 {
-		fmt.Println(usage)
+		fmt.Fprintln(os.Stderr, usage)
 		os.Exit(1)
 	}
 
 	t := strings.Split(args[0], "/")
 	if len(t) != 2 {
-		fmt.Println(usage)
+		fmt.Fprintln(os.Stderr, usage)
 		os.Exit(1)
 	}
 
@@ -55,14 +55,14 @@ func containerLogs(app string, container string, head int, tail int, ts bool) {
 
 	data, _, err := internal.Request("GET", path, nil)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
 
 	var logs [][]string
 	err = json.Unmarshal(data, &logs)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 	}
 
 	w := tabwriter.NewWriter(os.Stdout, 20, 1, 3, ' ', 0)

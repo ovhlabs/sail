@@ -121,18 +121,18 @@ func GenMarkdownTreeCustom(cmd *Command, dir string, filePrepender func(string) 
 	filename = dir + strings.Replace(filename, " ", "_", -1) + ".md"
 	outFile, err := os.Create(filename)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 	defer outFile.Close()
 	_, err = outFile.WriteString(filePrepender(filename))
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 	_, err = outFile.Write(out.Bytes())
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }

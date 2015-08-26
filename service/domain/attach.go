@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"stash.ovh.net/sailabove/sail/internal"
@@ -17,7 +18,7 @@ var cmdDomainAttach = &cobra.Command{
 	Aliases: []string{"add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 4 {
-			fmt.Println(usageDomainAttach)
+			fmt.Fprintln(os.Stderr, usageDomainAttach)
 		} else {
 			serviceDomainAttach(args[0], args[1], domainStruct{Pattern: args[2], Method: args[3]})
 		}
@@ -27,7 +28,7 @@ var cmdDomainAttach = &cobra.Command{
 func serviceDomainAttach(serviceID, domain string, args domainStruct) {
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
-		fmt.Println(usageDomainAttach)
+		fmt.Fprintln(os.Stderr, usageDomainAttach)
 		return
 	}
 

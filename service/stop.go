@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ var cmdServiceStop = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sail service stop <applicationName>/<serviceId>. Please see sail service stop --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail service stop <applicationName>/<serviceId>. Please see sail service stop --help")
 		} else {
 			serviceStop(args[0])
 		}
@@ -27,7 +28,7 @@ var cmdServiceStop = &cobra.Command{
 func serviceStop(serviceID string) {
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail service stop <applicationName>/<serviceId>. Please see sail service stop --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail service stop <applicationName>/<serviceId>. Please see sail service stop --help")
 	} else {
 		var empty map[string]interface{}
 		em, _ := json.Marshal(empty)

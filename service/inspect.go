@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ var cmdServiceInspect = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
 		} else {
 			serviceInspect(args[0])
 		}
@@ -27,7 +28,7 @@ var cmdServiceInspect = &cobra.Command{
 func serviceInspect(serviceID string) {
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
-		fmt.Println("Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail service inspect <applicationName>/<serviceId>. Please see sail service inspect --help")
 	} else {
 		internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/services/%s", t[0], t[1])))
 	}

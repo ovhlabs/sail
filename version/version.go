@@ -2,6 +2,7 @@ package version
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -23,6 +24,6 @@ var Cmd = &cobra.Command{
 }
 
 func prettyFormater(data []byte) {
-	fmt.Printf("Version sail: %s\n", internal.VERSION)
+	fmt.Fprintf(os.Stderr, "Version sail: %s\n", internal.VERSION)
 	internal.ReadConfig()
 }

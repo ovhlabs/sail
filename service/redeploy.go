@@ -74,13 +74,13 @@ type Redeploy struct {
 func cmdRedeploy(cmd *cobra.Command, args []string) {
 	usage := "Invalid usage. sail service redeploy <applicationName>/<serviceId>. Please see sail service redeploy --help\n"
 	if len(args) != 1 {
-		fmt.Printf(usage)
+		fmt.Fprintf(os.Stderr, usage)
 		return
 	}
 
 	split := strings.Split(args[0], "/")
 	if len(split) != 2 {
-		fmt.Printf(usage)
+		fmt.Fprintf(os.Stderr, usage)
 		return
 	}
 
@@ -104,7 +104,7 @@ func serviceRedeploy(args Redeploy) {
 		} else if len(t) == 1 {
 			args.Volumes[t[0]] = VolumeConfig{Size: "10"}
 		} else {
-			fmt.Printf("Error: Volume parameter '%s' not formated correctly\n", vol)
+			fmt.Fprintf(os.Stderr, "Error: Volume parameter '%s' not formated correctly\n", vol)
 			os.Exit(1)
 		}
 	}
@@ -130,15 +130,15 @@ func serviceRedeploy(args Redeploy) {
 	for _, gat := range redeployGateway {
 		t := strings.Split(gat, ":")
 		if len(t) != 2 {
-			fmt.Printf("Invalid gateway parameter, should be \"input:output\"")
+			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\"")
 			os.Exit(1)
 		}
 		if _, ok := args.ContainerNetwork[t[0]]; !ok {
-			fmt.Printf("Not configured input network %s\n", t[0])
+			fmt.Fprintf(os.Stderr, "Not configured input network %s\n", t[0])
 			os.Exit(1)
 		}
 		if _, ok := args.ContainerNetwork[t[1]]; !ok {
-			fmt.Printf("Not configured onput network %s\n", t[1])
+			fmt.Fprintf(os.Stderr, "Not configured onput network %s\n", t[1])
 			os.Exit(1)
 		}
 		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
@@ -150,19 +150,19 @@ func serviceRedeploy(args Redeploy) {
 	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
-		fmt.Printf("Fatal: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Fatal: %s\n", err)
 		return
 	}
 
 	buffer, _, err := internal.Stream("POST", path+"?stream", body)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
 
 	err = internal.DisplayStream(buffer)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
 }

@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"stash.ovh.net/sailabove/sail/internal"
@@ -20,7 +21,7 @@ var cmdApplicationDomainList = &cobra.Command{
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 || args[0] == "" {
-			fmt.Println("Invalid usage. Please see sail application domain list --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain list --help")
 		} else {
 			// cmdApplicationDomainList TODO ? Tab view with headers ['DOMAIN', 'SERVICE', 'METHOD', 'PATTERN']
 			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/attached-domains", args[0])))
@@ -34,7 +35,7 @@ var cmdApplicationDomainAttach = &cobra.Command{
 	Aliases: []string{"add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Println("Invalid usage. Please see sail application domain attach --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain attach --help")
 		} else {
 			internal.FormatOutputDef(internal.PostWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}
@@ -47,7 +48,7 @@ var cmdApplicationDomainDetach = &cobra.Command{
 	Aliases: []string{"add"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Println("Invalid usage. Please see sail application domain attach --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain attach --help")
 		} else {
 			internal.FormatOutputDef(internal.DeleteWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}

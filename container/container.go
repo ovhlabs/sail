@@ -2,6 +2,7 @@ package container
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -32,7 +33,7 @@ var cmdContainerInspect = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Println("Invalid usage. sail container inspect <applicationName> <containerId>. Please see sail container inspect --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail container inspect <applicationName> <containerId>. Please see sail container inspect --help")
 		} else {
 			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
 		}

@@ -20,7 +20,7 @@ var cmdDomainList = &cobra.Command{
 	Aliases: []string{"ls", "ps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println(usageList)
+			fmt.Fprintln(os.Stderr, usageList)
 		} else {
 			domainList(args[0])
 		}
@@ -31,7 +31,7 @@ func domainList(serviceID string) {
 
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
-		fmt.Println(usageList)
+		fmt.Fprintln(os.Stderr, usageList)
 		return
 	}
 

@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"stash.ovh.net/sailabove/sail/internal"
@@ -16,7 +17,7 @@ var cmdApplicationInspect = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 || args[0] == "" {
-			fmt.Println("Invalid usage. Please see sail application inspect --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application inspect --help")
 		} else {
 			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s", args[0])))
 		}
