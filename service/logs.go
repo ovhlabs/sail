@@ -72,12 +72,5 @@ func serviceLogs(args Logs) {
 		return
 	}
 
-	ret := internal.ReqWant("GET", http.StatusOK, path, body)
-	e := internal.DecodeError(ret)
-	if e != nil {
-		fmt.Printf("Error:%s\n", e)
-	} else {
-		fmt.Printf("%s\n", ret)
-	}
-
+	fmt.Println(internal.ReqWantJSON("GET", http.StatusOK, path, body))
 }
