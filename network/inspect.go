@@ -11,8 +11,9 @@ import (
 )
 
 var cmdNetworkInspect = &cobra.Command{
-	Use:   "inspect",
-	Short: "Inspect the docker private networks : sail network inspect <applicationName>/<networkId>",
+	Use:     "inspect",
+	Aliases: []string{"show"},
+	Short:   "Inspect the docker private networks : sail network inspect <applicationName>/<networkId>",
 	Long: `Inspect the docker private networks : sail network inspect <applicationName>/<networkId>
 	\"example : sail network inspect myApp"
 	`,

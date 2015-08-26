@@ -24,8 +24,9 @@ var Cmd = &cobra.Command{
 }
 
 var cmdContainerInspect = &cobra.Command{
-	Use:   "inspect",
-	Short: "Inspect a docker container : sail container inspect <applicationName> <containerId>",
+	Use:     "inspect",
+	Aliases: []string{"show"},
+	Short:   "Inspect a docker container : sail container inspect <applicationName> <containerId>",
 	Long: `Inspect a docker container : sail container inspect <applicationName> <containerId>
 	\"example : sail container inspect myApp"
 	`,

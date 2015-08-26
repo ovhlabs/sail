@@ -9,8 +9,9 @@ import (
 )
 
 var cmdServiceInspect = &cobra.Command{
-	Use:   "inspect",
-	Short: "Inspect a docker service : sail service inspect <applicationName>/<serviceId>",
+	Use:     "inspect",
+	Aliases: []string{"show"},
+	Short:   "Inspect a docker service : sail service inspect <applicationName>/<serviceId>",
 	Long: `Inspect a docker service : sail service inspect <applicationName>/<serviceId>
 	\"example : sail service inspect myApp"
 	`,

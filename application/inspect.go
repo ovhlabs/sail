@@ -8,8 +8,9 @@ import (
 )
 
 var cmdApplicationInspect = &cobra.Command{
-	Use:   "inspect",
-	Short: "Details of an app : sail application inspect <applicationName>",
+	Use:     "inspect",
+	Aliases: []string{"show"},
+	Short:   "Details of an app : sail application inspect <applicationName>",
 	Long: `Details of an app : sail application inspect <applicationName>
 	\"example : sail application inspect myApp"
 	`,
