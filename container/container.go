@@ -11,7 +11,7 @@ import (
 
 func init() {
 	Cmd.AddCommand(cmdContainerList)
-	Cmd.AddCommand(cmdContainerInspect)
+	Cmd.AddCommand(cmdContainerShow)
 	Cmd.AddCommand(cmdContainerAttach)
 	Cmd.AddCommand(cmdContainerLogs())
 }
@@ -24,16 +24,16 @@ var Cmd = &cobra.Command{
 	Aliases: []string{"c", "containers"},
 }
 
-var cmdContainerInspect = &cobra.Command{
-	Use:     "inspect",
-	Aliases: []string{"show"},
-	Short:   "Inspect a docker container: sail container inspect <applicationName> <containerId>",
-	Long: `Inspect a docker container: sail container inspect <applicationName> <containerId>
-	\"example: sail container inspect myApp"
+var cmdContainerShow = &cobra.Command{
+	Use:     "show",
+	Aliases: []string{"inspect"},
+	Short:   "Show a docker container: sail container show <applicationName> <containerId>",
+	Long: `Show a docker container: sail container show <applicationName> <containerId>
+	\"example: sail container show my-app my-container"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail container inspect <applicationName> <containerId>. Please see sail container inspect --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail container show <applicationName> <containerId>. Please see sail container show --help")
 		} else {
 			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
 		}

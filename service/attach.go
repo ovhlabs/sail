@@ -14,7 +14,7 @@ var cmdServiceAttach = &cobra.Command{
 	Use:   "attach",
 	Short: "Attach to a service console: sail service attach <applicationName>/<serviceId>",
 	Long: `Attach to a service console: sail service attach <applicationName>/<serviceId>
-	\"example: sail service attach myApp myServiceId"
+	\"example: sail service attach my-app myServiceId"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

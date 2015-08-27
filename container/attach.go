@@ -14,7 +14,7 @@ var cmdContainerAttach = &cobra.Command{
 	Use:   "attach",
 	Short: "Attach to a container console: sail container attach <applicationName>/<containerId>",
 	Long: `Attach to a container console: sail container attach <applicationName>/<containerId>
-	\"example: sail container attach myApp myContainerId"
+	\"example: sail container attach my-app myContainerId"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

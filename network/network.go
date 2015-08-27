@@ -4,10 +4,10 @@ import "github.com/spf13/cobra"
 
 func init() {
 	Cmd.AddCommand(cmdNetworkAdd)
-	Cmd.AddCommand(cmdNetworkInspect)
+	Cmd.AddCommand(cmdNetworkShow)
 	Cmd.AddCommand(cmdNetworkList)
 	Cmd.AddCommand(cmdNetworkRangeAdd)
-	Cmd.AddCommand(cmdNetworkRm)
+	Cmd.AddCommand(cmdNetworkDelete)
 }
 
 // Cmd network

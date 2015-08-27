@@ -4,7 +4,7 @@ import "github.com/spf13/cobra"
 
 func init() {
 	Cmd.AddCommand(cmdApplicationList)
-	Cmd.AddCommand(cmdApplicationInspect)
+	Cmd.AddCommand(cmdApplicationShow)
 
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainList)
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainAttach)

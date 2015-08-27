@@ -11,26 +11,26 @@ import (
 	"stash.ovh.net/sailabove/sail/internal"
 )
 
-var cmdNetworkInspect = &cobra.Command{
-	Use:     "inspect",
-	Aliases: []string{"show"},
-	Short:   "Inspect the docker private networks: sail network inspect <applicationName>/<networkId>",
-	Long: `Inspect the docker private networks: sail network inspect <applicationName>/<networkId>
-	\"example: sail network inspect myApp"
+var cmdNetworkShow = &cobra.Command{
+	Use:     "show",
+	Aliases: []string{"inspect"},
+	Short:   "Show the docker private networks: sail network show <applicationName>/<networkId>",
+	Long: `Show the docker private networks: sail network show <applicationName>/<networkId>
+	\"example: sail network show my-app"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail network show <applicationName>/<networkId>. Please see sail network show --help")
 		} else {
-			networkInspect(args[0])
+			networkShow(args[0])
 		}
 	},
 }
 
-func networkInspect(networkID string) {
+func networkShow(networkID string) {
 	t := strings.Split(networkID, "/")
 	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, "Invalid usage. sail network inspect <applicationName>/<networkId>. Please see sail network inspect --help")
+		fmt.Fprintln(os.Stderr, "Invalid usage. sail network show <applicationName>/<networkId>. Please see sail network show --help")
 	} else {
 
 		var network map[string]interface{}

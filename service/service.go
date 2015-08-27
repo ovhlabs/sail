@@ -8,13 +8,13 @@ import (
 func init() {
 	Cmd.AddCommand(cmdServiceAttach)
 	Cmd.AddCommand(cmdServiceList)
-	Cmd.AddCommand(cmdServiceInspect)
+	Cmd.AddCommand(cmdServiceShow)
 	Cmd.AddCommand(cmdServiceStop)
 	Cmd.AddCommand(domain.Cmd)
 	Cmd.AddCommand(logsCmd())
 	Cmd.AddCommand(redeployCmd())
 	Cmd.AddCommand(addCmd())
-	Cmd.AddCommand(rmCmd())
+	Cmd.AddCommand(deleteCmd())
 	Cmd.AddCommand(startCmd())
 	Cmd.AddCommand(scaleCmd())
 }

@@ -11,19 +11,19 @@ import (
 	"stash.ovh.net/sailabove/sail/internal"
 )
 
-func rmCmd() *cobra.Command {
+func deleteCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "rm",
-		Short:   "Remove a docker service: sail service rm <applicationName>/<serviceId>",
-		Run:     cmdServiceRm,
-		Aliases: []string{"delete", "remove"},
+		Use:     "delete",
+		Short:   "Delete a docker service: sail service delete <applicationName>/<serviceId>",
+		Run:     cmdServiceDelete,
+		Aliases: []string{"del", "rm", "remove"},
 	}
 	return cmd
 }
 
-func cmdServiceRm(cmd *cobra.Command, args []string) {
-	usage := "Invalid usage. sail service rm <applicationName>/<serviceId>"
+func cmdServiceDelete(cmd *cobra.Command, args []string) {
+	usage := "Invalid usage. sail service delete <applicationName>/<serviceId>"
 	if len(args) == 0 {
 		fmt.Fprintln(os.Stderr, usage)
 		return
@@ -34,10 +34,10 @@ func cmdServiceRm(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	serviceRm(argsS[0], argsS[1])
+	serviceDelete(argsS[0], argsS[1])
 }
 
-func serviceRm(namespace string, name string) {
+func serviceDelete(namespace string, name string) {
 	path := fmt.Sprintf("/applications/%s/services/%s", namespace, name)
 	data := internal.ReqWant("DELETE", http.StatusOK, path, nil)
 	// TODO Check for json error here

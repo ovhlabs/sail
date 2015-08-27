@@ -61,12 +61,12 @@ sail apps domain-list   List domains and routes on the HTTP load balancer
 sail containers          Containers
 sail containers attach   Attach to a container console
 sail containers ps       List docker containers
-sail containers inspect  Inspect a docker container
+sail containers inspect  Show a docker container
 
 sail repositories list   List the docker repository
 
 sail services attach         Attach to the console of the service containers
-sail services inspect        Inspect a docker service
+sail services inspect        Show a docker service
 sail services ps             List docker services
 sail services rm             Delete a docker service
 sail services stop           Stop a docker service
@@ -76,14 +76,14 @@ sail services domain list     List domains on the HTTP load balancer
 sail networks add        Add a new private network
 sail networks rm         Delete a private network
 sail networks list       List the docker private networks
-sail networks inspect    Inspect the docker private networks
+sail networks inspect    Show the docker private networks
 
 ```
 
 ## Bugs SA
 ```
 
-./sail network add myApp/privateb 172.31.0.0/24
+./sail network add my-app/privateb 172.31.0.0/24
 --> Return 200 (OK) instead of 201 (Created)
 
 ```
