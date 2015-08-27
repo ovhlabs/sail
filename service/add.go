@@ -220,6 +220,12 @@ func serviceAdd(args Add) {
 
 		// Just print data
 		internal.FormatOutputDef(ret)
+
+		// Always start service
+		if internal.Format == "pretty" {
+			fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
+		}
+		serviceStart(args.Application, args.Service, batch)
 		return
 	}
 
