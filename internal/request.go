@@ -133,15 +133,22 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	}
 }
 
+// RequestModifier is used to modify behavior of Request and Steam functions
+type RequestModifier func(req *http.Request)
+
+// SetHeader modify headers of http.Request
+func SetHeader(key, value string) RequestModifier {
+	return func(req *http.Request) {
+		req.Header.Set(key, value)
+	}
+}
+
 // Request executes an authentificated HTTP request on $path given $method and $args
-func Request(method string, path string, args []byte) ([]byte, int, error) {
-	respBody, code, err := Stream(method, path, args)
+func Request(method string, path string, args []byte, mods ...RequestModifier) ([]byte, int, error) {
+
+	respBody, code, err := Stream(method, path, args, mods...)
 	if err != nil {
 		return nil, 0, err
-	}
-
-	if respBody == nil {
-		panic("what ?")
 	}
 	defer respBody.Close()
 
@@ -159,7 +166,8 @@ func Request(method string, path string, args []byte) ([]byte, int, error) {
 }
 
 // Stream makes an authenticated http request and return io.ReadCloser
-func Stream(method string, path string, args []byte) (io.ReadCloser, int, error) {
+func Stream(method string, path string, args []byte, mods ...RequestModifier) (io.ReadCloser, int, error) {
+
 	err := ReadConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading configuration: %s\n", err)
@@ -172,8 +180,12 @@ func Stream(method string, path string, args []byte) (io.ReadCloser, int, error)
 	} else {
 		req, _ = http.NewRequest(method, Host+path, nil)
 	}
-
 	initRequest(req)
+
+	for i := range mods {
+		mods[i](req)
+	}
+
 	req.SetBasicAuth(User, Password)
 	resp, err := getHTTPClient().Do(req)
 	if err != nil {
