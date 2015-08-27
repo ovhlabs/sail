@@ -75,9 +75,14 @@ func serviceLogs(args Logs) {
 	}
 
 	b := internal.ReqWant("GET", http.StatusOK, path, body)
+	internal.FormatOutput(b, serviceLogsFormatter)
+}
+
+func serviceLogsFormatter(data []byte) {
 	logs := [][]string{}
-	err = json.Unmarshal(b, &logs)
+	err := json.Unmarshal(data, &logs)
 	internal.Check(err)
+
 	w := tabwriter.NewWriter(os.Stdout, 20, 1, 3, ' ', 0)
 	titles := []string{"TIMESTAMP", "ID", "LOG"}
 	fmt.Fprintln(w, strings.Join(titles, "\t"))

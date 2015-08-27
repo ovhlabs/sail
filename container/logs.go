@@ -54,13 +54,14 @@ func containerLogs(app string, container string, head int, tail int, ts bool) {
 	path := fmt.Sprintf("/applications/%s/containers/%s/logs?timestamps=%v", app, container, ts)
 
 	data, _, err := internal.Request("GET", path, nil)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
-	}
+	internal.Check(err)
+	internal.FormatOutput(data, containerLogsFormatter)
 
+}
+
+func containerLogsFormatter(data []byte) {
 	var logs [][]string
-	err = json.Unmarshal(data, &logs)
+	err := json.Unmarshal(data, &logs)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 	}
@@ -73,4 +74,5 @@ func containerLogs(app string, container string, head int, tail int, ts bool) {
 		fmt.Fprintf(w, "%s\t%s\t%s\n", logs[i][0], logs[i][1], logs[i][2])
 		w.Flush()
 	}
+
 }
