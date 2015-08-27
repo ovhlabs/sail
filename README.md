@@ -7,6 +7,12 @@ git clone ssh://git@stash.ovh.net:7999/sailabove/sail.git && cd sail
 go get && go build && ./sail -h
 ```
 
+# How to autocomplete
+```
+sudo sail autocomplete /etc/bash_completion.d/sail
+source /etc/bash_completion.d/sail
+```
+
 # Roadmap Rewrite
 ## TODO
 ```
