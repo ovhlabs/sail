@@ -14,18 +14,13 @@ source /etc/bash_completion.d/sail
 ```
 
 # Roadmap Rewrite
-## TODO
-```
-TODO based on python version of sail 0.5.5
-
-sail compose up               Create and start containers
-sail compose get              Export Docker compose receipt
-
-```
 
 ## DONE TO TEST
 
 ```
+sail compose up               Create and start containers
+sail compose get              Export Docker compose receipt
+
 sail services add            Add a new docker service
 sail services redeploy       Redeploy a docker service
 sail services start           Start a docker service
