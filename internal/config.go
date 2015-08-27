@@ -11,6 +11,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type headers map[string]string
+
 var (
 	// Host points to the sailabove infrastructure wanted
 	Host string
@@ -26,10 +28,42 @@ var (
 	Format string
 	// Home fetches the user home directory
 	Home = os.Getenv("HOME")
+	// Headers to append to each requests. For debugging/internal purpose.
+	Headers = make(headers)
 )
 
 func init() {
 	Cmd.AddCommand(cmdConfigShow)
+}
+
+// map --header arguments to map
+func (h headers) Set(value string) error {
+	chunks := strings.Split(value, "=")
+	if len(chunks) != 2 {
+		return fmt.Errorf("Invalid env var %s", value)
+	}
+
+	key := strings.TrimSpace(chunks[0])
+	val := strings.TrimSpace(chunks[1])
+
+	h[key] = val
+
+	return nil
+}
+
+func (h headers) String() string {
+	var i int
+	var buffer = make([]string, len(h))
+
+	for key, val := range h {
+		buffer[i] = fmt.Sprintf("%s=%s", key, val)
+		i++
+	}
+	return strings.Join(buffer, ", ")
+}
+
+func (h headers) Type() string {
+	return fmt.Sprint("Headers")
 }
 
 // Cmd config
@@ -51,6 +85,7 @@ var cmdConfigShow = &cobra.Command{
 type configStruct struct {
 	Username string `json:"username"`
 	Host     string `json:"host"`
+	Headers  string `json:"header,omitempty"`
 }
 
 func configShow() {
@@ -59,6 +94,7 @@ func configShow() {
 	ReadConfig()
 	config.Username = User
 	config.Host = Host
+	config.Headers = Headers.String()
 
 	data, err := json.Marshal(config)
 	Check(err)

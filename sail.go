@@ -31,6 +31,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&internal.User, "user", "U", "", "Docker index user, optional if you have a "+internal.Home+"/.docker/config.json file")
 	rootCmd.PersistentFlags().StringVarP(&internal.Password, "password", "P", "", "Docker index password, optional if you have a "+internal.Home+"/.docker/config.json file")
 	rootCmd.PersistentFlags().StringVarP(&internal.ConfigDir, "configDir", "", internal.Home+"/.docker", "configuration directory, default is "+internal.Home+"/.docker/")
+	rootCmd.PersistentFlags().Var(&internal.Headers, "header", "'KEY=value' headers to append to each requests. For debugging/internal purpose.")
 	rootCmd.Execute()
 }
 

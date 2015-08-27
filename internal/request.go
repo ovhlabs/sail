@@ -79,6 +79,14 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 
 	initRequest(req)
 	req.SetBasicAuth(User, Password)
+
+	for key, val := range Headers {
+		if Verbose {
+			fmt.Fprintf(os.Stderr, "Request header: %s=%s\n", key, val)
+		}
+		req.Header.Set(key, val)
+	}
+
 	resp, err := getHTTPClient().Do(req)
 	Check(err)
 	defer resp.Body.Close()
