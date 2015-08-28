@@ -3,11 +3,11 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"strings"
 	"text/tabwriter"
 
+	"github.com/google/go-querystring/query"
 	"github.com/spf13/cobra"
 	"stash.ovh.net/sailabove/sail/internal"
 )
@@ -35,15 +35,15 @@ func logsCmd() *cobra.Command {
 
 // Logs struct holds all parameters sent to /applications/%s/services/%s/logs
 type Logs struct {
-	Application string `json:"-"`
-	Service     string `json:"-"`
+	Application string `url:"-"`
+	Service     string `url:"-"`
 
-	Repository string `json:"repository,omitempty"`
-	Tail       int    `json:"tail,omitempty"`
-	Head       int    `json:"head,omitempty"`
-	Offset     int    `json:"offset,omitempty"`
-	Period     string `json:"period,omitempty"`
-	Search     string `json:"search,omitempty"`
+	Repository string `url:"repository,omitempty"`
+	Tail       int    `url:"tail,omitempty"`
+	Head       int    `url:"head,omitempty"`
+	Offset     int    `url:"offset,omitempty"`
+	Period     string `url:"period,omitempty"`
+	Search     string `url:"search,omitempty"`
 }
 
 func cmdLogs(cmd *cobra.Command, args []string) {
@@ -67,14 +67,14 @@ func cmdLogs(cmd *cobra.Command, args []string) {
 
 func serviceLogs(args Logs) {
 
-	path := fmt.Sprintf("/applications/%s/services/%s/logs", args.Application, args.Service)
-	body, err := json.MarshalIndent(args, " ", " ")
+	queryArgs, err := query.Values(args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal: %s\n", err)
 		return
 	}
+	path := fmt.Sprintf("/applications/%s/services/%s/logs?%s", args.Application, args.Service, queryArgs.Encode())
 
-	b := internal.ReqWant("GET", http.StatusOK, path, body)
+	b := internal.GetWantJSON(path)
 	internal.FormatOutput(b, serviceLogsFormatter)
 }
 
