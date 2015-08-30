@@ -2,21 +2,65 @@
 	"ImportPath": "stash.ovh.net/sailabove/sail",
 	"GoVersion": "go1.5",
 	"Packages": [
-		"github.com/howeyc/gopass",
-		"github.com/ghodss/yaml"
+		"./..."
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/docker/docker/cliconfig",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/homedir",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/system",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/units",
+			"Comment": "v1.4.1-5581-gaedd453",
+			"Rev": "aedd45346a19f9d06ebeec9ca7117a104e0c23c1"
+		},
+		{
 			"ImportPath": "github.com/ghodss/yaml",
 			"Rev": "c3eb24aeea63668ebdac08d2e252f20df8b6b1ae"
+		},
+		{
+			"ImportPath": "github.com/google/go-querystring/query",
+			"Rev": "547ef5ac979778feb2f760cdb5f4eae1a2207b86"
 		},
 		{
 			"ImportPath": "github.com/howeyc/gopass",
 			"Rev": "10b54de414cc9693221d5ff2ae14fd2fbf1b0ac1"
 		},
 		{
+			"ImportPath": "github.com/inconshreveable/mousetrap",
+			"Rev": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+		},
+		{
+			"ImportPath": "github.com/opencontainers/runc/libcontainer/user",
+			"Comment": "v0.0.3-22-g744a6b0",
+			"Rev": "744a6b0e7bd3aa1d2985060170040392be3e94e3"
+		},
+		{
+			"ImportPath": "github.com/spf13/cobra",
+			"Rev": "385fc87e4343efec233811d3d933509e8975d11a"
+		},
+		{
+			"ImportPath": "github.com/spf13/pflag",
+			"Rev": "67cbc198fd11dab704b214c1e629a97af392c085"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
 			"Rev": "81bf7719a6b7ce9b665598222362b50122dfc13b"
+		},
+		{
+			"ImportPath": "gopkg.in/check.v1",
+			"Rev": "11d3bc7aa68e238947792f30573146a3231fc0f1"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
