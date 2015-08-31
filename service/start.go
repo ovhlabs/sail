@@ -40,12 +40,38 @@ func cmdStart(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	if batch {
+		serviceStartRun(t[0], t[1])
+		os.Exit(0)
+		return
+	}
 	serviceStart(t[0], t[1], startBatch)
 }
 
+// serviceStart attach and start service
 func serviceStart(app string, service string, batch bool) {
-	path := fmt.Sprintf("/applications/%s/services/%s/start?stream", app, service)
 
+	reader, _, e := internal.Stream("GET",
+		fmt.Sprintf("/applications/%s/services/%s/attach", app, service),
+		nil,
+		internal.SetHeader("Content-Type", "application/x-yaml"))
+
+	if e != nil {
+		internal.Exit("Error while attach: %s\n", e)
+	}
+
+	serviceStartRun(app, service)
+
+	// Display api stream
+	err := internal.DisplayStream(reader)
+	if err != nil {
+		internal.Exit("Error: %s\n", err)
+	}
+}
+
+// serviceStart start service (without attach)
+func serviceStartRun(app string, service string) {
+	path := fmt.Sprintf("/applications/%s/services/%s/start?stream", app, service)
 	buffer, _, err := internal.Stream("POST", path, []byte("{}"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
@@ -57,10 +83,4 @@ func serviceStart(app string, service string, batch bool) {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
-
-	if batch {
-		os.Exit(0)
-	}
-
-	serviceAttach(app + "/" + service)
 }
