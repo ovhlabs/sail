@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -121,9 +122,19 @@ func ReadConfig() error {
 		return fmt.Errorf("No Auth found in config file in %s", ConfigDir)
 	}
 
+	if !strings.Contains(Host, "://") {
+		Host = "https://" + Host
+	}
+
+	url, err := url.ParseRequestURI(Host)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Invalid URL %s\n", Host)
+		return err
+	}
+
 	for authHost, a := range c.AuthConfigs {
 
-		if authHost == Host {
+		if authHost == url.Host {
 			if Verbose {
 				fmt.Fprintf(os.Stderr, "Found in config file: Host %s Username:%s Password:<notShow>\n", authHost, a.Username)
 			}
