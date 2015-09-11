@@ -11,6 +11,7 @@ import (
 	"stash.ovh.net/sailabove/sail/container"
 	"stash.ovh.net/sailabove/sail/internal"
 	"stash.ovh.net/sailabove/sail/me"
+	"stash.ovh.net/sailabove/sail/metric"
 	"stash.ovh.net/sailabove/sail/network"
 	"stash.ovh.net/sailabove/sail/repository"
 	"stash.ovh.net/sailabove/sail/service"
@@ -42,6 +43,7 @@ func addCommands() {
 	rootCmd.AddCommand(internal.Cmd)
 	rootCmd.AddCommand(container.Cmd)
 	rootCmd.AddCommand(me.Cmd)
+	rootCmd.AddCommand(metric.Cmd)
 	rootCmd.AddCommand(network.Cmd)
 	rootCmd.AddCommand(repository.Cmd)
 	rootCmd.AddCommand(service.Cmd)

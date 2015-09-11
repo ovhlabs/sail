@@ -10,11 +10,7 @@ func init() {
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainAttach)
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainDetach)
 
-	cmdApplicationMetric.AddCommand(tokenCmd())
-	cmdApplicationMetric.AddCommand(revokeCmd())
-
 	Cmd.AddCommand(cmdApplicationDomain)
-	Cmd.AddCommand(cmdApplicationMetric)
 }
 
 // Cmd application
