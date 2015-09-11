@@ -38,7 +38,7 @@ func scaleCmd() *cobra.Command {
 func cmdScale(cmd *cobra.Command, args []string) {
 
 	if len(args) != 1 {
-		fmt.Fprintln(os.Stderr, startUsage)
+		fmt.Fprintln(os.Stderr, scaleUsage)
 		os.Exit(1)
 	}
 
