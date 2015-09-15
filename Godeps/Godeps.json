@@ -38,6 +38,10 @@
 			"Rev": "10b54de414cc9693221d5ff2ae14fd2fbf1b0ac1"
 		},
 		{
+			"ImportPath": "github.com/inconshreveable/go-update",
+			"Rev": "8455de157e5e3eee5d680febf627fc4c03b59332"
+		},
+		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",
 			"Rev": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
 		},

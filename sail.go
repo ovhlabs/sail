@@ -15,6 +15,7 @@ import (
 	"stash.ovh.net/sailabove/sail/network"
 	"stash.ovh.net/sailabove/sail/repository"
 	"stash.ovh.net/sailabove/sail/service"
+	"stash.ovh.net/sailabove/sail/update"
 	"stash.ovh.net/sailabove/sail/version"
 )
 
@@ -47,6 +48,7 @@ func addCommands() {
 	rootCmd.AddCommand(network.Cmd)
 	rootCmd.AddCommand(repository.Cmd)
 	rootCmd.AddCommand(service.Cmd)
+	rootCmd.AddCommand(update.Cmd)
 	rootCmd.AddCommand(version.Cmd)
 	rootCmd.AddCommand(autocompleteCmd)
 }
