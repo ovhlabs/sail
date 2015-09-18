@@ -12,12 +12,14 @@ import (
 )
 
 var scaleBatch bool
+var scaleDestroy bool
 var scaleNumber int
-var scaleUsage = "usage: sail services scale [-h] [--number NUMBER] [--batch] <application>/<service>"
+var scaleUsage = "usage: sail services scale [-h] [--number NUMBER] [--batch] [--destroy] <application>/<service>"
 
 // Scale json data arguments
 type Scale struct {
-	Number int `json:"container_number"`
+	Number  int  `json:"container_number"`
+	Destroy bool `json:"destroy"`
 }
 
 func scaleCmd() *cobra.Command {
@@ -30,6 +32,7 @@ func scaleCmd() *cobra.Command {
 	}
 
 	cmd.Flags().BoolVar(&scaleBatch, "batch", false, "do not attach console on start")
+	cmd.Flags().BoolVar(&scaleDestroy, "destroy", false, "when scaling down, prune last stopped containers")
 	cmd.Flags().IntVar(&scaleNumber, "number", 0, "scale to `number` of containers")
 
 	return cmd
@@ -48,14 +51,15 @@ func cmdScale(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	serviceScale(t[0], t[1], scaleNumber, scaleBatch)
+	serviceScale(t[0], t[1], scaleNumber, scaleBatch, scaleDestroy)
 }
 
-func serviceScale(app string, service string, number int, batch bool) {
+func serviceScale(app string, service string, number int, batch bool, destroy bool) {
 	path := fmt.Sprintf("/applications/%s/services/%s/scale?stream", app, service)
 
 	args := Scale{
-		Number: number,
+		Number:  number,
+		Destroy: destroy,
 	}
 
 	data, err := json.Marshal(&args)
