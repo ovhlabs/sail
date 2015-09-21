@@ -19,7 +19,7 @@ var cmdAddNetworkAllow string
 var addPublish []string
 var cmdAddGateway []string
 var cmdAddVolume []string
-var batch bool
+var addBatch bool
 var cmdAddRedeploy bool
 var cmdAddBody Add
 var cmdAddNetwork []string
@@ -62,7 +62,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().StringSliceVar(&cmdAddGateway, "gateway", nil, "network-input:network-output")
 	cmd.Flags().StringVarP(&cmdAddBody.RestartPolicy, "restart", "", "no", "{no|always[:<max>]|on-failure[:<max>]}")
 	cmd.Flags().StringSliceVar(&cmdAddVolume, "volume", nil, "/path:size] (Size in GB)")
-	cmd.Flags().BoolVarP(&batch, "batch", "", false, "do not attach console on start")
+	cmd.Flags().BoolVarP(&addBatch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
 	// TODO [--pool <name>  use private hosts pool <name>]
@@ -196,7 +196,7 @@ func serviceAdd(args Add) {
 		return
 	}
 
-	if batch {
+	if addBatch {
 		ret, code, err := internal.Request("POST", path, body)
 
 		// http.Request failed for some reason
@@ -225,7 +225,8 @@ func serviceAdd(args Add) {
 		if internal.Format == "pretty" {
 			fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
 		}
-		serviceStart(args.Application, args.Service, batch)
+		serviceStart(args.Application, args.Service)
+
 		return
 	}
 
@@ -272,11 +273,11 @@ func serviceAdd(args Add) {
 	if internal.Format == "pretty" {
 		fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
 	}
-	serviceStart(args.Application, args.Service, batch)
+	serviceStartStream(args.Application, args.Service)
 }
 
 func ensureMode(args Add) {
-	redeployBatch = batch
+	redeployBatch = addBatch
 	redeployBody := Redeploy{
 		Service:              args.Service,
 		Volumes:              args.Volumes,

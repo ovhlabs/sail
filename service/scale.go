@@ -51,10 +51,34 @@ func cmdScale(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	serviceScale(t[0], t[1], scaleNumber, scaleBatch, scaleDestroy)
+	if scaleBatch {
+		serviceScale(t[0], t[1], scaleNumber, scaleDestroy)
+	} else {
+		serviceScaleStream(t[0], t[1], scaleNumber, scaleDestroy)
+	}
 }
 
-func serviceScale(app string, service string, number int, batch bool, destroy bool) {
+// serviceScaletStream attach and start service
+func serviceScaleStream(app string, service string, number int, destroy bool) {
+
+	reader, _, e := internal.Stream("GET",
+		fmt.Sprintf("/applications/%s/services/%s/attach", app, service),
+		nil,
+		internal.SetHeader("Content-Type", "application/x-yaml"))
+
+	if e != nil {
+		internal.Exit("Error while attach: %s\n", e)
+	}
+
+	serviceScale(app, service, number, destroy)
+
+	// Display api stream
+	err := internal.DisplayStream(reader)
+	internal.Check(err)
+}
+
+// serviceScale start service (without attach)
+func serviceScale(app string, service string, number int, destroy bool) {
 	path := fmt.Sprintf("/applications/%s/services/%s/scale?stream", app, service)
 
 	args := Scale{
@@ -63,22 +87,11 @@ func serviceScale(app string, service string, number int, batch bool, destroy bo
 	}
 
 	data, err := json.Marshal(&args)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
-	}
+	internal.Check(err)
 
 	buffer, _, err := internal.Stream("POST", path, data)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
-	}
+	internal.Check(err)
 
 	err = internal.DisplayStream(buffer)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
-	}
-
-	serviceStart(app, service, batch)
+	internal.Check(err)
 }
