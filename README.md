@@ -1,90 +1,98 @@
-# Description
-Sailabove Command Line
+# Sailabove client
 
-# How to build
-```
-git clone ssh://git@stash.ovh.net:7999/sailabove/sail.git && cd sail
-go get && go build && ./sail -h
-```
+Sailabove.com is a docker hosting solution aiming to be as flexible as a
+container and as elegant as a sailboat.
 
-# How to autocomplete
-```
-sudo sail autocomplete /etc/bash_completion.d/sail
-source /etc/bash_completion.d/sail
-```
+```bash
+docker login sailabove.io
 
-# Roadmap Rewrite
+# Build
+docker tag my-cool-project-image sailabove.io/my-app/my-cool-project-image
 
-## DONE TO TEST
+# Ship
+docker push sailabove.io/my-app/my-cool-project-image
 
-```
-sail compose up               Create and start containers
-sail compose get              Export Docker compose receipt
-
-sail services add            Add a new docker service
-sail services redeploy       Redeploy a docker service
-sail services start           Start a docker service
-sail services scale           Scale a docker service
-
-sail containers logs          Fetch the logs of a container
-
-sail apps domain-attach       Attach a domain on the HTTP load balancer
---> sail application domain attach applicationName domainName
-
-sail apps domain-detach       Detach a domain from the HTTP load balancer
---> sail application domain detach applicationName domainName
-
-sail networks range-add  Add an allocation range to a private network
-
-sail services logs            Fetch the logs of a service
-sail services domain attach   Attach a domain on the HTTP load balancer
-sail services domain detach   Detach a domain from the HTTP load balancer
-
-sail repositories add         Add a new docker repository
-sail repositories rm          Delete a repository
-
+# Run
+sail service add my-cool-project-image my-cool-project-service
 ```
 
-## DONE & TESTED
+## Setup
 
-```
-Configuration
+1. Grab lastest release for your platform from https://github.com/runabove/sail/releases
+2. Make it executable. ``chmod +x sail`` will do the trick on UNix based platforms
 
-me                  Account
-sail me show        show acount details
-sail me set-acls    Set ip based account access restrictions
+To update it, simply run
 
-sail apps               Applications
-sail apps list          List granted apps
-sail apps inspect       Details of an app
-sail apps domain-list   List domains and routes on the HTTP load balancer
-
-sail containers          Containers
-sail containers attach   Attach to a container console
-sail containers ps       List docker containers
-sail containers inspect  Show a docker container
-
-sail repositories list   List the docker repository
-
-sail services attach         Attach to the console of the service containers
-sail services inspect        Show a docker service
-sail services ps             List docker services
-sail services rm             Delete a docker service
-sail services stop           Stop a docker service
-
-sail services domain list     List domains on the HTTP load balancer
-
-sail networks add        Add a new private network
-sail networks rm         Delete a private network
-sail networks list       List the docker private networks
-sail networks inspect    Show the docker private networks
-
+```bash
+sail update
 ```
 
-## Bugs SA
+## Configuration
+
+``sail`` automatically loads registry's credentials from ``docker`` keyring.
+Hence, after a succesfull push to Sailabove's registry, there should be no
+need for configuration.
+
+```bash
+docker login sailabove.io
 ```
 
-./sail network add my-app/privateb 172.31.0.0/24
---> Return 200 (OK) instead of 201 (Created)
+If you wish to temporarily override a parameter, you may use ``SAIL_HOST``,
+``SAIL_USER`` and ``SAIL_PASSWORD`` to respectively force the API endpoint,
+the username and the password. Additionally, these parameters may be set via
+``--api-host``, ``--api-user`` and ``--api-password``
+
+## Usage
+
+Once you have claimed your private namespace on http://labs.runabove.com/docker and
+sucessfuly pushed your first image you may launch and supervice a service
+from this template image. For example, taking a ``my-redis`` Docker, let's
+create a ``redis`` service:
+
+```bash
+sail service add my-app/my-redis-image my-app/redis-service
+```
+
+Watch your private cluster's status:
+
+```bash
+sail service ps
+```
+
+Scale your cluster:
+
+```bash
+sail service scale my-app/redis-service --number 2
+```
+
+Clear everything:
 
 ```
+sail service rm my-app/redis-service
+```
+
+## Hacking
+
+Sailabove's CLI is written in Go 1.5, using the experimental vendoring
+mechanism introduced in this version. Make sure you are using at least
+version 1.5.
+
+```bash
+export GO15VENDOREXPERIMENT=1
+go get github.com/runabove/sail
+cd $GOPATH/src/github.com/runabove/sail
+go build
+```
+
+You've developed a new cool feature? Fixed an annoying bug? We'd be happy
+to hear from you! Make sure to read [CONTRIBUTING.md](./CONTRIBUTING.md) before.
+
+## Related links
+
+- **Sign Up**: http://labs.runabove.com/docker
+- **Registry**: https://registry.sailabove.io/
+- **Get help**: https://community.runabove.com/
+- **Get started**: https://community.runabove.com/kb/en/docker/getting-started-with-sailabove-docker.html
+- **Documentation**: [Reference documentation](https://community.runabove.com/kb/en/docker/documentation), [Guides](http://community.runabove.com/kb/en/docker/)
+- **OVH Docker mailing-list**: docker-subscribe@ml.ovh.net
+
