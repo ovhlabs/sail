@@ -52,8 +52,7 @@ func serviceStartStream(app string, service string) {
 
 	reader, _, e := internal.Stream("GET",
 		fmt.Sprintf("/applications/%s/services/%s/attach", app, service),
-		nil,
-		internal.SetHeader("Content-Type", "application/x-yaml"))
+		nil)
 
 	if e != nil {
 		internal.Exit("Error while attach: %s\n", e)

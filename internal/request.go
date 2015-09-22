@@ -117,20 +117,12 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	}
 
 	if stream {
-		reader := bufio.NewReader(resp.Body)
-		for {
-			line, err := reader.ReadBytes('\n')
-			if err != nil {
-				return nil
-			}
-			if string(line) != "" {
-				log.Print(string(line))
-			}
-		}
-	} else {
-		Check(err)
-		return body
+		DisplayStream(resp.Body)
+		return nil
 	}
+
+	Check(err)
+	return body
 }
 
 // RequestModifier is used to modify behavior of Request and Steam functions
@@ -212,6 +204,7 @@ func DisplayStream(buffer io.ReadCloser) error {
 		m := DecodeMessage(line)
 		if m != nil {
 			fmt.Fprintln(os.Stderr, m.Message)
+			continue
 		}
 		e := DecodeError(line)
 		if e != nil {
@@ -222,6 +215,9 @@ func DisplayStream(buffer io.ReadCloser) error {
 		}
 		if err != nil {
 			return err
+		}
+		if string(line) != "" {
+			log.Print(string(line))
 		}
 	}
 }
