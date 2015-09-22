@@ -1,5 +1,5 @@
 {
-	"ImportPath": "stash.ovh.net/sailabove/sail",
+	"ImportPath": "github.com/runabove/sail",
 	"GoVersion": "go1.5",
 	"Packages": [
 		"./..."

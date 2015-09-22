@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"stash.ovh.net/sailabove/sail/internal"
+	"github.com/runabove/sail/internal"
 
 	"github.com/spf13/cobra"
 )

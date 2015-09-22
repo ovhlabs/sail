@@ -6,17 +6,17 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sail/application"
-	"stash.ovh.net/sailabove/sail/compose"
-	"stash.ovh.net/sailabove/sail/container"
-	"stash.ovh.net/sailabove/sail/internal"
-	"stash.ovh.net/sailabove/sail/me"
-	"stash.ovh.net/sailabove/sail/metric"
-	"stash.ovh.net/sailabove/sail/network"
-	"stash.ovh.net/sailabove/sail/repository"
-	"stash.ovh.net/sailabove/sail/service"
-	"stash.ovh.net/sailabove/sail/update"
-	"stash.ovh.net/sailabove/sail/version"
+	"github.com/runabove/sail/application"
+	"github.com/runabove/sail/compose"
+	"github.com/runabove/sail/container"
+	"github.com/runabove/sail/internal"
+	"github.com/runabove/sail/me"
+	"github.com/runabove/sail/metric"
+	"github.com/runabove/sail/network"
+	"github.com/runabove/sail/repository"
+	"github.com/runabove/sail/service"
+	"github.com/runabove/sail/update"
+	"github.com/runabove/sail/version"
 )
 
 var rootCmd = &cobra.Command{

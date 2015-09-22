@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"stash.ovh.net/sailabove/sail/internal"
+	"github.com/runabove/sail/internal"
 
 	"github.com/inconshreveable/go-update"
 	"github.com/spf13/cobra"

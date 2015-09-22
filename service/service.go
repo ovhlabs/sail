@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sail/service/domain"
+	"github.com/runabove/sail/service/domain"
 )
 
 func init() {

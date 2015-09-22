@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-querystring/query"
 	"github.com/spf13/cobra"
 
-	"stash.ovh.net/sailabove/sail/internal"
+	"github.com/runabove/sail/internal"
 )
 
 var (

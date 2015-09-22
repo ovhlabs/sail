@@ -9,7 +9,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
-	"stash.ovh.net/sailabove/sail/internal"
+	"github.com/runabove/sail/internal"
 )
 
 var cmdRepositoryList = &cobra.Command{
