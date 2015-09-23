@@ -62,67 +62,34 @@ func ReqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 	return apiRequest(method, wantCode, path, jsonStr, false)
 }
 
+// apiRequest helper, issue the request and consume stream if requested. Otherwise, return full body
 func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream bool) []byte {
-
-	err := ReadConfig()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading configuration: %s\n", err)
-		os.Exit(1)
-	}
-
-	var req *http.Request
-	if jsonStr != nil {
-		req, _ = http.NewRequest(method, Host+path, bytes.NewReader(jsonStr))
-	} else {
-		req, _ = http.NewRequest(method, Host+path, nil)
-	}
-
-	initRequest(req)
-	req.SetBasicAuth(User, Password)
-
-	for key, val := range Headers {
-		if Verbose {
-			fmt.Fprintf(os.Stderr, "Request header: %s=%s\n", key, val)
-		}
-		req.Header.Set(key, val)
-	}
-
-	resp, err := getHTTPClient().Do(req)
+	bodyStream, code, err := doRequest(method, path, jsonStr)
 	Check(err)
-	defer resp.Body.Close()
+
+	defer bodyStream.Close()
+
+	if stream && code == wantCode {
+		DisplayStream(bodyStream)
+		return nil
+	}
 
 	var body []byte
-	if !stream {
-		body, err = ioutil.ReadAll(resp.Body)
-	}
+	body, err = ioutil.ReadAll(bodyStream)
+	Check(err)
 
-	if Verbose {
-		fmt.Fprintf(os.Stderr, "Request path: %s\n", Host+path)
-		fmt.Fprintf(os.Stderr, "Request Headers: %s\n", req.Header)
-		fmt.Fprintf(os.Stderr, "Request Body: %s\n", string(jsonStr))
-		fmt.Fprintf(os.Stderr, "Response Headers: %s\n", resp.Header)
-		fmt.Fprintf(os.Stderr, "Response Status: %s\n", resp.Status)
-
-		if err == nil {
-			fmt.Fprintf(os.Stderr, "Response Body: %s\n", string(body))
-
-		}
-	}
-
-	if resp.StatusCode != wantCode {
+	if code != wantCode {
 		if err == nil {
 			FormatOutputDef(body)
 		}
 		os.Exit(1)
 	}
 
-	if stream {
-		DisplayStream(resp.Body)
-		return nil
+	if Verbose {
+		fmt.Fprintf(os.Stderr, "Response Body: %s\n", string(body))
 	}
-
-	Check(err)
 	return body
+
 }
 
 // RequestModifier is used to modify behavior of Request and Steam functions
@@ -138,7 +105,7 @@ func SetHeader(key, value string) RequestModifier {
 // Request executes an authentificated HTTP request on $path given $method and $args
 func Request(method string, path string, args []byte, mods ...RequestModifier) ([]byte, int, error) {
 
-	respBody, code, err := Stream(method, path, args, mods...)
+	respBody, code, err := doRequest(method, path, args, mods...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -159,6 +126,11 @@ func Request(method string, path string, args []byte, mods ...RequestModifier) (
 
 // Stream makes an authenticated http request and return io.ReadCloser
 func Stream(method string, path string, args []byte, mods ...RequestModifier) (io.ReadCloser, int, error) {
+	return doRequest(method, path, args, mods...)
+}
+
+//doRequest builds the request and return io.ReadCloser
+func doRequest(method string, path string, args []byte, mods ...RequestModifier) (io.ReadCloser, int, error) {
 
 	err := ReadConfig()
 	if err != nil {
@@ -176,6 +148,13 @@ func Stream(method string, path string, args []byte, mods ...RequestModifier) (i
 
 	for i := range mods {
 		mods[i](req)
+	}
+
+	for key, val := range Headers {
+		if Verbose {
+			fmt.Fprintf(os.Stderr, "Request header: %s=%s\n", key, val)
+		}
+		req.Header.Set(key, val)
 	}
 
 	req.SetBasicAuth(User, Password)
