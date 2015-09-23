@@ -155,6 +155,10 @@ func serviceAdd(args Add) {
 	}
 
 	// Parse links
+	if len(redeployLink) > 0 {
+		args.Links = make(map[string]string)
+	}
+
 	for _, link := range cmdAddLink {
 		t := strings.Split(link, ":")
 		if len(t) == 1 {

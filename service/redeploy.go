@@ -110,6 +110,10 @@ func serviceRedeploy(args Redeploy) {
 	}
 
 	// Parse links
+	if len(redeployLink) > 0 {
+		args.Links = make(map[string]string)
+	}
+
 	for _, link := range redeployLink {
 		t := strings.Split(link, ":")
 		if len(t) == 1 {
