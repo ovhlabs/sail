@@ -3,6 +3,7 @@ package update
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/runabove/sail/internal"
 
@@ -16,12 +17,14 @@ var architecture string
 // used by CI to inject url for downloading with sail update.
 // value of urlUpdate injected at build time
 // full URL update is constructed with architecture var :
-// urlUpdate + architecture + "/sail", sail is the binary
+// urlUpdate + sail- + architecture, sail is the binary
 var urlUpdateRelease string
 var urlUpdateSnapshot string
 
 func init() {
-	Cmd.AddCommand(cmdUpdateSnapshot)
+	if urlUpdateSnapshot != "" {
+		Cmd.AddCommand(cmdUpdateSnapshot)
+	}
 }
 
 // Cmd update
@@ -31,7 +34,7 @@ var Cmd = &cobra.Command{
 	Long:    `sail update`,
 	Aliases: []string{"up"},
 	Run: func(cmd *cobra.Command, args []string) {
-		doUpdate(fmt.Sprintf("%s%s"+"/sail", urlUpdateRelease, architecture))
+		doUpdate(urlUpdateRelease, architecture)
 	},
 }
 
@@ -41,11 +44,17 @@ var cmdUpdateSnapshot = &cobra.Command{
 	Long:    `sail update snapshot`,
 	Aliases: []string{"snap"},
 	Run: func(cmd *cobra.Command, args []string) {
-		doUpdate(fmt.Sprintf("%s%s"+"/sail", urlUpdateSnapshot, architecture))
+		doUpdate(urlUpdateSnapshot, architecture)
 	},
 }
 
-func doUpdate(url string) {
+func doUpdate(baseurl, architecture string) {
+	url := fmt.Sprintf("%s/sail-%s", baseurl, architecture)
+
+	if internal.Verbose {
+		fmt.Fprintf(os.Stderr, "Debug: updating from %s\n", url)
+	}
+
 	resp, err := http.Get(url)
 	if err != nil {
 		internal.Exit("Error when downloading sail\n", err)

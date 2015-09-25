@@ -1,0 +1,37 @@
+language: go
+
+go:
+  - 1.5.1
+
+env:
+  global:
+    - GO15VENDOREXPERIMENT=1
+    - URL_UPDATE_RELEASE="https://github.com/runabove/sail/releases/download/$TRAVIS_TAG"
+    - URL_UPDATE_SNAPSHOT=""
+    - PROJECT_NAME="sail"
+    - PROJECT_PATH="github.com/runabove"
+
+install: true
+
+script: chmod +x package.sh && ./package.sh
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: debKvR7gOgUc3tEUdksRRp/33m8xHNKtKwqxIHz3123MoOTq+PXpifZTkqZj8z81yOYpCGr4vFHbdNFiXooYHsfOTebVj1/3cRafS17OlAkCbkRCpyfEU3uW5eZ13McpIBjKeKz1aSD4B1DB/gjvhPNF1Obmct1Wcrnls1+Uad9PoiYbim7XxxMb7BNv1dk0B9omfJUeR5qN8F+TnnI/5+fZrDfIv3mLSPO8ZTAY92OUjsD4915NMdYegZIizvonjG5vw5+empCGVvBp5aV2tVBnxDd0290WhMI7RUOWP7Hqjey7KJCXs+rYTYC3Qr/sS/QpEvBocFl28CS/U4eGCFSGWv4cPMa8nq153WoXEiSAY+BoUNMXkyfwIEjINAjkb5TX3vQfEdUI+puENpkocgXN1nhIbKfjw4fEggA4d1a0b/aDYdL4TJ/6x05WJQgFfKAagyLZTLTbBskIBhkdsRvVNbe94I8Ni9HM4FSa/icU2cBzRLOn9K+iD3gcON7gn2tgToCsz6svv8ewBr1guyvLwQJqQff4e8FBwbSNYuBdYRU4dnP0lu/YcmYuQeA5fTZN93RXoYV1IZQ0GYFY4TCzTTwiSjD68kNc3TMDWrkbJ+AdmeJHjv7IUBx1SAH0FYsQ6RQLrEGZlxnL8Z7+fjjgeKSPhccSJC7d86hFXEI=
+  file:
+    - bin/sail-darwin-386
+    - bin/sail-darwin-amd64
+    - bin/sail-linux-386
+    - bin/sail-linux-amd64
+    - bin/sail-windows-386
+    - bin/sail-windows-amd64
+  on:
+    tags: true
+
+notifications:
+  email:
+    recipients:
+      - release@sailabove.com
+
