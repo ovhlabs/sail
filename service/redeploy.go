@@ -25,10 +25,11 @@ var (
 func redeployCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "redeploy",
-		Short: "Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>",
-		Long:  `Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>`,
-		Run:   cmdRedeploy,
+		Use:     "redeploy",
+		Short:   "Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>",
+		Long:    `Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>`,
+		Aliases: []string{"restart"},
+		Run:     cmdRedeploy,
 	}
 
 	cmd.Flags().StringVarP(&redeployBody.ContainerModel, "model", "", "", "Container model")
