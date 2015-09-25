@@ -11,27 +11,38 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var usageDomainAttach = "Invalid usage. sail service attach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sail service attach --help"
+var usageDomainAttach = "Invalid usage. sail service attach <applicationName>/<serviceId> <domain> [<pattern> [<method>]]. Please see sail service attach --help"
 var cmdDomainAttach = &cobra.Command{
 	Use:     "attach",
-	Short:   "Attach a domain on the HTTP load balancer: sail service domain attach <applicationName>/<serviceId> <domain> <pattern> <method>",
+	Short:   "Attach a domain on the HTTP load balancer: sail service domain attach <applicationName>/<serviceId> <domain> [<pattern> [<method>]]",
 	Aliases: []string{"add"},
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 4 {
+		if len(args) < 2 || len(args) > 4 {
 			fmt.Fprintln(os.Stderr, usageDomainAttach)
-		} else {
-			serviceDomainAttach(args[0], args[1], domainStruct{Pattern: args[2], Method: args[3]})
+			os.Exit(1)
 		}
+
+		pattern := "/"
+		method := "*"
+		if len(args) >= 3 {
+			pattern = args[2]
+		}
+		if len(args) >= 4 {
+			method = args[3]
+		}
+
+		serviceDomainAttach(args[0], args[1], pattern, method)
 	},
 }
 
-func serviceDomainAttach(serviceID, domain string, args domainStruct) {
+func serviceDomainAttach(serviceID, domain, pattern, method string) {
 	t := strings.Split(serviceID, "/")
 	if len(t) != 2 {
 		fmt.Fprintln(os.Stderr, usageDomainAttach)
 		return
 	}
 
+	args := domainStruct{Pattern: pattern, Method: method}
 	body, err := json.Marshal(args)
 	internal.Check(err)
 
