@@ -151,14 +151,22 @@ func serviceRedeploy(args Redeploy) {
 
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(redeployPublished)
+	app := args.Application
+	service := args.Service
 
-	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", args.Application, args.Service)
+	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", app, service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal: %s\n", err)
 		return
 	}
 
+	// Attach console
+	if !redeployBatch {
+		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
+	}
+
+	// Redeploy
 	buffer, _, err := internal.Stream("POST", path+"?stream", body)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
@@ -169,5 +177,9 @@ func serviceRedeploy(args Redeploy) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
+	}
+
+	if !redeployBatch {
+		internal.ExitAfterCtrlC()
 	}
 }

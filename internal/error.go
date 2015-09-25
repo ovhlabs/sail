@@ -2,15 +2,7 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
-	"os"
 )
-
-// Exit func display an error message on stderr and exit 1
-func Exit(format string, args ...interface{}) {
-	fmt.Fprintf(os.Stderr, format, args...)
-	os.Exit(1)
-}
 
 // Error type
 type Error struct {
@@ -40,25 +32,4 @@ func (e *Error) String() string {
 
 func (e *Error) Error() string {
 	return e.String()
-}
-
-// Message type
-type Message struct {
-	Message string `json:"message"`
-	Type    string `json:"type"`
-}
-
-// DecodeMessage return a Message struct from json
-func DecodeMessage(data []byte) *Message {
-	var m Message
-
-	err := json.Unmarshal(data, &m)
-	if err != nil {
-		return nil
-	}
-
-	if m.Message == "" && m.Type == "" {
-		return nil
-	}
-	return &m
 }

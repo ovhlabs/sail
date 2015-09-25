@@ -51,33 +51,15 @@ func cmdScale(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if scaleBatch {
-		serviceScale(t[0], t[1], scaleNumber, scaleDestroy)
-	} else {
-		serviceScaleStream(t[0], t[1], scaleNumber, scaleDestroy)
-	}
-}
-
-// serviceScaletStream attach and start service
-func serviceScaleStream(app string, service string, number int, destroy bool) {
-
-	reader, _, e := internal.Stream("GET",
-		fmt.Sprintf("/applications/%s/services/%s/attach", app, service),
-		nil)
-
-	if e != nil {
-		internal.Exit("Error while attach: %s\n", e)
-	}
-
-	serviceScale(app, service, number, destroy)
-
-	// Display api stream
-	err := internal.DisplayStream(reader)
-	internal.Check(err)
+	serviceScale(t[0], t[1], scaleNumber, scaleDestroy, scaleBatch)
 }
 
 // serviceScale start service (without attach)
-func serviceScale(app string, service string, number int, destroy bool) {
+func serviceScale(app string, service string, number int, destroy bool, batch bool) {
+	if !batch {
+		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
+	}
+
 	path := fmt.Sprintf("/applications/%s/services/%s/scale?stream", app, service)
 
 	args := Scale{
@@ -93,4 +75,8 @@ func serviceScale(app string, service string, number int, destroy bool) {
 
 	err = internal.DisplayStream(buffer)
 	internal.Check(err)
+
+	if !batch {
+		internal.ExitAfterCtrlC()
+	}
 }

@@ -40,33 +40,15 @@ func cmdStart(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if startBatch {
-		serviceStart(t[0], t[1])
-	} else {
-		serviceStartStream(t[0], t[1])
-	}
-}
-
-// serviceStartStream attach and start service
-func serviceStartStream(app string, service string) {
-
-	reader, _, e := internal.Stream("GET",
-		fmt.Sprintf("/applications/%s/services/%s/attach", app, service),
-		nil)
-
-	if e != nil {
-		internal.Exit("Error while attach: %s\n", e)
-	}
-
-	serviceStart(app, service)
-
-	// Display api stream
-	err := internal.DisplayStream(reader)
-	internal.Check(err)
+	serviceStart(t[0], t[1], startBatch)
 }
 
 // serviceStart start service (without attach)
-func serviceStart(app string, service string) {
+func serviceStart(app string, service string, batch bool) {
+	if !batch {
+		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
+	}
+
 	path := fmt.Sprintf("/applications/%s/services/%s/start?stream", app, service)
 	buffer, _, err := internal.Stream("POST", path, []byte("{}"))
 	if err != nil {
@@ -76,4 +58,8 @@ func serviceStart(app string, service string) {
 
 	err = internal.DisplayStream(buffer)
 	internal.Check(err)
+
+	if !batch {
+		internal.ExitAfterCtrlC()
+	}
 }

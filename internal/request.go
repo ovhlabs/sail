@@ -57,6 +57,19 @@ func StreamWant(method string, wantCode int, path string, jsonStr []byte) {
 	apiRequest(method, wantCode, path, jsonStr, true)
 }
 
+// StreamPrint opens a stream and print it in a goroutine
+func StreamPrint(method string, path string, args []byte, mods ...RequestModifier) {
+	reader, _, err := Stream(method, path, args, mods...)
+
+	if err != nil {
+		Exit("Error while attach: %s\n", err)
+	}
+
+	go func(stream io.ReadCloser) {
+		DisplayStream(reader)
+	}(reader)
+}
+
 // ReqWant requests with a method on a path, check wantCode and returns []byte
 func ReqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 	return apiRequest(method, wantCode, path, jsonStr, false)
