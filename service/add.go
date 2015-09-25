@@ -41,6 +41,7 @@ func addCmd() *cobra.Command {
 		[--restart {no|always[:<max>]|on-failure[:<max>]}]
 		[--volume       /path:size] (Size in GB)
 		[--batch        do not attach console on start]
+		[--pool         deploy on dedicated host pool <name>]
 		[--redeploy     if the service already exists, redeploy instead]
 
 		override docker options:
@@ -65,7 +66,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&addBatch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
 	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
-	// TODO [--pool <name>  use private hosts pool <name>]
+	cmd.Flags().StringVarP(&cmdAddBody.Pool, "pool", "", "", "Dedicated host pool")
 	return cmd
 }
 
@@ -98,6 +99,7 @@ type Add struct {
 	ContainerEnvironment []string                       `json:"container_environment"`
 	ContainerModel       string                         `json:"container_model"`
 	ContainerPorts       map[string][]PortConfig        `json:"container_ports"`
+	Pool                 string                         `json:"pool,omitempty"`
 }
 
 func cmdAdd(cmd *cobra.Command, args []string) {

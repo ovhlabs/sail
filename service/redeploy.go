@@ -20,6 +20,7 @@ var (
 	redeployGateway      []string
 	redeployVolume       []string
 	redeployBatch        bool
+	redeployPool         string
 )
 
 func redeployCmd() *cobra.Command {
@@ -49,6 +50,7 @@ func redeployCmd() *cobra.Command {
 	cmd.Flags().StringSliceVarP(&redeployVolume, "volume", "", nil, "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&redeployBatch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().StringSliceVarP(&redeployLink, "link", "", nil, "name:alias")
+	cmd.Flags().StringVarP(&redeployPool, "pool", "", "", "Dedicated host pool")
 	return cmd
 }
 
@@ -70,6 +72,7 @@ type Redeploy struct {
 	ContainerEnvironment []string                       `json:"container_environment,omitempty"`
 	ContainerModel       string                         `json:"container_model,omitempty"`
 	ContainerPorts       map[string][]PortConfig        `json:"container_ports,omitempty"`
+	Pool                 string                         `json:"pool,omitempty"`
 }
 
 func cmdRedeploy(cmd *cobra.Command, args []string) {
@@ -148,6 +151,9 @@ func serviceRedeploy(args Redeploy) {
 		}
 		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
 	}
+	// Load Pool
+	args.Pool = redeployPool
+	fmt.Fprintf(os.Stderr, "Pool: %s\n", args.Pool)
 
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(redeployPublished)
