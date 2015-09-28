@@ -40,7 +40,7 @@ then
 else
     sed -i 's/const VERSION =.*/const VERSION = "$version"/' internal/const.go
     git commit -am "[auto] bump version to v$version"
-    git tag -s "v$version" -F
+    git tag -s "v$version"
 fi
 
 # Ensure github remote is registered
