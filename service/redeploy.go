@@ -147,7 +147,6 @@ func serviceRedeploy(args Redeploy) {
 	}
 	// Load Pool
 	args.Pool = redeployPool
-	fmt.Fprintf(os.Stderr, "Pool: %s\n", args.Pool)
 
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(redeployPublished)
@@ -173,10 +172,15 @@ func serviceRedeploy(args Redeploy) {
 		os.Exit(1)
 	}
 
-	err = internal.DisplayStream(buffer)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
+	line, err := internal.DisplayStream(buffer)
+	internal.Check(err)
+	if line != nil {
+		var data map[string]interface{}
+		err = json.Unmarshal(line, &data)
+		internal.Check(err)
+
+		fmt.Printf("Hostname: %v\n", data["hostname"])
+		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
 	}
 
 	if !redeployBatch {

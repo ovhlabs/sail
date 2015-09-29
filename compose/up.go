@@ -1,6 +1,7 @@
 package compose
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -51,15 +52,18 @@ func cmdUp(cmd *cobra.Command, args []string) {
 
 	// Execute request
 	path := fmt.Sprintf("/applications/%s/fig/up?stream", ns)
-	reader, _, err := internal.Stream("POST", path, payload,
-		internal.SetHeader("Content-Type", "application/x-yaml"))
-	if err != nil {
-		internal.Exit("Error: %s\n", err)
-	}
+	buffer, _, err := internal.Stream("POST", path, payload, internal.SetHeader("Content-Type", "application/x-yaml"))
+	internal.Check(err)
 
 	// Display api stream
-	err = internal.DisplayStream(reader)
-	if err != nil {
-		internal.Exit("Error: %s\n", err)
+	line, err := internal.DisplayStream(buffer)
+	internal.Check(err)
+	if line != nil {
+		var data map[string]interface{}
+		err = json.Unmarshal(line, &data)
+		internal.Check(err)
+
+		fmt.Printf("Hostname: %v\n", data["hostname"])
+		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
 	}
 }

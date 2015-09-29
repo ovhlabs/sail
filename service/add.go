@@ -1,10 +1,8 @@
 package service
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -250,39 +248,16 @@ func serviceAdd(args Add) {
 		return
 	}
 
-	reader := bufio.NewReader(buffer)
+	line, err := internal.DisplayStream(buffer)
+	internal.Check(err)
+	if line != nil {
+		var data map[string]interface{}
+		err = json.Unmarshal(line, &data)
+		internal.Check(err)
 
-	for {
-		line, err := reader.ReadBytes('\n')
-		m := internal.DecodeMessage(line)
-		if m != nil {
-			fmt.Fprintln(os.Stderr, m.Message)
-		}
-		e := internal.DecodeError(line)
-		if e != nil {
-			fmt.Fprintln(os.Stderr, e)
-			if e.Code == 409 && cmdAddRedeploy {
-				if internal.Format == "pretty" {
-					fmt.Fprintf(os.Stderr, "Starting redeploy...\n")
-				}
-				ensureMode(args)
-				return
-			}
-			os.Exit(1)
-		}
-		if err != nil && err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
-		}
+		fmt.Printf("Hostname: %v\n", data["hostname"])
+		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
 	}
-
-	if internal.Format == "pretty" {
-		fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
-	}
-	serviceStart(args.Application, args.Service, true)
 }
 
 func ensureMode(args Add) {

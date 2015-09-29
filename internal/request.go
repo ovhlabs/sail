@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 )
@@ -187,8 +186,8 @@ func doRequest(method string, path string, args []byte, mods ...RequestModifier)
 	return resp.Body, resp.StatusCode, nil
 }
 
-// DisplayStream decode each line from http buffer and print either message or error
-func DisplayStream(buffer io.ReadCloser) error {
+// DisplayStream decode each line from http buffer and print either message or error. Return last read line
+func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 	reader := bufio.NewReader(buffer)
 
 	for {
@@ -196,23 +195,24 @@ func DisplayStream(buffer io.ReadCloser) error {
 		if Verbose {
 			fmt.Fprintf(os.Stderr, "Received message: %v\n", string(line))
 		}
+
+		// Progress message
 		m := DecodeMessage(line)
 		if m != nil {
 			fmt.Fprintln(os.Stderr, m.Message)
 			continue
 		}
+
+		// Error message (will be last message)
 		e := DecodeError(line)
 		if e != nil {
-			return e
+			fmt.Fprintf(os.Stderr, "Error: %s\n", e.Message)
+			continue
 		}
-		if err != nil && err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-		if string(line) != "" {
-			log.Print(string(line))
+
+		// Final message
+		if err == io.EOF {
+			return line, nil
 		}
 	}
 }
@@ -231,6 +231,9 @@ func GetListApplications(args []string) []string {
 // Check checks e and panic if not nil
 func Check(err error) {
 	if err != nil {
+		if Verbose {
+			panic(err)
+		}
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}

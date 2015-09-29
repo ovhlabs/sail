@@ -57,6 +57,6 @@ func serviceStop(app string, service string, batch bool) {
 		os.Exit(1)
 	}
 
-	err = internal.DisplayStream(buffer)
+	_, err = internal.DisplayStream(buffer)
 	internal.Check(err)
 }

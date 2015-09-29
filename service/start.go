@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -53,13 +54,18 @@ func serviceStart(app string, service string, batch bool) {
 
 	path := fmt.Sprintf("/applications/%s/services/%s/start?stream", app, service)
 	buffer, _, err := internal.Stream("POST", path, []byte("{}"))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
-	}
-
-	err = internal.DisplayStream(buffer)
 	internal.Check(err)
+
+	line, err := internal.DisplayStream(buffer)
+	internal.Check(err)
+	if line != nil {
+		var data map[string]interface{}
+		err = json.Unmarshal(line, &data)
+		internal.Check(err)
+
+		fmt.Printf("Hostname: %v\n", data["hostname"])
+		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
+	}
 
 	if !batch {
 		internal.ExitAfterCtrlC()

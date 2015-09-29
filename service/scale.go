@@ -73,8 +73,16 @@ func serviceScale(app string, service string, number int, destroy bool, batch bo
 	buffer, _, err := internal.Stream("POST", path, data)
 	internal.Check(err)
 
-	err = internal.DisplayStream(buffer)
+	line, err := internal.DisplayStream(buffer)
 	internal.Check(err)
+	if line != nil {
+		var data map[string]interface{}
+		err = json.Unmarshal(line, &data)
+		internal.Check(err)
+
+		fmt.Printf("Hostname: %v\n", data["hostname"])
+		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
+	}
 
 	if !batch {
 		internal.ExitAfterCtrlC()
