@@ -193,6 +193,9 @@ func DisplayStream(buffer io.ReadCloser) error {
 
 	for {
 		line, err := reader.ReadBytes('\n')
+		if Verbose {
+			fmt.Fprintf(os.Stderr, "Received message: %v\n", string(line))
+		}
 		m := DecodeMessage(line)
 		if m != nil {
 			fmt.Fprintln(os.Stderr, m.Message)
