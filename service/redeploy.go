@@ -138,18 +138,9 @@ func serviceRedeploy(args Redeploy) {
 	for _, gat := range redeployGateway {
 		t := strings.Split(gat, ":")
 		if len(t) != 2 {
-			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\"")
+			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\". Typically, output will be 'predictor' or 'public'")
 			os.Exit(1)
 		}
-		if _, ok := args.ContainerNetwork[t[0]]; !ok {
-			fmt.Fprintf(os.Stderr, "Not configured input network %s\n", t[0])
-			os.Exit(1)
-		}
-		if _, ok := args.ContainerNetwork[t[1]]; !ok {
-			fmt.Fprintf(os.Stderr, "Not configured onput network %s\n", t[1])
-			os.Exit(1)
-		}
-		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
 	}
 	// Load Pool
 	args.Pool = redeployPool

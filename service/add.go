@@ -178,16 +178,16 @@ func serviceAdd(args Add) {
 	for _, gat := range cmdAddGateway {
 		t := strings.Split(gat, ":")
 		if len(t) != 2 {
-			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\"")
+			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\". Typically, output will be one of 'predictor', 'public'")
 			os.Exit(1)
 		}
 		if _, ok := args.ContainerNetwork[t[0]]; !ok {
-			fmt.Fprintf(os.Stderr, "Not configured input network %s\n", t[0])
-			os.Exit(1)
+			fmt.Fprintf(os.Stderr, "Automatically adding %s to network list\n", t[0])
+			args.ContainerNetwork[t[0]] = make(map[string][]string)
 		}
 		if _, ok := args.ContainerNetwork[t[1]]; !ok {
-			fmt.Fprintf(os.Stderr, "Not configured onput network %s\n", t[1])
-			os.Exit(1)
+			fmt.Fprintf(os.Stderr, "Automatically adding %s to network list\n", t[0])
+			args.ContainerNetwork[t[1]] = make(map[string][]string)
 		}
 		args.ContainerNetwork[t[0]]["gateway_to"] = append(args.ContainerNetwork[t[0]]["gateway_to"], t[1])
 	}
