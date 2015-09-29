@@ -8,8 +8,8 @@ import (
 	"text/tabwriter"
 
 	"github.com/google/go-querystring/query"
-	"github.com/spf13/cobra"
 	"github.com/runabove/sail/internal"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -47,21 +47,24 @@ type Logs struct {
 }
 
 func cmdLogs(cmd *cobra.Command, args []string) {
-	usage := "Invalid usage. sail service logs <applicationName>/<serviceId>. Please see sail service logs --help\n"
+	usage := "Invalid usage. sail service logs [<applicationName>/]<serviceId>. Please see sail service logs --help\n"
 	if len(args) != 1 {
 		fmt.Fprintf(os.Stderr, usage)
 		return
 	}
 
-	split := strings.Split(args[0], "/")
-	if len(split) != 2 {
-		fmt.Fprintf(os.Stderr, usage)
-		return
+	// Split namespace and service
+	host, app, service, _, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
 	}
 
 	// Get args
-	logsBody.Application = split[0]
-	logsBody.Service = split[1]
+	logsBody.Application = app
+	logsBody.Service = service
 	serviceLogs(logsBody)
 }
 

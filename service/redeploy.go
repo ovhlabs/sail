@@ -82,15 +82,18 @@ func cmdRedeploy(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	split := strings.Split(args[0], "/")
-	if len(split) != 2 {
-		fmt.Fprintf(os.Stderr, usage)
-		return
+	// Split namespace and repository
+	host, app, service, _, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+	redeployBody.Application = app
+	redeployBody.Service = service
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
 	}
 
-	// Get args
-	redeployBody.Application = split[0]
-	redeployBody.Service = split[1]
+	// Redeploy
 	serviceRedeploy(redeployBody)
 }
 

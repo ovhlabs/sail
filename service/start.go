@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -11,7 +10,7 @@ import (
 )
 
 var startBatch bool
-var startUsage = "usage: sail services start [-h] [--batch] service"
+var startUsage = "usage: sail services start [-h] [--batch] [<applicationName>/]<serviceId>"
 
 func startCmd() *cobra.Command {
 
@@ -34,13 +33,16 @@ func cmdStart(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	t := strings.Split(args[0], "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, startUsage)
+	// Split namespace and service
+	host, app, service, _, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
 		os.Exit(1)
 	}
 
-	serviceStart(t[0], t[1], startBatch)
+	serviceStart(app, service, startBatch)
 }
 
 // serviceStart start service (without attach)

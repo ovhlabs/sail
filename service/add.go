@@ -24,6 +24,8 @@ var cmdAddRedeploy bool
 var cmdAddBody Add
 var cmdAddNetwork []string
 
+const cmdAddUsage = "Invalid usage. sail service add [<application>/]<repository>[:tag] [<service>]. Please see sail service add --help"
+
 func addCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
@@ -108,27 +110,28 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
 	cmdAddBody.ContainerCommand = make([]string, 0)
 
-	if len(args) != 2 {
-		fmt.Fprintf(os.Stderr, "Invalid usage. sail service add <application>/<repository>[:tag] <service>. Please see sail service add --help\n")
-		return
-	}
-
-	// Get args
-	cmdAddBody.Repository = args[0]
-	cmdAddBody.Service = args[1]
-
-	// Split repo URL and tag
-	split := strings.Split(cmdAddBody.Repository, ":")
-	if len(split) > 1 {
-		cmdAddBody.Repository = split[0]
-		cmdAddBody.RepositoryTag = split[1]
+	if len(args) < 2 {
+		fmt.Fprintln(os.Stderr, cmdAddUsage)
+		os.Exit(1)
 	}
 
 	// Split namespace and repository
-	split = strings.Split(cmdAddBody.Repository, "/")
-	if len(split) > 1 {
-		cmdAddBody.Application = split[0]
-		cmdAddBody.Repository = split[1]
+	host, app, repo, tag, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+	cmdAddBody.Application = app
+	cmdAddBody.Repository = repo
+	cmdAddBody.RepositoryTag = tag
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
+	}
+
+	// Service name
+	if len(args) >= 2 {
+		cmdAddBody.Service = args[1]
+	} else {
+		cmdAddBody.Service = cmdAddBody.Repository
 	}
 
 	serviceAdd(cmdAddBody)

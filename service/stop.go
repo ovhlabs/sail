@@ -3,14 +3,13 @@ package service
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/runabove/sail/internal"
 	"github.com/spf13/cobra"
 )
 
 var stopBatch bool
-var stopUsage = "usage: sail services stop [-h] [--batch] <applicationName>/<serviceId>"
+var stopUsage = "usage: sail services stop [-h] [--batch] [<applicationName>/]<serviceId>"
 
 func stopCmd() *cobra.Command {
 
@@ -33,13 +32,16 @@ func cmdStop(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	t := strings.Split(args[0], "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, stopUsage)
+	// Split namespace and service
+	host, app, service, _, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
 		os.Exit(1)
 	}
 
-	serviceStop(t[0], t[1], stopBatch)
+	serviceStop(app, service, stopBatch)
 }
 
 // serviceStop stop service (without attach)
