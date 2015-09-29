@@ -226,8 +226,9 @@ func GetListApplications(args []string) []string {
 }
 
 // Check checks e and panic if not nil
-func Check(e error) {
-	if e != nil {
-		panic(e)
+func Check(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		os.Exit(1)
 	}
 }
