@@ -38,7 +38,7 @@ then
         echo "Error: version mismatch '$current_tag' != 'v$version'"
     fi
 else
-    sed -i 's/const VERSION =.*/const VERSION = "$version"/' internal/const.go
+    sed -i "s/const VERSION =.*/const VERSION = \"$version\"/" internal/const.go
     git commit -am "[auto] bump version to v$version"
     git tag -s "v$version"
 fi
