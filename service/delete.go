@@ -10,14 +10,19 @@ import (
 	"github.com/runabove/sail/internal"
 )
 
+var deleteForce bool
+
 func deleteCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "delete",
-		Short:   "Delete a docker service: sail service delete [<applicationName>/]<serviceId>",
+		Short:   "Delete a docker service: sail service delete [<applicationName>/]<serviceId> [--force]",
 		Run:     cmdServiceDelete,
 		Aliases: []string{"del", "rm", "remove"},
 	}
+
+	cmd.Flags().BoolVarP(&deleteForce, "force", "", false, "danger zone: delete service even if it breaks links")
+
 	return cmd
 }
 
@@ -41,7 +46,7 @@ func cmdServiceDelete(cmd *cobra.Command, args []string) {
 }
 
 func serviceDelete(namespace string, name string) {
-	path := fmt.Sprintf("/applications/%s/services/%s", namespace, name)
+	path := fmt.Sprintf("/applications/%s/services/%s?force=%t", namespace, name, deleteForce)
 	data := internal.ReqWant("DELETE", http.StatusOK, path, nil)
 	// TODO Check for json error here
 	internal.FormatOutputDef(data)
