@@ -206,8 +206,7 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 		// Error message (will be last message)
 		e := DecodeError(line)
 		if e != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", e.Message)
-			continue
+			return line, fmt.Errorf(e.Message)
 		}
 
 		// Final message
