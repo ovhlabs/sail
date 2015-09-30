@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -15,7 +14,7 @@ func deleteCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "delete",
-		Short:   "Delete a docker service: sail service delete <applicationName>/<serviceId>",
+		Short:   "Delete a docker service: sail service delete [<applicationName>/]<serviceId>",
 		Run:     cmdServiceDelete,
 		Aliases: []string{"del", "rm", "remove"},
 	}
@@ -23,18 +22,22 @@ func deleteCmd() *cobra.Command {
 }
 
 func cmdServiceDelete(cmd *cobra.Command, args []string) {
-	usage := "Invalid usage. sail service delete <applicationName>/<serviceId>"
-	if len(args) == 0 {
-		fmt.Fprintln(os.Stderr, usage)
-		return
-	}
-	argsS := strings.Split(args[0], "/")
-	if len(argsS) != 2 {
+	usage := "Invalid usage. sail service delete [<applicationName>/]<serviceId>"
+	if len(args) != 1 {
 		fmt.Fprintln(os.Stderr, usage)
 		return
 	}
 
-	serviceDelete(argsS[0], argsS[1])
+	// Split namespace and service
+	host, app, service, _, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
+	}
+
+	serviceDelete(app, service)
 }
 
 func serviceDelete(namespace string, name string) {

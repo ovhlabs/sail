@@ -20,7 +20,7 @@ var (
 func cmdComposeUp() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "up",
-		Short: "sail compose up <namespace>",
+		Short: "sail compose up [<application>]",
 		Run:   cmdUp,
 	}
 
@@ -37,12 +37,18 @@ func cmdComposeUp() *cobra.Command {
 }
 
 func cmdUp(cmd *cobra.Command, args []string) {
+	// FIXME: duplicate
+	internal.ReadConfig()
+	var ns string
 
 	// Check args
-	if len(args) != 1 {
-		internal.Exit("Invalid usage. sail compose up <namespace>. Please see sail compose up -h\n")
+	if len(args) > 1 {
+		internal.Exit("Invalid usage. sail compose up [<application>]. Please see sail compose up -h\n")
+	} else if len(args) > 1 {
+		ns = args[0]
+	} else {
+		ns = internal.User
 	}
-	ns := args[0]
 
 	// Try to read file
 	payload, err := ioutil.ReadFile(upFile)
