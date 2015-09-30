@@ -290,22 +290,25 @@ func parsePublishedPort(args []string) map[string][]PortConfig {
 		split := strings.Split(pub, ":")
 		if len(split) == 1 { // containerPort
 			v[split[0]+"/tcp"] = []PortConfig{PortConfig{PublishedPort: split[0]}}
-		} else if len(split) == 2 { // network::containerPort, publishedPort:containerPort
-			_, err := strconv.Atoi("-42")
-			if err != nil { // network::containerPort
-				key := split[0] + "/" + split[1]
-				v[key] = append(v[key], PortConfig{PublishedPort: split[0], Network: split[1]})
+		} else if len(split) == 2 { // network:containerPort, publishedPort:containerPort
+			_, err := strconv.Atoi(split[0])
+			if err != nil { // network:containerPort
+				key := split[1] + "/tcp"
+				v[key] = append(v[key], PortConfig{PublishedPort: split[1], Network: split[0]})
 			} else { // publishedPort:containerPort
-				key := split[0] + "/tcp"
-				v[key] = append(v[key], PortConfig{PublishedPort: split[1]})
+				key := split[1] + "/tcp"
+				v[key] = append(v[key], PortConfig{PublishedPort: split[0]})
 			}
-		} else if len(split) == 3 { // network:publishedPort:containerPort
+		} else if len(split) == 3 { // network:publishedPort:containerPort, network::containerPort
 			if split[1] == "" {
 				split[1] = split[2]
 			}
 
-			key := split[1] + "/" + split[0]
-			v[key] = append(v[key], PortConfig{PublishedPort: split[2], Network: split[0]})
+			key := split[2] + "/tcp"
+			v[key] = append(v[key], PortConfig{PublishedPort: split[0], Network: split[1]})
+		} else {
+			fmt.Fprintf(os.Stderr, "Error: Invalid port expose rule %s.", pub)
+			os.Exit(1)
 		}
 	}
 
