@@ -213,6 +213,9 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 		if err == io.EOF {
 			return line, nil
 		}
+
+		// Default
+		fmt.Printf(string(line))
 	}
 }
 
