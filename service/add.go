@@ -232,7 +232,7 @@ func serviceAdd(args Add) {
 		if internal.Format == "pretty" {
 			fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
 		}
-		serviceStart(args.Application, args.Service, false)
+		serviceStart(args.Application, args.Service, true)
 
 		return
 	}
