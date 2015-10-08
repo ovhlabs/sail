@@ -34,6 +34,10 @@
 			"Rev": "547ef5ac979778feb2f760cdb5f4eae1a2207b86"
 		},
 		{
+			"ImportPath": "github.com/google/shlex",
+			"Rev": "6f45313302b9c56850fc17f99e40caebce98c716"
+		},
+		{
 			"ImportPath": "github.com/howeyc/gopass",
 			"Rev": "10b54de414cc9693221d5ff2ae14fd2fbf1b0ac1"
 		},
