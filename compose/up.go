@@ -67,7 +67,10 @@ func cmdUp(cmd *cobra.Command, args []string) {
 	if line != nil {
 		var data map[string]interface{}
 		err = json.Unmarshal(line, &data)
-		internal.Check(err)
+		if err != nil {
+			fmt.Printf("Error detected in API Return. Line: %s\n", line)
+			return
+		}
 
 		fmt.Printf("Hostname: %v\n", data["hostname"])
 		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
