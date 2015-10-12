@@ -7,7 +7,6 @@ func init() {
 	Cmd.AddCommand(cmdApplicationShow)
 
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainList)
-	cmdApplicationDomain.AddCommand(cmdApplicationDomainAttach)
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainDetach)
 
 	Cmd.AddCommand(cmdApplicationDomain)

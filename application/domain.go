@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/runabove/sail/internal"
+	"github.com/spf13/cobra"
 )
 
 var cmdApplicationDomain = &cobra.Command{
@@ -25,19 +25,6 @@ var cmdApplicationDomainList = &cobra.Command{
 		} else {
 			// cmdApplicationDomainList TODO ? Tab view with headers ['DOMAIN', 'SERVICE', 'METHOD', 'PATTERN']
 			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/attached-domains", args[0])))
-		}
-	},
-}
-
-var cmdApplicationDomainAttach = &cobra.Command{
-	Use:     "attach",
-	Short:   "Attach a domain on the HTTP load balancer: sail application domain attach <applicationName> <domainName>",
-	Aliases: []string{"add"},
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain attach --help")
-		} else {
-			internal.FormatOutputDef(internal.PostWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
 		}
 	},
 }
