@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -115,7 +116,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.Links = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
 
-	if len(args) >= 2 || len(args) < 1 {
+	if len(args) > 2 || len(args) < 1 {
 		fmt.Fprintln(os.Stderr, cmdAddUsage)
 		os.Exit(1)
 	}
@@ -237,61 +238,48 @@ func serviceAdd(args Add) {
 		return
 	}
 
-	if addBatch {
-		ret, code, err := internal.Request("POST", path, body)
-
-		// http.Request failed for some reason
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			return
-		}
-
-		//  If we are in ensure mode, fallback to redeploy
-		if code == 409 && cmdAddRedeploy {
-			ensureMode(args)
-			return
-		}
-
-		// If API returned a json error
-		e := internal.DecodeError(ret)
-		if e != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", e)
-			return
-		}
-
-		// Just print data
-		internal.FormatOutputDef(ret)
-
-		// Always start service
-		if internal.Format == "pretty" {
-			fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
-		}
-		serviceStart(args.Application, args.Service, true)
-
-		return
+	stream := ""
+	if !addBatch {
+		stream = "?stream"
 	}
 
-	buffer, code, err := internal.Stream("POST", path+"?stream", body)
+	buffer, code, err := internal.Stream("POST", path+stream, body)
+
+	// http.Request failed for some reason
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return
 	}
 
+	//  If we are in ensure mode, fallback to redeploy
 	if code == 409 && cmdAddRedeploy {
 		ensureMode(args)
+		return
+	} else if code >= 400 {
+		body, err = ioutil.ReadAll(buffer)
+		internal.Check(err)
+		internal.FormatOutputError(body)
 		return
 	}
 
 	line, err := internal.DisplayStream(buffer)
-	internal.Check(err)
-	if line != nil {
-		var data map[string]interface{}
-		err = json.Unmarshal(line, &data)
-		internal.Check(err)
 
-		fmt.Printf("Hostname: %v\n", data["hostname"])
-		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
+	//  If we are in ensure mode, fallback to redeploy
+	if err != nil {
+		e := internal.DecodeError(line)
+		if e != nil && e.Code == 409 && cmdAddRedeploy {
+			ensureMode(args)
+			return
+		}
+		internal.FormatOutputError(line)
+		return
 	}
+
+	// Always start service
+	if internal.Format == "pretty" {
+		fmt.Fprintf(os.Stderr, "Starting service %s/%s...\n", args.Application, args.Service)
+	}
+	serviceStart(args.Application, args.Service, addBatch)
 }
 
 func ensureMode(args Add) {

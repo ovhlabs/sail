@@ -36,6 +36,10 @@ func FormatOutputError(data []byte) {
 	Check(json.Unmarshal(data, &err))
 
 	message := err["message"]
+	if message == nil {
+		message = err["error_details"]
+	}
+
 	if message != nil {
 		fmt.Printf("Error: %s\n", message)
 	} else {
