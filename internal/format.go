@@ -30,6 +30,19 @@ func FormatOutputDef(data []byte) {
 	FormatOutput(data, yamlFormatter)
 }
 
+// FormatOutputError prints the "message" field of an API return or falls back on FormatOutputDef if the field does not exist
+func FormatOutputError(data []byte) {
+	var err map[string]interface{}
+	Check(json.Unmarshal(data, &err))
+
+	message := err["message"]
+	if message != nil {
+		fmt.Printf("Error: %s\n", message)
+	} else {
+		FormatOutputDef(data)
+	}
+}
+
 func jsonFormatter(data []byte) {
 	var out bytes.Buffer
 	json.Indent(&out, data, "", "  ")

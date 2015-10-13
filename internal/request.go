@@ -92,7 +92,7 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 
 	if code != wantCode {
 		if err == nil {
-			FormatOutputDef(body)
+			FormatOutput(body, FormatOutputError)
 		}
 		os.Exit(1)
 	}
@@ -206,7 +206,6 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 		// Error message (will be last message)
 		e := DecodeError(line)
 		if e != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", line)
 			return line, fmt.Errorf(e.Message)
 		}
 
