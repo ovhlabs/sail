@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/google/shlex"
+	"github.com/spf13/cobra"
 
 	"github.com/runabove/sail/internal"
 )
@@ -60,7 +60,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&cmdAddBody.ContainerModel, "model", "", "x1", "Container model")
 	cmd.Flags().IntVarP(&cmdAddBody.ContainerNumber, "number", "", 1, "Number of container to run")
 	cmd.Flags().StringSliceVarP(&cmdAddLink, "link", "", nil, "name:alias")
-	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{"public", "private"}, "public|private|<namespace name>")
+	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{}, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&cmdAddNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
 	cmd.Flags().StringSliceVarP(&addPublish, "publish", "p", nil, "Publish a container's port to the host")
 	cmd.Flags().StringSliceVar(&cmdAddGateway, "gateway", nil, "network-input:network-output")
