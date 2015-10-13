@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var usageDomainDetach = "Invalid usage. sail service detach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sail service detach --help"
+var usageDomainDetach = "Invalid usage. sail service domain detach <applicationName>/<serviceId> <domain> <pattern> <method>. Please see sail service domain detach --help"
 var cmdDomainDetach = &cobra.Command{
 	Use:     "detach",
 	Aliases: []string{"delete", "del", "rm", "remove"},

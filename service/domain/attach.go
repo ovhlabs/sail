@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var usageDomainAttach = "Invalid usage. sail service attach <applicationName>/<serviceId> <domain> [<pattern> [<method>]]. Please see sail service attach --help"
+var usageDomainAttach = "Invalid usage. sail service domain attach <applicationName>/<serviceId> <domain> [<pattern> [<method>]]. Please see sail service domain attach --help"
 var cmdDomainAttach = &cobra.Command{
 	Use:     "attach",
 	Short:   "Attach a domain on the HTTP load balancer: sail service domain attach <applicationName>/<serviceId> <domain> [<pattern> [<method>]]",
