@@ -115,7 +115,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	cmdAddBody.Links = make(map[string]string)
 	cmdAddBody.ContainerPorts = make(map[string][]PortConfig)
 
-	if len(args) < 2 {
+	if len(args) >= 2 || len(args) < 1 {
 		fmt.Fprintln(os.Stderr, cmdAddUsage)
 		os.Exit(1)
 	}
@@ -140,7 +140,7 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 	internal.Check(err)
 
 	// Service name
-	if len(args) >= 2 {
+	if len(args) > 1 {
 		cmdAddBody.Service = args[1]
 	} else {
 		cmdAddBody.Service = cmdAddBody.Repository
