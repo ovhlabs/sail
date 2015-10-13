@@ -221,9 +221,8 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 }
 
 // GetListApplications returns list of applications, GET on /applications
-func GetListApplications(args []string) []string {
-	apps := []string{}
-	if len(args) == 0 {
+func GetListApplications(apps []string) []string {
+	if len(apps) == 0 {
 		b := ReqWant("GET", http.StatusOK, "/applications", nil)
 		err := json.Unmarshal(b, &apps)
 		Check(err)

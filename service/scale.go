@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -14,7 +13,7 @@ import (
 var scaleBatch bool
 var scaleDestroy bool
 var scaleNumber int
-var scaleUsage = "usage: sail services scale [-h] [--number NUMBER] [--batch] [--destroy] <application>/<service>"
+var scaleUsage = "usage: sail services scale [-h] [--number NUMBER] [--batch] [--destroy] [<application>/]<service>"
 
 // Scale json data arguments
 type Scale struct {
@@ -39,19 +38,21 @@ func scaleCmd() *cobra.Command {
 }
 
 func cmdScale(cmd *cobra.Command, args []string) {
-
 	if len(args) != 1 {
 		fmt.Fprintln(os.Stderr, scaleUsage)
 		os.Exit(1)
 	}
 
-	t := strings.Split(args[0], "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, startUsage)
+	// Split namespace and service
+	host, app, service, _, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
 		os.Exit(1)
 	}
 
-	serviceScale(t[0], t[1], scaleNumber, scaleDestroy, scaleBatch)
+	serviceScale(app, service, scaleNumber, scaleDestroy, scaleBatch)
 }
 
 // serviceScale start service (without attach)

@@ -132,6 +132,13 @@ func cmdAdd(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	err = internal.CheckName(cmdAddBody.Application)
+	internal.Check(err)
+	err = internal.CheckName(cmdAddBody.Repository)
+	internal.Check(err)
+	err = internal.CheckName(cmdAddBody.Service)
+	internal.Check(err)
+
 	// Service name
 	if len(args) >= 2 {
 		cmdAddBody.Service = args[1]

@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/runabove/sail/internal"
 	"github.com/spf13/cobra"
@@ -25,12 +24,15 @@ var cmdServiceAttach = &cobra.Command{
 }
 
 func serviceAttach(serviceID string) {
-	t := strings.Split(serviceID, "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, "Invalid usage. sail service attach <applicationName>/<serviceId>. Please see sail service attach --help")
+	// Split namespace and service
+	host, app, service, _, err := internal.ParseResourceName(serviceID)
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
 		os.Exit(1)
 	}
 
-	internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", t[0], t[1]), nil)
+	internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
 	internal.ExitAfterCtrlC()
 }

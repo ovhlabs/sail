@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/google/shlex"
+	"github.com/spf13/cobra"
 
 	"github.com/runabove/sail/internal"
 )
@@ -30,8 +30,8 @@ func redeployCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "redeploy",
-		Short:   "Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>",
-		Long:    `Redeploy a docker service: sail service redeploy <applicationName>/<serviceId>`,
+		Short:   "Redeploy a docker service: sail service redeploy [<applicationName>/]<serviceId>",
+		Long:    `Redeploy a docker service: sail service redeploy [<applicationName>/]<serviceId>`,
 		Aliases: []string{"restart"},
 		Run:     cmdRedeploy,
 	}
@@ -78,7 +78,7 @@ type Redeploy struct {
 }
 
 func cmdRedeploy(cmd *cobra.Command, args []string) {
-	usage := "Invalid usage. sail service redeploy <applicationName>/<serviceId>. Please see sail service redeploy --help\n"
+	usage := "Invalid usage. sail service redeploy [<applicationName>/]<serviceId>. Please see sail service redeploy --help\n"
 	if len(args) != 1 {
 		fmt.Fprintf(os.Stderr, usage)
 		return

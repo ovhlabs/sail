@@ -76,6 +76,14 @@ func ParseResourceName(repositoryName string) (host, application, repository, ta
 	return
 }
 
+// CheckName validates that a service or application looks consistent. It will only block request that will *always* fail. It does not duplicate API validation
+func CheckName(name string) error {
+	if strings.Contains(name, "/") {
+		return fmt.Errorf("Name %s can not contain '/'", name)
+	}
+	return nil
+}
+
 // CheckHostConsistent with config. Assume config has already been parsed. Consider '' as OK
 func CheckHostConsistent(host string) bool {
 	if host == "" {

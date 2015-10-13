@@ -19,8 +19,8 @@ var (
 func logsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "logs",
-		Short: "Logs of a docker service: sail service logs <applicationName>/<serviceId>",
-		Long:  `Logs of a docker service: sail service logs <applicationName>/<serviceId>`,
+		Short: "Logs of a docker service: sail service logs [<applicationName>/]<serviceId>",
+		Long:  `Logs of a docker service: sail service logs [<applicationName>/]<serviceId>`,
 		Run:   cmdLogs,
 	}
 
