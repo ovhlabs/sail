@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var usageList = "Invalid usage. sail service domain list <application-name>/<service-name>. Please see sail domain list --help"
+var usageList = "Invalid usage. sail service domain list [[<application-name>/]<service-name>]. Please see sail domain list --help"
 var domainHeadersDone = false
 
 var cmdDomainList = &cobra.Command{
