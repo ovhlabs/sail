@@ -3,18 +3,19 @@ package network
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/runabove/sail/internal"
 
 	"github.com/spf13/cobra"
 )
 
+const cmdNetDelUsage = "Remove a private network: sail network delete [<applicationName>/]<networkId>"
+
 var cmdNetworkDelete = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"del", "rm", "remove"},
-	Short:   "Remove a private network: sail network delete <applicationName>/<networkId>",
-	Long:    `Remove a private network: sail network delete <applicationName>/<networkId>`,
+	Short:   cmdNetDelUsage,
+	Long:    cmdNetDelUsage,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			fmt.Fprintln(os.Stderr, "Invalid usage. sail network delete <applicationName>/<networkId>. Please see sail network delete --help")
@@ -25,12 +26,18 @@ var cmdNetworkDelete = &cobra.Command{
 }
 
 func networkRemove(networkID string) {
-	t := strings.Split(networkID, "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, "Invalid usage. sail network delete <applicationName>/<networkId>. Please see sail network delete --help")
-		return
+	// Split namespace and repository
+	host, app, net, tag, err := internal.ParseResourceName(networkID)
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
+	} else if len(tag) > 0 {
+		fmt.Fprintf(os.Stderr, "Error: Invalid network name. Please see sail network delete --help\n")
+		os.Exit(1)
 	}
 
-	path := fmt.Sprintf("/applications/%s/networks/%s", t[0], t[1])
+	path := fmt.Sprintf("/applications/%s/networks/%s", app, net)
 	internal.FormatOutputDef(internal.DeleteWantJSON(path))
 }

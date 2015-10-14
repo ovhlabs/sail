@@ -4,20 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/runabove/sail/internal"
 
 	"github.com/spf13/cobra"
 )
 
+const cmdNetAddUsage = "Add a new private network: sail network add [<applicationName>/]<networkId> subnet"
+
 var cmdNetworkAdd = &cobra.Command{
 	Use:   "add",
-	Short: "Add a new private network: sail network add <applicationName>/<networkId> subnet",
-	Long:  `Add a new private network: sail network add <applicationName>/<networkId> subnet`,
+	Short: cmdNetAddUsage,
+	Long:  cmdNetAddUsage,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail network add <applicationName>/<networkId> subnet. Please see sail network add --help")
+			fmt.Fprintln(os.Stderr, cmdNetAddUsage)
 		} else {
 			n := networkAddStruct{Subnet: args[1]}
 			networkAdd(args[0], n)
@@ -30,16 +31,22 @@ type networkAddStruct struct {
 }
 
 func networkAdd(networkID string, args networkAddStruct) {
-	t := strings.Split(networkID, "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, "Invalid usage. sail network add <applicationName>/<networkId>. Please see sail network add --help")
-		return
+	// Split namespace and repository
+	host, app, net, tag, err := internal.ParseResourceName(networkID)
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
+	} else if len(tag) > 0 {
+		fmt.Fprintf(os.Stderr, "Error: Invalid network name. Please see sail network add --help\n")
+		os.Exit(1)
 	}
 
 	body, err := json.Marshal(args)
 	internal.Check(err)
 
-	path := fmt.Sprintf("/applications/%s/networks/%s", t[0], t[1])
+	path := fmt.Sprintf("/applications/%s/networks/%s", app, net)
 	internal.FormatOutputDef(internal.PostBodyWantJSON(path, body))
 
 }
