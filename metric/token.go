@@ -47,6 +47,11 @@ func cmdCreate(cmd *cobra.Command, args []string) {
 	// Get args
 	application := args[0]
 	path := fmt.Sprintf("/applications/%s/metrics/token", application)
+
+	// Sanity
+	err := internal.CheckName(application)
+	internal.Check(err)
+
 	internal.FormatOutputDef(internal.PostWantJSON(path))
 }
 
@@ -60,6 +65,12 @@ func cmdRevoke(cmd *cobra.Command, args []string) {
 	// Get args
 	application := args[0]
 	token := args[1]
+
+	// Sanity
+	err := internal.CheckName(application)
+	internal.Check(err)
+	err = internal.CheckName(token)
+	internal.Check(err)
 
 	path := fmt.Sprintf("/applications/%s/metrics/token/%s", application, token)
 	data := internal.DeleteWantJSON(path)

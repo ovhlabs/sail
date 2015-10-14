@@ -47,6 +47,10 @@ func serviceDomainAttach(serviceID, domain, pattern, method string) {
 		os.Exit(1)
 	}
 
+	// Sanity checks
+	err = internal.CheckName(domain)
+	internal.Check(err)
+
 	args := domainStruct{Pattern: pattern, Method: method}
 	body, err := json.Marshal(args)
 	internal.Check(err)

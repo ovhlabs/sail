@@ -29,6 +29,10 @@ var cmdApplicationDomainList = &cobra.Command{
 		app := ""
 
 		if len(args) == 1 && args[0] != "" {
+			// Sanity
+			err := internal.CheckName(args[0])
+			internal.Check(err)
+
 			app = args[0]
 		} else if len(args) > 1 {
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain list --help")
@@ -47,6 +51,12 @@ var cmdApplicationDomainDetach = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain attach --help")
 		} else {
+			// Sanity
+			err := internal.CheckName(args[0])
+			internal.Check(err)
+			err = internal.CheckName(args[1])
+			internal.Check(err)
+
 			path := fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])
 			data := internal.DeleteWantJSON(path)
 
