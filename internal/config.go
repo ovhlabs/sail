@@ -16,11 +16,11 @@ type headers map[string]string
 
 var (
 	// Host points to the sailabove infrastructure wanted
-	Host string
+	Host = os.Getenv("SAIL_HOST")
 	// User of sailabove to use
-	User string
+	User = os.Getenv("SAIL_USER")
 	// Password of sailabove account to use
-	Password string
+	Password = os.Getenv("SAIL_PASSWORD")
 	// ConfigDir points to the Docker configuration directory
 	ConfigDir string
 	// Verbose conditions the quantity of output of api requests
@@ -34,6 +34,9 @@ var (
 )
 
 func init() {
+	if Host == "" {
+		Host = "sailabove.io"
+	}
 	Cmd.AddCommand(cmdConfigShow)
 }
 
@@ -105,6 +108,9 @@ func configShow() {
 
 // ReadConfig fetches docker config from ConfigDir
 func ReadConfig() error {
+	if !strings.Contains(Host, "://") {
+		Host = "https://" + Host
+	}
 
 	// if --user / --password are in args, take them.
 	if User != "" && Password != "" {
@@ -120,10 +126,6 @@ func ReadConfig() error {
 
 	if len(c.AuthConfigs) <= 0 {
 		return fmt.Errorf("No Auth found in config file in %s", ConfigDir)
-	}
-
-	if !strings.Contains(Host, "://") {
-		Host = "https://" + Host
 	}
 
 	url, err := url.ParseRequestURI(Host)
