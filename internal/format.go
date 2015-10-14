@@ -32,12 +32,18 @@ func FormatOutputDef(data []byte) {
 
 // FormatOutputError prints the "message" field of an API return or falls back on FormatOutputDef if the field does not exist
 func FormatOutputError(data []byte) {
-	var err map[string]interface{}
-	Check(json.Unmarshal(data, &err))
+	var errorDesc map[string]interface{}
+	if err := json.Unmarshal(data, &errorDesc); err != nil {
+		// sometimes, the API returns a string instead of a
+		// JSON-object for the error. Let's fallback on that
+		s := ""
+		Check(json.Unmarshal(data, &s))
+		errorDesc = map[string]interface{}{"message": s}
+	}
 
-	message := err["message"]
+	message := errorDesc["message"]
 	if message == nil {
-		message = err["error_details"]
+		message = errorDesc["error_details"]
 	}
 
 	if message != nil {
