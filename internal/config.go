@@ -154,7 +154,7 @@ func ReadConfig() error {
 	}
 
 	if User == "" || Password == "" || Host == "" {
-		return fmt.Errorf("Invalid configuration, check user, password and host")
+		return fmt.Errorf("Missing user, password or host in configuration. Did you forget to 'docker login %s' ?", url.Host)
 	}
 
 	expandRegistryURL()

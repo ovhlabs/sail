@@ -145,10 +145,7 @@ func Stream(method string, path string, args []byte, mods ...RequestModifier) (i
 func doRequest(method string, path string, args []byte, mods ...RequestModifier) (io.ReadCloser, int, error) {
 
 	err := ReadConfig()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading configuration: %s\n", err)
-		os.Exit(1)
-	}
+	Check(err)
 
 	var req *http.Request
 	if args != nil {
