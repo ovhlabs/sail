@@ -8,8 +8,8 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/spf13/cobra"
 	"github.com/runabove/sail/internal"
+	"github.com/spf13/cobra"
 )
 
 var cmdServiceList = &cobra.Command{
@@ -29,6 +29,10 @@ func serviceList(apps []string) {
 	services := []string{}
 	var service map[string]interface{}
 	for _, app := range apps {
+		// Sanity checks
+		err := internal.CheckName(app)
+		internal.Check(err)
+
 		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services", app), nil)
 		internal.Check(json.Unmarshal(b, &services))
 		for _, serviceID := range services {
