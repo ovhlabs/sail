@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/runabove/sail/internal"
+	"github.com/spf13/cobra"
 )
 
 var cmdMetricToken = &cobra.Command{
@@ -62,5 +62,9 @@ func cmdRevoke(cmd *cobra.Command, args []string) {
 	token := args[1]
 
 	path := fmt.Sprintf("/applications/%s/metrics/token/%s", application, token)
-	internal.FormatOutputDef(internal.DeleteWantJSON(path))
+	data := internal.DeleteWantJSON(path)
+
+	internal.FormatOutput(data, func(data []byte) {
+		fmt.Fprintf(os.Stderr, "Disabled IoT token %s from service %s\n", token, application)
+	})
 }

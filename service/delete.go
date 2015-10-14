@@ -48,6 +48,8 @@ func cmdServiceDelete(cmd *cobra.Command, args []string) {
 func serviceDelete(namespace string, name string) {
 	path := fmt.Sprintf("/applications/%s/services/%s?force=%t", namespace, name, deleteForce)
 	data := internal.ReqWant("DELETE", http.StatusOK, path, nil)
-	// TODO Check for json error here
-	internal.FormatOutputDef(data)
+
+	internal.FormatOutput(data, func(data []byte) {
+		fmt.Fprintf(os.Stderr, "Deleted service %s/%s\n", namespace, name)
+	})
 }

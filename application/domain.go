@@ -47,7 +47,12 @@ var cmdApplicationDomainDetach = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application domain attach --help")
 		} else {
-			internal.FormatOutputDef(internal.DeleteWantJSON(fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])))
+			path := fmt.Sprintf("/applications/%s/attached-domains/%s", args[0], args[1])
+			data := internal.DeleteWantJSON(path)
+
+			internal.FormatOutput(data, func(data []byte) {
+				fmt.Fprintf(os.Stderr, "Detached domain %s from application %s\n", args[1], args[0])
+			})
 		}
 	},
 }

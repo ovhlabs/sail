@@ -32,5 +32,9 @@ func repositoryRemove(repositoryID string) {
 	}
 
 	path := fmt.Sprintf("/repositories/%s/%s", t[0], t[1])
-	internal.FormatOutputDef(internal.DeleteWantJSON(path))
+	data := internal.DeleteWantJSON(path)
+
+	internal.FormatOutput(data, func(data []byte) {
+		fmt.Fprintf(os.Stderr, "Deleted repository %s/%s\n", t[0], t[1])
+	})
 }
