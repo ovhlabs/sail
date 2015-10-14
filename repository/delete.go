@@ -3,7 +3,6 @@ package repository
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/runabove/sail/internal"
 
@@ -25,16 +24,22 @@ var cmdRepositoryDelete = &cobra.Command{
 }
 
 func repositoryRemove(repositoryID string) {
-	t := strings.Split(repositoryID, "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, "Invalid usage. sail repository delete <applicationName>/<repositoryId>. Please see sail repository delete --help")
-		return
+	// Split namespace and repository
+	host, app, repo, tag, err := internal.ParseResourceName(repositoryID)
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
+	} else if len(tag) > 0 {
+		fmt.Fprintf(os.Stderr, "Error: Invalid repository name. Please see sail repository delete --help\n")
+		os.Exit(1)
 	}
 
-	path := fmt.Sprintf("/repositories/%s/%s", t[0], t[1])
+	path := fmt.Sprintf("/repositories/%s/%s", app, repo)
 	data := internal.DeleteWantJSON(path)
 
 	internal.FormatOutput(data, func(data []byte) {
-		fmt.Fprintf(os.Stderr, "Deleted repository %s/%s\n", t[0], t[1])
+		fmt.Fprintf(os.Stderr, "Deleted repository %s/%s\n", app, repo)
 	})
 }
