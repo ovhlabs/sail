@@ -46,22 +46,28 @@ type Logs struct {
 }
 
 func cmdLogs(cmd *cobra.Command, args []string) {
-	usage := "usage: sail containers logs <applicationName>/<containerId>"
+	usage := "usage: sail containers logs [<applicationName>/]<containerId>"
 
 	if len(args) != 1 {
 		fmt.Fprintln(os.Stderr, usage)
 		os.Exit(1)
 	}
 
-	t := strings.Split(args[0], "/")
-	if len(t) != 2 {
-		fmt.Fprintln(os.Stderr, usage)
+	// Split namespace and container
+	host, app, container, tag, err := internal.ParseResourceName(args[0])
+	internal.Check(err)
+
+	if !internal.CheckHostConsistent(host) {
+		fmt.Fprintf(os.Stderr, "Error: Invalid Host %s for endpoint %s\n", host, internal.Host)
+		os.Exit(1)
+	} else if len(tag) > 0 {
+		fmt.Fprintf(os.Stderr, "Error: Invalid container name. Please see sail container logs --help\n")
 		os.Exit(1)
 	}
 
 	// Get args
-	logsBody.Application = t[0]
-	logsBody.Container = t[1]
+	logsBody.Application = app
+	logsBody.Container = container
 	containerLogs(logsBody)
 }
 
