@@ -1,4 +1,4 @@
 package internal
 
 // VERSION of sail
-const VERSION = "$version"
+const VERSION = "0.5.2"
