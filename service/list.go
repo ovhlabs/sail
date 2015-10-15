@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"text/tabwriter"
 
@@ -22,7 +23,7 @@ var cmdServiceList = &cobra.Command{
 }
 
 func serviceList(apps []string) {
-	w := tabwriter.NewWriter(os.Stdout, 27, 1, 2, ' ', 0)
+	w := tabwriter.NewWriter(os.Stdout, 0, 4, 2, ' ', 0)
 	titles := []string{"NAME", "REPOSITORY", "IMAGE ID", "STATE", "CONTAINERS", "CREATED", "NETWORK"}
 	fmt.Fprintln(w, strings.Join(titles, "\t"))
 
@@ -35,6 +36,7 @@ func serviceList(apps []string) {
 
 		b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services", app), nil)
 		internal.Check(json.Unmarshal(b, &services))
+		sort.StringSlice(services).Sort()
 		for _, serviceID := range services {
 			b := internal.ReqWant("GET", http.StatusOK, fmt.Sprintf("/applications/%s/services/%s", app, serviceID), nil)
 			internal.Check(json.Unmarshal(b, &service))
@@ -55,8 +57,7 @@ func serviceList(apps []string) {
 				int(service["container_number"].(float64)),
 				service["creation_date"].(string)[:19],
 				strings.Join(ips, ","))
-
-			w.Flush()
 		}
 	}
+	w.Flush()
 }
