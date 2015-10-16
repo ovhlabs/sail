@@ -36,7 +36,7 @@ func addCmd() *cobra.Command {
 		[--network      {public|private|<namespace name>}]
 		[--network-allow [network:]ip[/mask] Use IPs whitelist]
 		[--publish, -p  Publish a container's port to the host]
-		[                 format: network:publishedPort:containerPort, network::containerPort, publishedPort:containerPort, containerPort]
+		[                 format: network:publishedPort:containerPort, network:containerPort, publishedPort:containerPort, containerPort]
 		[--gateway      network-input:network-output
 		[--restart {no|always[:<max>]|on-failure[:<max>]}]
 		[--volume       /path:size] (Size in GB)
@@ -290,11 +290,11 @@ func parsePublishedPort(args []string) map[string][]PortConfig {
 		split := strings.Split(pub, ":")
 		if len(split) == 1 { // containerPort
 			v[split[0]+"/tcp"] = []PortConfig{PortConfig{PublishedPort: split[0]}}
-		} else if len(split) == 2 { // network::containerPort, publishedPort:containerPort
-			_, err := strconv.Atoi("-42")
-			if err != nil { // network::containerPort
+		} else if len(split) == 2 { // network:containerPort, publishedPort:containerPort 
+			_, err := strconv.Atoi(split[0])
+			if err != nil { // network:containerPort
 				key := split[0] + "/" + split[1]
-				v[key] = append(v[key], PortConfig{PublishedPort: split[0], Network: split[1]})
+				v[key] = append(v[key], PortConfig{Network: split[0], PublishedPort: split[1]})
 			} else { // publishedPort:containerPort
 				key := split[0] + "/tcp"
 				v[key] = append(v[key], PortConfig{PublishedPort: split[1]})
@@ -304,8 +304,8 @@ func parsePublishedPort(args []string) map[string][]PortConfig {
 				split[1] = split[2]
 			}
 
-			key := split[1] + "/" + split[0]
-			v[key] = append(v[key], PortConfig{PublishedPort: split[2], Network: split[0]})
+			key := split[0] + "/" + split[2]
+			v[key] = append(v[key], PortConfig{PublishedPort: split[1], Network: split[0]})
 		}
 	}
 
