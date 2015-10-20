@@ -68,13 +68,13 @@ func TestParsePublishedPortPublishedPortContainerPort(t *testing.T){
 }
 
 func TestParsePublishedPortNetworkContainerPort(t *testing.T){
-	// network:containerPort
-	// expecting containerPorts["1.2.3.4/8080"][0]{Network:"1.2.3.4" PublishedPort:"8080"}
+	// network::containerPort
+	// expecting containerPorts["8080/tcp"][0]{Network:"1.2.3.4" PublishedPort:"8080"}
 	
 	Network := "1.2.3.4"
 	ContainerPort := "8080"
 	
-	addPublish := []string{Network + ":" + ContainerPort}
+	addPublish := []string{Network + "::" + ContainerPort}
 
 	containerPorts := make(map[string][]PortConfig)
 
@@ -92,13 +92,13 @@ func TestParsePublishedPortNetworkContainerPort(t *testing.T){
 		t.Error("Had object ", containerPorts)
 	}
 
-	if(containerPorts[Network+"/"+ContainerPort][0].PublishedPort != ContainerPort){
-		t.Error("Expecting a PublishedPort on port " + ContainerPort + " , got ", containerPorts[Network+"/"+ContainerPort][0].PublishedPort)
+	if(containerPorts[ContainerPort+"/tcp"][0].PublishedPort != ContainerPort){
+		t.Error("Expecting a PublishedPort on port " + ContainerPort + " , got ", containerPorts[ContainerPort+"/tcp"][0].PublishedPort)
 	}
 
 
-	if(containerPorts[Network+"/"+ContainerPort][0].Network != Network){
-		t.Error("Expecting a Network " + Network + " , got ", containerPorts[Network+"/"+ContainerPort][0].Network)
+	if(containerPorts[ContainerPort+"/tcp"][0].Network != Network){
+		t.Error("Expecting a Network " + Network + " , got ", containerPorts[ContainerPort+"/tcp"][0].Network)
 	}
 }
 
