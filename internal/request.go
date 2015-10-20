@@ -65,7 +65,8 @@ func StreamPrint(method string, path string, args []byte, mods ...RequestModifie
 	}
 
 	go func(stream io.ReadCloser) {
-		DisplayStream(reader)
+		_, err := DisplayStream(reader)
+		Check(err)
 	}(reader)
 }
 
@@ -82,7 +83,8 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	defer bodyStream.Close()
 
 	if stream && code == wantCode {
-		DisplayStream(bodyStream)
+		_, err := DisplayStream(bodyStream)
+		Check(err)
 		return nil
 	}
 
@@ -203,7 +205,6 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 		// Error message (will be last message)
 		e := DecodeError(line)
 		if e != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", e.Message)
 			return line, fmt.Errorf(e.Message)
 		}
 
