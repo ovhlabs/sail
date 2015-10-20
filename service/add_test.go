@@ -73,7 +73,7 @@ func TestParsePublishedPortNetworkContainerPort(t *testing.T){
 	
 	Network := "1.2.3.4"
 	ContainerPort := "8080"
-	
+
 	addPublish := []string{Network + "::" + ContainerPort}
 
 	containerPorts := make(map[string][]PortConfig)
@@ -95,7 +95,6 @@ func TestParsePublishedPortNetworkContainerPort(t *testing.T){
 	if(containerPorts[ContainerPort+"/tcp"][0].PublishedPort != ContainerPort){
 		t.Error("Expecting a PublishedPort on port " + ContainerPort + " , got ", containerPorts[ContainerPort+"/tcp"][0].PublishedPort)
 	}
-
 
 	if(containerPorts[ContainerPort+"/tcp"][0].Network != Network){
 		t.Error("Expecting a Network " + Network + " , got ", containerPorts[ContainerPort+"/tcp"][0].Network)
