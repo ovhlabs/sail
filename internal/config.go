@@ -108,9 +108,7 @@ func configShow() {
 
 // ReadConfig fetches docker config from ConfigDir
 func ReadConfig() error {
-	if !strings.Contains(Host, "://") {
-		Host = "https://" + Host
-	}
+	expandRegistryURL()
 
 	// if --user / --password are in args, take them.
 	if User != "" && Password != "" {
@@ -159,12 +157,14 @@ func ReadConfig() error {
 		return fmt.Errorf("Missing user, password or host in configuration. Did you forget to 'docker login %s' ?", url.Host)
 	}
 
-	expandRegistryURL()
 	return nil
 }
 
 func expandRegistryURL() {
-	Host = Host + "/v1"
+	if strings.Contains(Host, "/v1") == false {
+		Host = Host + "/v1"
+	}
+
 	if strings.HasPrefix(Host, "http") || strings.HasPrefix(Host, "https") {
 		return
 	}
