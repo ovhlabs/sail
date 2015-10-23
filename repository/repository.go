@@ -3,7 +3,7 @@ package repository
 import "github.com/spf13/cobra"
 
 func init() {
-	Cmd.AddCommand(cmdRepositoryAdd)
+	//Cmd.AddCommand(cmdRepositoryAdd)
 	Cmd.AddCommand(cmdRepositoryDelete)
 	Cmd.AddCommand(cmdRepositoryList)
 }
