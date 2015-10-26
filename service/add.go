@@ -31,8 +31,9 @@ const cmdAddUsage = "Invalid usage. sail service add [<application>/]<repository
 func addCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "add",
-		Short: "Add a new docker service",
+		Use:     "add",
+		Aliases: []string{"create", "a", "c"},
+		Short:   "Add a new docker service",
 		Long: `add [<namespace>/]<repository>[:tag] [namespace/]<service-name>
 		--model         Container model
 		--number        Number of container to run
