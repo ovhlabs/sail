@@ -10,6 +10,12 @@ func init() {
 	cmdApplicationDomain.AddCommand(cmdApplicationDomainDetach)
 
 	Cmd.AddCommand(cmdApplicationDomain)
+
+	cmdApplicationWebhook.AddCommand(cmdApplicationWebhookList)
+	cmdApplicationWebhook.AddCommand(cmdApplicationWebhookAdd)
+	cmdApplicationWebhook.AddCommand(cmdApplicationWebhookDelete)
+
+	Cmd.AddCommand(cmdApplicationWebhook)
 }
 
 // Cmd application
