@@ -92,7 +92,8 @@ func apiRequest(method string, wantCode int, path string, jsonStr []byte, stream
 	body, err = ioutil.ReadAll(bodyStream)
 	Check(err)
 
-	if code != wantCode {
+	// Hard-wire 201-200 equivalence to work around api returning 200 in place of 201
+	if code != wantCode && !(wantCode == http.StatusCreated && code == http.StatusOK) {
 		if err == nil {
 			FormatOutput(body, FormatOutputError)
 		}
