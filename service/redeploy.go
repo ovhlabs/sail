@@ -47,7 +47,7 @@ func redeployCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&redeployBody.ContainerUser, "user", "", "", "override docker user")
 	cmd.Flags().StringSliceVar(&redeployNetwork, "network", nil, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&redeployNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
-	cmd.Flags().StringSliceVarP(&redeployPublished, "publish", "", nil, "Publish a container's port to the host")
+	cmd.Flags().StringSliceVarP(&redeployPublished, "publish", "p", nil, "Publish a container's port to the host")
 	cmd.Flags().StringSliceVarP(&redeployGateway, "gateway", "", nil, "network-input:network-output")
 	cmd.Flags().StringSliceVarP(&redeployVolume, "volume", "", nil, "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&redeployBatch, "batch", "", false, "do not attach console on start")
