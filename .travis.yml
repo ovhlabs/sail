@@ -6,7 +6,6 @@ go:
 env:
   global:
     - GO15VENDOREXPERIMENT=1
-    - URL_UPDATE_RELEASE="https://github.com/runabove/sail/releases/download/$TRAVIS_TAG"
     - URL_UPDATE_SNAPSHOT=""
     - PROJECT_NAME="sail"
     - PROJECT_PATH="github.com/runabove"
@@ -34,4 +33,3 @@ notifications:
   email:
     recipients:
       - release@sailabove.com
-
