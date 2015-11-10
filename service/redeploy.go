@@ -38,7 +38,7 @@ func redeployCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&redeployBody.ContainerModel, "model", "", "", "Container model")
 	cmd.Flags().IntVarP(&redeployBody.ContainerNumber, "number", "", 0, "Number of container to run")
-	cmd.Flags().StringSliceVarP(&redeployBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
+	cmd.Flags().StringSliceVarP(&redeployBody.ContainerEnvironment, "env", "e", nil, "override docker environment. Syntax: key=val,...")
 	cmd.Flags().StringVarP(&redeployBody.RestartPolicy, "restart", "", "", "{no|always[:<max>]|on-failure[:<max>]}")
 	cmd.Flags().StringVarP(&redeployCommand, "command", "", "", "override docker run command")
 	cmd.Flags().StringVarP(&redeployBody.RepositoryTag, "tag", "", "", "deploy from new image version")

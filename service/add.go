@@ -75,7 +75,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().StringSliceVar(&cmdAddVolume, "volume", nil, "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&addBatch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().BoolVarP(&cmdAddRedeploy, "redeploy", "", false, "if the service already exists, redeploy instead")
-	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment")
+	cmd.Flags().StringSliceVarP(&cmdAddBody.ContainerEnvironment, "env", "e", nil, "override docker environment. Syntax: key=val,...")
 	cmd.Flags().StringVarP(&cmdAddBody.Pool, "pool", "", "", "Dedicated host pool")
 	return cmd
 }
