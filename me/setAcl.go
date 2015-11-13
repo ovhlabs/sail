@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/spf13/cobra"
 	"github.com/runabove/sail/internal"
+	"github.com/spf13/cobra"
 )
 
 var cmdMeSetAcl = &cobra.Command{

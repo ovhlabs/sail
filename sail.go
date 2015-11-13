@@ -13,6 +13,7 @@ import (
 	"github.com/runabove/sail/me"
 	"github.com/runabove/sail/metric"
 	"github.com/runabove/sail/network"
+	"github.com/runabove/sail/operation"
 	"github.com/runabove/sail/repository"
 	"github.com/runabove/sail/service"
 	"github.com/runabove/sail/update"
@@ -47,6 +48,7 @@ func addCommands() {
 	rootCmd.AddCommand(metric.Cmd)
 	rootCmd.AddCommand(network.Cmd)
 	rootCmd.AddCommand(repository.Cmd)
+	rootCmd.AddCommand(operation.Cmd)
 	rootCmd.AddCommand(service.Cmd)
 	rootCmd.AddCommand(update.Cmd)
 	rootCmd.AddCommand(version.Cmd)

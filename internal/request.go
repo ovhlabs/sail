@@ -229,6 +229,14 @@ func GetListApplications(apps []string) []string {
 	return apps
 }
 
+// GetUserName returns the name of the current user, GET on /users
+func GetUserName() string {
+	user := map[string]string{}
+	r := GetWantJSON("/users")
+	json.Unmarshal(r, &user)
+	return user["name"]
+}
+
 // Check checks e and panic if not nil
 func Check(err error) {
 	if err != nil {
