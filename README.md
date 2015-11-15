@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/runabove/sail.svg?branch=master)](https://travis-ci.org/runabove/sail)
+[![GoDoc](https://godoc.org/github.com/runabove/sail?status.svg)](https://godoc.org/github.com/runabove/sail)
+
 # Sailabove client
 
 Sailabove.com is a docker hosting solution aiming to be as flexible as a
@@ -95,4 +98,3 @@ to hear from you! Make sure to read [CONTRIBUTING.md](./CONTRIBUTING.md) before.
 - **Get started**: https://community.runabove.com/kb/en/docker/getting-started-with-sailabove-docker.html
 - **Documentation**: [Reference documentation](https://community.runabove.com/kb/en/docker/documentation), [Guides](http://community.runabove.com/kb/en/docker/)
 - **OVH Docker mailing-list**: docker-subscribe@ml.ovh.net
-
