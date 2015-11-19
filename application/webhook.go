@@ -13,7 +13,36 @@ import (
 var cmdApplicationWebhook = &cobra.Command{
 	Use:   "webhook",
 	Short: "Application webhook commands: sail application webhook --help",
-	Long:  `Application webhook commands: sail application webhook <command>`,
+	Long: `Application webhook commands: sail application webhook <command>
+
+Events will be posted as json to the webhook. See below for an example.
+
+In case the webhook can not be reached, Sailabove will retry up to 10 times to send the event over approximately 2hours.
+In this case, events may arrive out of order.
+
+Example of what an event looks like :
+{
+    "service": "sampleapp",
+    "timestamp": 1448015759.061321,
+    "application": "devel",
+    "id": "b9e7bef7-d571-4ee4-b80e-835a2377040e", <- id of the container
+    "state": "STOPPED",
+    "prev_state": "STOPPING",
+    "type": "Container",
+    "data": {
+        "last_exit_status": {
+            "reason": "exited",
+            "exit_status": 1,
+            "raw_exit_status": 256
+        }
+    },
+    "event": "state",
+    "counters": {
+        "start": 12, <- how many times your container has started.
+        "post_attempts": 5 <- how many times we've tried to contact this hook url before succeeding.
+    }
+}
+`,
 }
 
 var cmdApplicationWebhookList = &cobra.Command{
@@ -41,7 +70,7 @@ var cmdApplicationWebhookAdd = &cobra.Command{
 	Short: "Add a webhook to an application ; sail application webhook add <applicationName> <WebhookURL>",
 	Long: `Add a webhook to an application ; sail application webhook add <applicationName> <WebhookURL>
 		example: sail application webhook add my-app http://www.endpoint.com/hook
-		Endpoint url must except POST with json body.
+		Endpoint url must accept POST with json body.
 		`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
