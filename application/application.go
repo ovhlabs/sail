@@ -16,6 +16,12 @@ func init() {
 	cmdApplicationWebhook.AddCommand(cmdApplicationWebhookDelete)
 
 	Cmd.AddCommand(cmdApplicationWebhook)
+
+	cmdApplicationEnv.AddCommand(cmdApplicationListEnv)
+	cmdApplicationEnv.AddCommand(cmdApplicationSetEnv)
+	cmdApplicationEnv.AddCommand(cmdApplicationDelEnv)
+
+	Cmd.AddCommand(cmdApplicationEnv)
 }
 
 // Cmd application
