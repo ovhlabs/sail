@@ -6,6 +6,12 @@ func init() {
 	Cmd.AddCommand(cmdMeShow)
 	Cmd.AddCommand(cmdMeSetPassword)
 	Cmd.AddCommand(cmdMeSetAcl)
+
+	cmdMeSSHKey.AddCommand(cmdMeSSHKeyList)
+	cmdMeSSHKey.AddCommand(cmdMeSSHKeyAdd)
+	cmdMeSSHKey.AddCommand(cmdMeSSHKeyDelete)
+
+	Cmd.AddCommand(cmdMeSSHKey)
 }
 
 // Cmd me
