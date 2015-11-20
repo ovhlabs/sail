@@ -18,7 +18,6 @@ var (
 	redeployLink         []string
 	redeployNetwork      []string
 	redeployNetworkAllow string
-	redeployGateway      []string
 	redeployVolume       []string
 	redeployBatch        bool
 	redeployPool         string
@@ -48,7 +47,6 @@ func redeployCmd() *cobra.Command {
 	cmd.Flags().StringSliceVar(&redeployNetwork, "network", nil, "public|private|<namespace name>")
 	cmd.Flags().StringVarP(&redeployNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
 	cmd.Flags().StringSliceVarP(&redeployPublished, "publish", "p", nil, "Publish a container's port to the host")
-	cmd.Flags().StringSliceVarP(&redeployGateway, "gateway", "", nil, "network-input:network-output")
 	cmd.Flags().StringSliceVarP(&redeployVolume, "volume", "", nil, "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&redeployBatch, "batch", "", false, "do not attach console on start")
 	cmd.Flags().StringSliceVarP(&redeployLink, "link", "", nil, "name:alias")
@@ -160,13 +158,6 @@ func serviceRedeploy(args Redeploy) {
 		args.ContainerNetwork[network] = make(map[string][]string)
 	}
 
-	for _, gat := range redeployGateway {
-		t := strings.Split(gat, ":")
-		if len(t) != 2 {
-			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\". Typically, output will be 'predictor' or 'public'")
-			os.Exit(1)
-		}
-	}
 	// Load Pool
 	args.Pool = redeployPool
 

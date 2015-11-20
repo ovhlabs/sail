@@ -42,7 +42,7 @@ func addCmd() *cobra.Command {
 		[--network-allow [network:]ip[/mask] Use IPs whitelist]
 		[--publish, -p  Publish a container's port to the host]
 		[                 format: network:publishedPort:containerPort, network::containerPort, publishedPort:containerPort, containerPort]
-		[--gateway      network-input:network-output
+		[--gateway      DEPRECATED: network-input:network-output
 		[--restart {no|always[:<max>]|on-failure[:<max>]}]
 		[--volume       /path:size] (Size in GB)
 		[--batch        do not attach console on start]
@@ -214,6 +214,8 @@ func serviceAdd(args Add) {
 	}
 
 	for _, gat := range cmdAddGateway {
+		fmt.Fprintf(os.Stderr, "WARNING: --gateway parameter is deprecated")
+
 		t := strings.Split(gat, ":")
 		if len(t) != 2 {
 			fmt.Fprintf(os.Stderr, "Invalid gateway parameter, should be \"input:output\". Typically, output will be one of 'predictor', 'public'")
