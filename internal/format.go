@@ -47,7 +47,7 @@ func FormatOutputError(data []byte) {
 	}
 
 	if message != nil {
-		fmt.Printf("Error: %s\n", message)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", message)
 	} else {
 		FormatOutputDef(data)
 	}
