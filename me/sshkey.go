@@ -35,12 +35,12 @@ var cmdMeSSHKeyAdd = &cobra.Command{
 
 	Use:     "add",
 	Aliases: []string{"register"},
-	Short:   "Add an ssh key this account from a public key file or from stdin: sail me sshkey add <keyName> [<filepath>] ",
-	Long: `Add an ssh key this account from a public key file or from stdin: sail me sshkey add <keyName> [<filepath>]
+	Short:   `Add an ssh key to this account from a public key file or from stdin: sail me sshkey add "<keyName>" [<filepath>] `,
+	Long: `Add an ssh key to this account from a public key file or from stdin: sail me sshkey add "<keyName>" [<filepath>]
 Support spaces in key name.
 examples:
-sail me sshkey add "my test name" /home/user/.ssh/id_rsa
-sail me sshkey add "my test name" then copy and paste the content of /home/user/.ssh/id_rsa
+  sail me sshkey add "my test name" /home/user/.ssh/id_rsa
+  sail me sshkey add "my test name" then copy and paste the content of /home/user/.ssh/id_rsa
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 || args[0] == "" {
@@ -69,9 +69,10 @@ var cmdMeSSHKeyDelete = &cobra.Command{
 
 	Use:     "delete",
 	Aliases: []string{"del", "rm"},
-	Short:   "Delete an ssh keys from the account: sail me sshkey delete <fingerprint>",
-	Long: `Delete an ssh keys of this account: sail me sshkey delete <fingerprint>
-	example : sail me sshkey delete 0d/keDZZb3OAjj+8JI7T5iIxMLUT643YfW3mBznqrC8=`,
+	Short:   "Delete an ssh keys from this account: sail me sshkey delete <fingerprint>",
+	Long: `Delete an ssh keys from this account: sail me sshkey delete <fingerprint>
+example :
+  sail me sshkey delete 0d/keDZZb3OAjj+8JI7T5iIxMLUT643YfW3mBznqrC8=`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 || args[0] == "" {
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail me sshkey delete --help")
