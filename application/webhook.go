@@ -48,57 +48,92 @@ Example of what an event looks like :
 var cmdApplicationWebhookList = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Short:   "List the webhooks of an app: sail application webhook list <applicationName>",
-	Long: `List the webhooks of an app: sail application webhook list <applicationName>
-	example: sail application webhook list my-app"
+	Short:   "List the webhooks of an app: sail application webhook list [<applicationName>]",
+	Long: `List the webhooks of an app: sail application webhook list [<applicationName>]
+example:
+	sail application webhook list
+	sail application webhook list my-app
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 || args[0] == "" {
+		var applicationName string
+		switch len(args) {
+		case 0:
+			applicationName = internal.GetUserName()
+		case 1:
+			applicationName = args[0]
+		default:
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application webhook list --help")
-		} else {
-			// Sanity
-			err := internal.CheckName(args[0])
-			internal.Check(err)
-
-			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/hook", args[0])))
+			return
 		}
+		// Sanity
+		err := internal.CheckName(applicationName)
+		internal.Check(err)
+
+		internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/hook", applicationName)))
 	},
 }
 
 var cmdApplicationWebhookAdd = &cobra.Command{
 	Use:   "add",
-	Short: "Add a webhook to an application ; sail application webhook add <applicationName> <WebhookURL>",
-	Long: `Add a webhook to an application ; sail application webhook add <applicationName> <WebhookURL>
-		example: sail application webhook add my-app http://www.endpoint.com/hook
-		Endpoint url must accept POST with json body.
+	Short: "Add a webhook to an application ; sail application webhook add [<applicationName>] <WebhookURL>",
+	Long: `Add a webhook to an application ; sail application webhook add [<applicationName>] <WebhookURL>
+example:
+	sail application webhook add http://www.endpoint.com/hook
+	sail application webhook add my-app http://www.endpoint.com/hook
+Endpoint url must accept POST with json body.
 		`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
+		var applicationName string
+		var webhookURL string
+		switch len(args) {
+		case 1:
+			applicationName = internal.GetUserName()
+			webhookURL = args[0]
+		case 2:
+			applicationName = args[0]
+			webhookURL = args[1]
+		default:
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application webhook add --help")
-		} else {
-			// Sanity
-			err := internal.CheckName(args[0])
-			internal.Check(err)
-			webhookAdd(args[0], args[1])
+			return
 		}
+		// Sanity
+		err := internal.CheckName(applicationName)
+		internal.Check(err)
+
+		webhookAdd(applicationName, webhookURL)
 	},
 }
 
 var cmdApplicationWebhookDelete = &cobra.Command{
-	Use:   "delete",
-	Short: "Delete a webhook to an application ; sail application webhook delete <applicationName> <WebhookURL>",
-	Long: `Delete a webhook to an application ; sail application webhook delete <applicationName> <WebhookURL>
-		example: sail application webhook delete my-app http://www.endpoint.com/hook
+	Use:     "delete",
+	Aliases: []string{"del", "rm"},
+	Short:   "Delete a webhook to an application ; sail application webhook delete [<applicationName>] <WebhookURL>",
+	Long: `Delete a webhook to an application ; sail application webhook delete [<applicationName>] <WebhookURL>
+example:
+	sail application webhook delete http://www.endpoint.com/hook
+	sail application webhook delete my-app http://www.endpoint.com/hook
 		`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
+		var applicationName string
+		var webhookURL string
+		switch len(args) {
+		case 1:
+			applicationName = internal.GetUserName()
+			webhookURL = args[0]
+		case 2:
+			applicationName = args[0]
+			webhookURL = args[1]
+		default:
 			fmt.Fprintln(os.Stderr, "Invalid usage. Please see sail application webhook delete --help")
-		} else {
-			// Sanity
-			err := internal.CheckName(args[0])
-			internal.Check(err)
-			webhookDelete(args[0], args[1])
+			return
 		}
+
+		// Sanity
+		err := internal.CheckName(applicationName)
+		internal.Check(err)
+
+		webhookDelete(applicationName, webhookURL)
+
 	},
 }
 
