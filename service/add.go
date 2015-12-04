@@ -15,7 +15,7 @@ import (
 )
 
 var cmdAddLink []string
-var cmdAddNetworkAllow string
+var cmdAddNetworkAllow []string
 var addPublish []string
 var cmdAddGateway []string
 var cmdAddVolume []string
@@ -63,7 +63,7 @@ func addCmd() *cobra.Command {
 	cmd.Flags().IntVarP(&cmdAddBody.ContainerNumber, "number", "", 1, "Number of container to run")
 	cmd.Flags().StringSliceVarP(&cmdAddLink, "link", "", nil, "name:alias")
 	cmd.Flags().StringSliceVar(&cmdAddNetwork, "network", []string{}, "public|private|<namespace name>")
-	cmd.Flags().StringVarP(&cmdAddNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
+	cmd.Flags().StringSliceVar(&cmdAddNetworkAllow, "network-allow", []string{}, "[network:]ip[/mask] Use IPs whitelist")
 	cmd.Flags().StringSliceVarP(&addPublish, "publish", "p", nil, "Publish a container's port to the host")
 	cmd.Flags().StringSliceVar(&cmdAddGateway, "gateway", nil, "network-input:network-output")
 	cmd.Flags().StringVarP(&cmdAddBody.RestartPolicy, "restart", "", "no", "{no|always[:<max>]|on-failure[:<max>]}")
@@ -82,8 +82,9 @@ func addCmd() *cobra.Command {
 
 // PortConfig is a parameter of Add to modify exposed container ports
 type PortConfig struct {
-	PublishedPort string `json:"published_port"`
-	Network       string `json:"network,omitempty"`
+	PublishedPort    string   `json:"published_port"`
+	WhitelistedCidrs []string `json:"whitelisted_cidrs"`
+	Network          string   `json:"network,omitempty"`
 }
 
 // VolumeConfig is a parameter of Add to modify mounted volumes
@@ -235,6 +236,9 @@ func serviceAdd(args Add) {
 	// Parse ContainerPorts
 	args.ContainerPorts = parsePublishedPort(addPublish)
 
+	// Parse NetworkAllow
+	args.ContainerPorts = parseWhitelistedCidrs(cmdAddNetworkAllow, args.ContainerPorts)
+
 	path := fmt.Sprintf("/applications/%s/services/%s", args.Application, args.Service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {
@@ -339,4 +343,31 @@ func parsePublishedPort(args []string) map[string][]PortConfig {
 	}
 
 	return v
+}
+
+func parseWhitelistedCidrs(args []string, containerPorts map[string][]PortConfig) map[string][]PortConfig {
+	// Parse NetworkAllow
+	for _, network := range args {
+		parsedNetwork := strings.Split(network, ":")
+		addr := parsedNetwork[0]
+		if len(parsedNetwork) == 1 {
+			// No port specified, applying to all exposed ports
+			for port := range containerPorts {
+				for portConfig := range containerPorts[port] {
+					containerPorts[port][portConfig].WhitelistedCidrs = append(containerPorts[port][portConfig].WhitelistedCidrs, addr)
+				}
+			}
+		} else if len(parsedNetwork) == 2 {
+			// Apply to specified port
+			port := parsedNetwork[1] + "/tcp"
+			for portConfig := range containerPorts[port] {
+				containerPorts[port][portConfig].WhitelistedCidrs = append(containerPorts[port][portConfig].WhitelistedCidrs, addr)
+			}
+		} else {
+			fmt.Fprintf(os.Stderr, "Invalid allowed network, should be 1.2.3.4[/24][:80]")
+			os.Exit(1)
+		}
+	}
+
+	return containerPorts
 }

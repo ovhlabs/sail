@@ -17,7 +17,7 @@ var (
 	redeployPublished    []string
 	redeployLink         []string
 	redeployNetwork      []string
-	redeployNetworkAllow string
+	redeployNetworkAllow []string
 	redeployVolume       []string
 	redeployBatch        bool
 	redeployPool         string
@@ -45,7 +45,7 @@ func redeployCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&redeployEntrypoint, "entrypoint", "", "", "override docker entrypoint")
 	cmd.Flags().StringVarP(&redeployBody.ContainerUser, "user", "", "", "override docker user")
 	cmd.Flags().StringSliceVar(&redeployNetwork, "network", nil, "public|private|<namespace name>")
-	cmd.Flags().StringVarP(&redeployNetworkAllow, "network-allow", "", "", "[network:]ip[/mask] Use IPs whitelist")
+	cmd.Flags().StringSliceVar(&redeployNetworkAllow, "network-allow", []string{}, "[network:]ip[/mask] Use IPs whitelist")
 	cmd.Flags().StringSliceVarP(&redeployPublished, "publish", "p", nil, "Publish a container's port to the host")
 	cmd.Flags().StringSliceVarP(&redeployVolume, "volume", "", nil, "/path:size] (Size in GB)")
 	cmd.Flags().BoolVarP(&redeployBatch, "batch", "", false, "do not attach console on start")
@@ -165,6 +165,9 @@ func serviceRedeploy(args Redeploy) {
 	args.ContainerPorts = parsePublishedPort(redeployPublished)
 	app := args.Application
 	service := args.Service
+
+	// Parse NetworkAllow
+	args.ContainerPorts = parseWhitelistedCidrs(redeployNetworkAllow, args.ContainerPorts)
 
 	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", app, service)
 	body, err := json.MarshalIndent(args, " ", " ")
