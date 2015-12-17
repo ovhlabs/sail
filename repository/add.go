@@ -13,35 +13,41 @@ import (
 var cmdRepositoryAdd = &cobra.Command{
 	// FIXME: only support adding from source via CLI, type external. Rename to 'register' ?
 	Use:   "add",
-	Short: "Add a new repository: sail repository add [<applicationName>/]<repositoryId> <type> [source]",
-	Long: `Add a new repository: sail repository add [<applicationName>/]<repositoryId> <type> [source]
+	Short: "Add an external repository: sail repository add [<applicationName>/]<repositoryName> [<source>/][<namespace>/]<externalRepositoryName> ",
+	Long: `Add an external repository: sail repository add [<applicationName>/]<repositoryName> [<source>/][<user>/]<externalRepositoryName>
+examples:
+	- sail repository add myapp/myrepo docker.private.registry/privateRegistryAccount/mysql
+	- sail repository add myapp/myrepo dockerHubAccount/mysql
+	- sail repository add myapp/myrepo mysql
 
-	<type> The type of repository {hosted,external}
-	[source] For external repositories, the source (e.g. registry.hub.docker.com/redis)
-
+[<user>] The account which hold the distant repository. If ommitted it use official docker image.
+<externalRepositoryName> the name of the distant repository. Example : tutum/nginx
+[<source>] For external repositories. Default value : the docker hub (e.g. https://hub.docker.com)
+Only pubic repositories are supported yet. ADD NOTE FOR PRIVATE REGISTRIES
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail repository add [<applicationName>/]<repositoryId> <type> [source]. Please see sail repository add --help")
-		} else {
-			source := ""
-			if len(args) == 3 {
-				source = args[2]
-			}
-			n := repositoryAddStruct{Type: args[1], Source: source}
-			repositoryAdd(args[0], n)
+		switch len(args) {
+		case 2:
+			repositoryName := args[0]
+			source := args[1]
+
+		default:
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail repository add [<applicationName>/]<repositoryName> [<source>/][<user>/]<externalRepositoryName>. Please see sail repository add --help")
+			return
 		}
+
+		n := repositoryAddStruct{Source: source}
+		repositoryAdd(repositoryName, n)
 	},
 }
 
 type repositoryAddStruct struct {
-	Type   string `json:"type"`
-	Source string `json:"source,omitempty"`
+	Source string `json:"source"`
 }
 
-func repositoryAdd(repositoryID string, args repositoryAddStruct) {
+func repositoryAdd(repositoryName string, args repositoryAddStruct) {
 	// Split namespace and repository
-	host, app, repo, tag, err := internal.ParseResourceName(repositoryID)
+	host, app, repo, tag, err := internal.ParseResourceName(repositoryName)
 	internal.Check(err)
 
 	if !internal.CheckHostConsistent(host) {
