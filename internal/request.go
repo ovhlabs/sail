@@ -196,6 +196,11 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 			fmt.Fprintf(os.Stderr, "Received message: %v\n", string(line))
 		}
 
+		// Drop empty lines
+		if len(line) == 0 {
+			continue
+		}
+
 		// Progress message
 		m := DecodeMessage(line)
 		if m != nil {

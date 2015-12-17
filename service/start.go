@@ -58,7 +58,7 @@ func serviceStart(app string, service string, batch bool) {
 
 	line, err := internal.DisplayStream(buffer)
 	internal.Check(err)
-	if line != nil {
+	if len(line) > 0 {
 		var data map[string]interface{}
 		err = json.Unmarshal(line, &data)
 		internal.Check(err)

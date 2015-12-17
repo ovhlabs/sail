@@ -76,7 +76,7 @@ func serviceScale(app string, service string, number int, destroy bool, batch bo
 
 	line, err := internal.DisplayStream(buffer)
 	internal.Check(err)
-	if line != nil {
+	if len(line) > 0 {
 		var data map[string]interface{}
 		err = json.Unmarshal(line, &data)
 		internal.Check(err)
