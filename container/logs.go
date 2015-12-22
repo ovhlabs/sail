@@ -29,7 +29,7 @@ func cmdContainerLogs() *cobra.Command {
 	cmd.Flags().IntVarP(&logsBody.Tail, "tail", "", 0, "Return N last lines, before offset.")
 	cmd.Flags().IntVarP(&logsBody.Head, "head", "", 0, "Return N first lines, after offset.")
 	cmd.Flags().IntVarP(&logsBody.Offset, "offset", "", 0, "Offset result by N line")
-	cmd.Flags().StringVarP(&logsBody.Period, "period", "", "24 hours ago", "Lucene compatible period")
+	cmd.Flags().StringVarP(&logsBody.Period, "period", "", "", "Human readable (Lucene syntax) period")
 
 	return cmd
 }
