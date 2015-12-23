@@ -192,13 +192,14 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 
 	for {
 		line, err := reader.ReadBytes('\n')
-		if Verbose {
-			fmt.Fprintf(os.Stderr, "Received message: %v\n", string(line))
-		}
 
 		// Drop empty lines
 		if len(line) == 0 {
 			continue
+		}
+
+		if Verbose {
+			fmt.Fprintf(os.Stderr, "Received message: %v\n", string(line))
 		}
 
 		// Progress message
