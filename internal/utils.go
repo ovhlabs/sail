@@ -31,7 +31,7 @@ func DecodeMessage(data []byte) *Message {
 		return nil
 	}
 
-	if m.Message == "" && m.Type == "" {
+	if m.Type == "" {
 		return nil
 	}
 	return &m
