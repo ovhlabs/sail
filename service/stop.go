@@ -50,7 +50,7 @@ func serviceStop(app string, service string, batch bool) {
 		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
 	}
 
-	path := fmt.Sprintf("/applications/%s/services/%s/stop?stream", app, service)
+	path := fmt.Sprintf("/applications/%s/services/%s/stop", app, service)
 	buffer, _, err := internal.Stream("POST", path, []byte("{}"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)

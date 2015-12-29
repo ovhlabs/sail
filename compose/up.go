@@ -57,7 +57,7 @@ func cmdUp(cmd *cobra.Command, args []string) {
 	}
 
 	// Execute request
-	path := fmt.Sprintf("/applications/%s/fig/up?stream", ns)
+	path := fmt.Sprintf("/applications/%s/fig/up", ns)
 	buffer, _, err := internal.Stream("POST", path, payload, internal.SetHeader("Content-Type", "application/x-yaml"))
 	internal.Check(err)
 

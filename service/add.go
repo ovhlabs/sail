@@ -92,7 +92,7 @@ type VolumeConfig struct {
 	Size string `json:"size"`
 }
 
-// Add struct holds all parameters sent to /applications/%s/services/%s?stream
+// Add struct holds all parameters sent to /applications/%s/services/%s
 type Add struct {
 	Service              string                         `json:"-"`
 	Volumes              map[string]VolumeConfig        `json:"volumes,omitempty"`
@@ -246,12 +246,7 @@ func serviceAdd(args Add) {
 		return
 	}
 
-	stream := ""
-	if !addBatch {
-		stream = "?stream"
-	}
-
-	buffer, code, err := internal.Stream("POST", path+stream, body)
+	buffer, code, err := internal.Stream("POST", path, body)
 
 	// http.Request failed for some reason
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func initRequest(req *http.Request) {
@@ -141,6 +142,14 @@ func Request(method string, path string, args []byte, mods ...RequestModifier) (
 
 // Stream makes an authenticated http request and return io.ReadCloser
 func Stream(method string, path string, args []byte, mods ...RequestModifier) (io.ReadCloser, int, error) {
+	// Inform API that we expect a stream. Attach is always a stream. Passing stream=true breaks it.
+	if !strings.Contains(path, "/attach") {
+		if strings.ContainsRune(path, '?') {
+			path += "&stream=true"
+		} else {
+			path += "?stream=true"
+		}
+	}
 	return doRequest(method, path, args, mods...)
 }
 

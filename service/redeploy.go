@@ -182,7 +182,7 @@ func serviceRedeploy(args Redeploy) {
 	}
 
 	// Redeploy
-	buffer, _, err := internal.Stream("POST", path+"?stream", body)
+	buffer, _, err := internal.Stream("POST", path, body)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)

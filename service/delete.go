@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -47,9 +46,13 @@ func cmdServiceDelete(cmd *cobra.Command, args []string) {
 
 func serviceDelete(namespace string, name string) {
 	path := fmt.Sprintf("/applications/%s/services/%s?force=%t", namespace, name, deleteForce)
-	data := internal.ReqWant("DELETE", http.StatusOK, path, nil)
+	buffer, _, err := internal.Stream("DELETE", path, nil)
 
-	internal.FormatOutput(data, func(data []byte) {
-		fmt.Fprintf(os.Stderr, "Deleted service %s/%s\n", namespace, name)
-	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		os.Exit(1)
+	}
+
+	_, err = internal.DisplayStream(buffer)
+	internal.Check(err)
 }

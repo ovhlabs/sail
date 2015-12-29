@@ -61,7 +61,7 @@ func serviceScale(app string, service string, number int, destroy bool, batch bo
 		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
 	}
 
-	path := fmt.Sprintf("/applications/%s/services/%s/scale?stream", app, service)
+	path := fmt.Sprintf("/applications/%s/services/%s/scale", app, service)
 
 	args := Scale{
 		Number:  number,
