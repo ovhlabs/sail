@@ -73,6 +73,5 @@ func cmdUp(cmd *cobra.Command, args []string) {
 		}
 
 		fmt.Printf("Hostname: %v\n", data["hostname"])
-		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
 	}
 }

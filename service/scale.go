@@ -82,7 +82,6 @@ func serviceScale(app string, service string, number int, destroy bool, batch bo
 		internal.Check(err)
 
 		fmt.Printf("Hostname: %v\n", data["hostname"])
-		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
 	}
 
 	if !batch {

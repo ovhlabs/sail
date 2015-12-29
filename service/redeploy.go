@@ -196,7 +196,6 @@ func serviceRedeploy(args Redeploy) {
 		internal.Check(err)
 
 		fmt.Printf("Hostname: %v\n", data["hostname"])
-		fmt.Printf("Running containers: %v/%v\n", data["container_number"], data["container_target"])
 	}
 
 	if !redeployBatch {
