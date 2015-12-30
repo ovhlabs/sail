@@ -23,7 +23,7 @@ examples:
 [<user>] The account which hold the distant repository. If ommitted it use official docker image.
 <externalRepositoryName> the name of the distant repository. Example : tutum/nginx
 [<registryURL>] Url of the registry. Default value : the docker hub (e.g. https://hub.docker.com)
-Only pubic repositories are supported yet. ADD NOTE FOR PRIVATE REGISTRIES
+Only publicly accessible repositories are supported.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var registryURL, externalRepositoryName, repositoryName string
