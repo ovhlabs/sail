@@ -13,36 +13,46 @@ import (
 var cmdRepositoryAdd = &cobra.Command{
 	// FIXME: only support adding from source via CLI, type external. Rename to 'register' ?
 	Use:   "add",
-	Short: "Add an external repository: sail repository add [<applicationName>/]<repositoryName> [<source>/][<namespace>/]<externalRepositoryName> ",
-	Long: `Add an external repository: sail repository add [<applicationName>/]<repositoryName> [<source>/][<user>/]<externalRepositoryName>
+	Short: "Add an external repository: sail repository add [<applicationName>/]<repositoryName> [<registryURL>] [<namespace>/]<externalRepositoryName> ",
+	Long: `Add an external repository: sail repository add [<applicationName>/]<repositoryName> [<registryURL>] [<user>/]<externalRepositoryName>[:<tag>]
 examples:
-	- sail repository add myapp/myrepo docker.private.registry/privateRegistryAccount/mysql
-	- sail repository add myapp/myrepo dockerHubAccount/mysql
+	- sail repository add myapp/myrepo docker.private.registry.com privateRegistryAccount/mysql:5.5
+	- sail repository add myapp/myrepo dockerHubAccount/mysql:5.5
 	- sail repository add myapp/myrepo mysql
 
 [<user>] The account which hold the distant repository. If ommitted it use official docker image.
 <externalRepositoryName> the name of the distant repository. Example : tutum/nginx
-[<source>] For external repositories. Default value : the docker hub (e.g. https://hub.docker.com)
+[<registryURL>] Url of the registry. Default value : the docker hub (e.g. https://hub.docker.com)
 Only pubic repositories are supported yet. ADD NOTE FOR PRIVATE REGISTRIES
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var registryURL, externalRepositoryName, repositoryName string
 		switch len(args) {
 		case 2:
-			repositoryName := args[0]
-			source := args[1]
+			repositoryName = args[0]
+			registryURL = ""
+			externalRepositoryName = args[1]
+		case 3:
+			repositoryName = args[0]
+			registryURL = args[1]
+			externalRepositoryName = args[2]
 
 		default:
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail repository add [<applicationName>/]<repositoryName> [<source>/][<user>/]<externalRepositoryName>. Please see sail repository add --help")
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail repository add [<applicationName>/]<repositoryName> [<registryURL>/][<user>/]<externalRepositoryName>[:<tag>]. Please see sail repository add --help")
 			return
 		}
 
-		n := repositoryAddStruct{Source: source}
+		n := repositoryAddStruct{
+			RegistryURL:            registryURL,
+			ExternalRepositoryName: externalRepositoryName,
+		}
 		repositoryAdd(repositoryName, n)
 	},
 }
 
 type repositoryAddStruct struct {
-	Source string `json:"source"`
+	RegistryURL            string `json:"registryURL,omitempty"`
+	ExternalRepositoryName string `json:"externalRepositoryName"`
 }
 
 func repositoryAdd(repositoryName string, args repositoryAddStruct) {
