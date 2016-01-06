@@ -296,7 +296,6 @@ func ensureMode(args Add) {
 		ContainerCommand:     args.ContainerCommand,
 		ContainerNetwork:     args.ContainerNetwork,
 		ContainerEntrypoint:  args.ContainerEntrypoint,
-		ContainerNumber:      args.ContainerNumber,
 		RepositoryTag:        args.RepositoryTag,
 		Links:                args.Links,
 		Application:          args.Application,
