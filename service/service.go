@@ -7,6 +7,7 @@ import (
 
 func init() {
 	Cmd.AddCommand(cmdServiceAttach)
+	Cmd.AddCommand(cmdServiceEvents)
 	Cmd.AddCommand(cmdServiceList)
 	Cmd.AddCommand(cmdServiceShow)
 	Cmd.AddCommand(domain.Cmd)

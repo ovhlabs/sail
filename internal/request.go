@@ -71,6 +71,21 @@ func StreamPrint(method string, path string, args []byte, mods ...RequestModifie
 	}(reader)
 }
 
+// EventStreamPrint opens an event stream and print it in a goroutine, and exit when an event
+// indicates an exit status
+func EventStreamPrint(method string, path string, args []byte, exitAtContainerExit bool, mods ...RequestModifier) {
+	reader, _, err := Stream(method, path, args, mods...)
+
+	if err != nil {
+		Exit("Error while attach: %s\n", err)
+	}
+
+	go func(stream io.ReadCloser) {
+		_, err := DisplayEventStream(reader, exitAtContainerExit)
+		Check(err)
+	}(reader)
+}
+
 // ReqWant requests with a method on a path, check wantCode and returns []byte
 func ReqWant(method string, wantCode int, path string, jsonStr []byte) []byte {
 	return apiRequest(method, wantCode, path, jsonStr, false)
@@ -142,8 +157,8 @@ func Request(method string, path string, args []byte, mods ...RequestModifier) (
 
 // Stream makes an authenticated http request and return io.ReadCloser
 func Stream(method string, path string, args []byte, mods ...RequestModifier) (io.ReadCloser, int, error) {
-	// Inform API that we expect a stream. Attach is always a stream. Passing stream=true breaks it.
-	if !strings.Contains(path, "/attach") {
+	// Inform API that we expect a stream. Attach/events is always a stream. Passing stream=true breaks it.
+	if !(strings.Contains(path, "/attach") || strings.Contains(path, "/events")) {
 		if strings.ContainsRune(path, '?') {
 			path += "&stream=true"
 		} else {
@@ -231,6 +246,43 @@ func DisplayStream(buffer io.ReadCloser) ([]byte, error) {
 
 		// Default
 		fmt.Printf(string(line))
+	}
+}
+
+// DisplayEventStream displays each event related to a service, and terminates
+// the current process with the exit code contained in an event, if any.
+func DisplayEventStream(buffer io.ReadCloser, exitAtContainerExit bool) ([]byte, error) {
+	reader := bufio.NewReader(buffer)
+
+	for {
+		line, err := reader.ReadBytes('\n')
+
+		// Drop empty lines
+		if len(line) == 0 {
+			continue
+		}
+
+		if Verbose {
+			fmt.Fprintf(os.Stderr, "Received message: %v\n", string(line))
+		}
+
+		// Progress message
+		ev := DecodeEvent(line)
+		if ev != nil {
+			fmt.Fprintln(os.Stderr, ev.Message)
+		}
+
+		// Close the process with the exit status of the container, if any
+		if ev.Data != nil && ev.Data.LastExitStatus != nil && ev.Data.LastExitStatus.ExitStatus != nil {
+			if exitAtContainerExit {
+				os.Exit(*ev.Data.LastExitStatus.ExitStatus)
+			}
+		}
+
+		// Final message
+		if err == io.EOF {
+			return line, nil
+		}
 	}
 }
 

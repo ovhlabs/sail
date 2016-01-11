@@ -22,6 +22,33 @@ type Message struct {
 	Type    string `json:"type"`
 }
 
+// LastExitStatus type
+type LastExitStatus struct {
+	Reason        string `json:"reason"`
+	RawExitStatus int    `json:"raw_exit_status"`
+	ExitStatus    *int   `json:"exit_status"`
+	Signal        *int   `json:"signal"`
+}
+
+// EventData type
+type EventData struct {
+	LastExitStatus *LastExitStatus `json:"last_exit_status"`
+}
+
+// Event type
+type Event struct {
+	Event       string     `json:"event"`
+	Service     string     `json:"service"`
+	Timestamp   float64    `json:"timestamp"`
+	Data        *EventData `json:"data"`
+	Application string     `json:"application"`
+	State       string     `json:"state"`
+	PrevState   string     `json:"prev_state"`
+	Message     string     `json:"message"`
+	Type        string     `json:"type"`
+	ID          string     `json:"id"`
+}
+
 // DecodeMessage return a Message struct from json
 func DecodeMessage(data []byte) *Message {
 	var m Message
@@ -35,6 +62,16 @@ func DecodeMessage(data []byte) *Message {
 		return nil
 	}
 	return &m
+}
+
+// DecodeEvent return a Event struct from json
+func DecodeEvent(data []byte) *Event {
+	var ev Event
+	err := json.Unmarshal(data, &ev)
+	if err != nil {
+		return nil
+	}
+	return &ev
 }
 
 // ParseResourceName normalizes repo or service name of the form [[cluster/]application/]name[:tag]
