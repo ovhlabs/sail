@@ -36,8 +36,7 @@ func cmdContainerLogs() *cobra.Command {
 
 // Logs struct holds all parameters sent to /applications/%s/containers/%s/logs
 type Logs struct {
-	Application string `url:"-"`
-	Container   string `url:"-"`
+	Container string `url:"-"`
 
 	Tail   int    `url:"tail,omitempty"`
 	Head   int    `url:"head,omitempty"`
@@ -46,7 +45,7 @@ type Logs struct {
 }
 
 func cmdLogs(cmd *cobra.Command, args []string) {
-	usage := "usage: sail containers logs [<applicationName>/]<containerId>"
+	usage := "usage: sail containers logs <containerId>"
 
 	if len(args) != 1 {
 		fmt.Fprintln(os.Stderr, usage)
@@ -54,7 +53,7 @@ func cmdLogs(cmd *cobra.Command, args []string) {
 	}
 
 	// Split namespace and container
-	host, app, container, tag, err := internal.ParseResourceName(args[0])
+	host, _, container, tag, err := internal.ParseResourceName(args[0])
 	internal.Check(err)
 
 	if !internal.CheckHostConsistent(host) {
@@ -66,7 +65,6 @@ func cmdLogs(cmd *cobra.Command, args []string) {
 	}
 
 	// Get args
-	logsBody.Application = app
 	logsBody.Container = container
 	containerLogs(logsBody)
 }
@@ -77,7 +75,7 @@ func containerLogs(args Logs) {
 		fmt.Fprintf(os.Stderr, "Fatal: %s\n", err)
 		return
 	}
-	path := fmt.Sprintf("/applications/%s/containers/%s/logs?%s", args.Application, args.Container, queryArgs.Encode())
+	path := fmt.Sprintf("/containers/%s/logs?%s", args.Container, queryArgs.Encode())
 
 	b := internal.GetWantJSON(path)
 	internal.FormatOutput(b, containerLogsFormatter)

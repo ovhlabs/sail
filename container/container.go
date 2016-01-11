@@ -27,15 +27,21 @@ var Cmd = &cobra.Command{
 var cmdContainerShow = &cobra.Command{
 	Use:     "show",
 	Aliases: []string{"inspect"},
-	Short:   "Show a docker container: sail container show <applicationName> <containerId>",
-	Long: `Show a docker container: sail container show <applicationName> <containerId>
+	Short:   "Show a docker container: sail container show <containerId>",
+	Long: `Show a docker container: sail container show <containerId>
 	\"example: sail container show my-app my-container"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail container show <applicationName> <containerId>. Please see sail container show --help")
+		var container string
+
+		if len(args) == 1 {
+			container = args[0]
+		} else if len(args) == 2 {
+			container = args[1]
 		} else {
-			internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/applications/%s/containers/%s", args[0], args[1])))
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail container show <applicationName> <containerId>. Please see sail container show --help")
+			os.Exit(1)
 		}
+		internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/containers/%s", container)))
 	},
 }
