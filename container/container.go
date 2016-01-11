@@ -34,12 +34,13 @@ var cmdContainerShow = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var container string
 
-		if len(args) == 1 {
+		switch len(args) {
+		case 1:
 			container = args[0]
-		} else if len(args) == 2 {
+		case 2:
 			container = args[1]
-		} else {
-			fmt.Fprintln(os.Stderr, "Invalid usage. sail container show <applicationName> <containerId>. Please see sail container show --help")
+		default:
+			fmt.Fprintln(os.Stderr, "Invalid usage. sail container show <containerId>. Please see sail container show --help")
 			os.Exit(1)
 		}
 		internal.FormatOutputDef(internal.GetWantJSON(fmt.Sprintf("/containers/%s", container)))

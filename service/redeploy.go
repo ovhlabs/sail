@@ -167,6 +167,11 @@ func serviceRedeploy(args Redeploy) {
 	// Parse NetworkAllow
 	args.ContainerPorts = parseWhitelistedCidrs(redeployNetworkAllow, args.ContainerPorts)
 
+	// Actual redeploy
+	doServiceRedeploy(args, app, service)
+}
+
+func doServiceRedeploy(args Redeploy, app, service string) {
 	path := fmt.Sprintf("/applications/%s/services/%s/redeploy", app, service)
 	body, err := json.MarshalIndent(args, " ", " ")
 	if err != nil {

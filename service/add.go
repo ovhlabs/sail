@@ -308,7 +308,7 @@ func ensureMode(args Add) {
 		ContainerModel:       args.ContainerModel,
 		ContainerPorts:       args.ContainerPorts,
 	}
-	serviceRedeploy(redeployBody)
+	doServiceRedeploy(redeployBody, args.Application, args.Service)
 }
 
 func parsePublishedPort(args []string) map[string][]PortConfig {
