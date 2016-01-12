@@ -65,13 +65,15 @@ func cmdUp(cmd *cobra.Command, args []string) {
 	line, err := internal.DisplayStream(buffer)
 	internal.Check(err)
 	if len(line) > 0 {
-		var data map[string]interface{}
+		var data []map[string]interface{}
 		err = json.Unmarshal(line, &data)
 		if err != nil {
 			fmt.Printf("Error detected in API Return. Line: %s\n", line)
 			return
 		}
 
-		fmt.Printf("Hostname: %v\n", data["hostname"])
+		for i := range data {
+			fmt.Printf("Compose operation for service %v is %v\n", data[i]["name"], data[i]["result"])
+		}
 	}
 }
