@@ -272,10 +272,13 @@ func DisplayEventStream(buffer io.ReadCloser, exitAtContainerExit bool) ([]byte,
 			fmt.Fprintln(os.Stderr, ev.Message)
 		}
 
-		// Close the process with the exit status of the container, if any
-		if ev.Data != nil && ev.Data.LastExitStatus != nil && ev.Data.LastExitStatus.ExitStatus != nil {
-			if exitAtContainerExit {
+		// Close the process with the exit status of the container, if any.
+		// If the container was stopped using a signal, exit with the exit status 255.
+		if exitAtContainerExit && ev.Data != nil && ev.Data.LastExitStatus != nil {
+			if ev.Data.LastExitStatus.ExitStatus != nil {
 				os.Exit(*ev.Data.LastExitStatus.ExitStatus)
+			} else if ev.Data.LastExitStatus.Signal != nil {
+				os.Exit(255)
 			}
 		}
 

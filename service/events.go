@@ -12,7 +12,7 @@ var cmdServiceEvents = &cobra.Command{
 	Use:   "events",
 	Short: "Stream all service events: sail service events <applicationName>/<serviceId>",
 	Long: `Stream all service events: sail service events <applicationName>/<serviceId>
-	\"example: sail service events my-app/myServiceId"
+	"example: sail service events my-app/myServiceId"
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

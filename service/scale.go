@@ -14,6 +14,11 @@ var scaleBatch bool
 var scaleDestroy bool
 var scaleNumber int
 var scaleUsage = "usage: sail services scale [-h] [--number NUMBER] [--batch] [--destroy] [<application>/]<service>"
+var scaleLongUsage = `usage: sail services scale [-h] [--number NUMBER] [--batch] [--destroy] [<application>/]<service>
+
+The command will exit as soon as all service containers have stopped.
+Its exit status will be the one of the last container. If the last container was stopped with
+a signal, the command exits with an exit status of 255.`
 
 // Scale json data arguments
 type Scale struct {
@@ -60,6 +65,9 @@ func serviceScale(app string, service string, number int, destroy bool, batch bo
 	if !batch {
 		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
 	}
+
+	// stream service events in a goroutine
+	internal.EventStreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/events", app, service), nil, true)
 
 	path := fmt.Sprintf("/applications/%s/services/%s/scale", app, service)
 

@@ -56,6 +56,10 @@ func addCmd() *cobra.Command {
 			--workdir
 			--environment KEY=val
 		other options:
+
+The command will exit as soon as all service containers have stopped.
+Its exit status will be the one of the last container. If the last container was stopped with
+a signal, the command exits with an exit status of 255.
 		`,
 		Run: cmdAdd,
 	}

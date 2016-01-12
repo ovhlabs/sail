@@ -11,14 +11,19 @@ import (
 )
 
 var startBatch bool
-var startUsage = "usage: sail services start [-h] [--batch] [<applicationName>/]<serviceId>"
+var startUsage = "usage: sail services start [-h] [--batch] [<applicationName>/]<serviceId>."
+var startLongUsage = `usage: sail services start [-h] [--batch] [<applicationName>/]<serviceId>.
+
+The command will exit as soon as all service containers have stopped.
+Its exit status will be the one of the last container. If the last container was stopped with
+a signal, the command exits with an exit status of 255.`
 
 func startCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: startUsage,
-		Long:  startUsage,
+		Long:  startLongUsage,
 		Run:   cmdStart,
 	}
 
@@ -51,6 +56,9 @@ func serviceStart(app string, service string, batch bool) {
 	if !batch {
 		internal.StreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/attach", app, service), nil)
 	}
+
+	// stream service events in a goroutine
+	internal.EventStreamPrint("GET", fmt.Sprintf("/applications/%s/services/%s/events", app, service), nil, true)
 
 	path := fmt.Sprintf("/applications/%s/services/%s/start", app, service)
 	buffer, _, err := internal.Stream("POST", path, []byte("{}"))
