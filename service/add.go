@@ -86,7 +86,7 @@ a signal, the command exits with an exit status of 255.
 
 // PortConfig is a parameter of Add to modify exposed container ports
 type PortConfig struct {
-	PublishedPort    string   `json:"published_port"`
+	PublishedPort    int      `json:"published_port"`
 	WhitelistedCidrs []string `json:"whitelisted_cidrs"`
 	Network          string   `json:"network,omitempty"`
 }
@@ -311,31 +311,48 @@ func ensureMode(args Add) {
 	doServiceRedeploy(redeployBody, args.Application, args.Service)
 }
 
+func parsePort(raw string) (int, error) {
+	port, err := strconv.Atoi(raw)
+	if err != nil || port < 1 || port > 65535 {
+		return -1, fmt.Errorf("Invalid port number '%s': should be between 1 and 65535", raw)
+	}
+	return port, nil
+}
+
 func parsePublishedPort(args []string) map[string][]PortConfig {
 	v := make(map[string][]PortConfig)
 
 	for _, pub := range args {
 		split := strings.Split(pub, ":")
 		if len(split) == 1 { // containerPort
-			v[split[0]+"/tcp"] = []PortConfig{PortConfig{PublishedPort: split[0]}}
+			port, err := parsePort(split[0])
+			internal.Check(err)
+			v[split[0]+"/tcp"] = []PortConfig{PortConfig{PublishedPort: port}}
 		} else if len(split) == 2 { // network:containerPort, publishedPort:containerPort
-			_, err := strconv.Atoi(split[0])
+			port, err := strconv.Atoi(split[0])
 			if err != nil { // network:containerPort
 				key := split[1] + "/tcp"
-				v[key] = append(v[key], PortConfig{PublishedPort: split[1], Network: split[0]})
+				port, err = parsePort(split[1])
+				internal.Check(err)
+				v[key] = append(v[key], PortConfig{PublishedPort: port, Network: split[0]})
 			} else { // publishedPort:containerPort
 				key := split[1] + "/tcp"
-				v[key] = append(v[key], PortConfig{PublishedPort: split[0]})
+				port, err = parsePort(split[0])
+				internal.Check(err)
+				v[key] = append(v[key], PortConfig{PublishedPort: port})
 			}
 		} else if len(split) == 3 { // network:publishedPort:containerPort, network::containerPort
 			if split[1] == "" {
 				split[1] = split[2]
 			}
 
+			port, err := parsePort(split[1])
+			internal.Check(err)
+
 			key := split[2] + "/tcp"
-			v[key] = append(v[key], PortConfig{PublishedPort: split[0], Network: split[1]})
+			v[key] = append(v[key], PortConfig{PublishedPort: port, Network: split[0]})
 		} else {
-			fmt.Fprintf(os.Stderr, "Error: Invalid port expose rule %s.", pub)
+			fmt.Fprintf(os.Stderr, "Error: Invalid port expose rule '%s'\n", pub)
 			os.Exit(1)
 		}
 	}
