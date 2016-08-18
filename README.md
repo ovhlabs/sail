@@ -1,3 +1,7 @@
+## WARNING
+
+> This project has been *discontinued* and is kept for reference purpose only
+
 [![Build Status](https://travis-ci.org/runabove/sail.svg?branch=master)](https://travis-ci.org/runabove/sail)
 [![GoDoc](https://godoc.org/github.com/runabove/sail?status.svg)](https://godoc.org/github.com/runabove/sail)
 
